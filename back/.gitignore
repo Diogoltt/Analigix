@@ -185,3 +185,7 @@ Thumbs.db
 logs/
 *.log
 
+# Database files
+*.db
+*.sqlite
+*.sqlite3

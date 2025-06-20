@@ -5,12 +5,12 @@ import os
 import glob
 
 # --- CONSTANTES ---
-NOME_BANCO = 'despesas_brasil.db'
+NOME_BANCO = os.path.join('..', 'database', 'despesas_brasil.db')
 NOME_TABELA = 'despesas'
 
 # --- MAPEAMENTO DE COLUNAS POR ESTADO ---
 MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
-        'arquivo': 'csvs/*AC*.csv',
+        'arquivo': '../csvs/*AC*.csv',
         'colunas': {
             'orgao': 'descricao',
             'valor_pago': 'pago',
@@ -20,7 +20,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
         }
     },
     'AL': {  # Alagoas
-        'arquivo': 'csvs/*AL*.csv',
+        'arquivo': '../csvs/*AL*.csv',
         'colunas': {
             'orgao': 'orgao_descricao',
             'valor_pago': 'total_pago',
@@ -30,7 +30,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
         }
     },
     'AP': {  # Amapá
-        'arquivo': 'csvs/*AP*.csv',
+        'arquivo': '../csvs/*AP*.csv',
         'colunas': {
             'orgao': 'NOME_UNIDADE_GESTORA',
             'valor_pago': 'VAL_PAGO',
@@ -40,7 +40,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
         }
     },
     'AM': {  # Amazonas
-        'arquivo': 'csvs/*AM*.csv',
+        'arquivo': '../csvs/*AM*.csv',
         'colunas': {
             'orgao': 'Função',  # Usando função como referência
             'valor_pago': 'Pago',
@@ -49,7 +49,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'AM'
         }
     },    'BA': {  # Bahia
-        'arquivo': 'csvs/*BA*.csv',
+        'arquivo': '../csvs/*BA*.csv',
         'colunas': {
             'orgao': 'Órgão',
             'valor_pago': 'Valor Pago',
@@ -59,7 +59,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
         }
     },
     'CE': {  # Ceará
-        'arquivo': 'csvs/*CE*.csv',
+        'arquivo': '../csvs/*CE*.csv',
         'colunas': {
             'orgao': 'Unidade gestora',
             'valor_pago': 'Valor pago final',
@@ -68,7 +68,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'CE'
         }
     },    'DF': {  # Distrito Federal
-        'arquivo': 'csvs/*DF*.csv',
+        'arquivo': '../csvs/*DF*.csv',
         'colunas': {
             'orgao': 'Unidade Gestora',
             'valor_pago': 'Valor Final',
@@ -77,7 +77,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'DF'
         }
     },    'ES': {  # Espírito Santo
-        'arquivo': 'csvs/*ES*.csv',
+        'arquivo': '../csvs/*ES*.csv',
         'colunas': {
             'orgao': 'Descricao',
             'valor_pago': 'Pago',
@@ -86,7 +86,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'ES'
         }
     },    'GO': {  # Goiás
-        'arquivo': 'csvs/*GO*.csv',
+        'arquivo': '../csvs/*GO*.csv',
         'colunas': {
             'orgao': 'View Execucao Orcamentaria Visao Geral[Nome Orgao]',
             'valor_pago': 'View Execucao Orcamentaria Visao Geral[Valor Pago]',
@@ -95,7 +95,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'GO'
         }
     },'MA': {  # Maranhão
-        'arquivo': 'csvs/*MA*.csv',
+        'arquivo': '../csvs/*MA*.csv',
         'colunas': {
             'orgao': None,  # Precisará ser verificado no arquivo real
             'valor_pago': None,
@@ -104,7 +104,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'MA'
         }
     },    'MT': {  # Mato Grosso
-        'arquivo': 'csvs/*MT*.csv',
+        'arquivo': '../csvs/*MT*.csv',
         'colunas': {
             'orgao': 'Subelemento',
             'valor_pago': 'Valor Pagamento',
@@ -113,7 +113,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'MT'
         }
     },'MS': {  # Mato Grosso do Sul
-        'arquivo': 'csvs/*MS*.csv',
+        'arquivo': '../csvs/*MS*.csv',
         'colunas': {
             'orgao': 'Orgão',
             'valor_pago': 'Pago',
@@ -122,7 +122,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'MS'
         }
     },    'MG': {  # Minas Gerais
-        'arquivo': 'csvs/*MG*.csv',
+        'arquivo': '../csvs/*MG*.csv',
         'colunas': {
             'orgao': 'Órgão ',
             'valor_pago': 'Valor Pago ',
@@ -131,7 +131,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'MG'
         }
     },    'PA': {  # Pará
-        'arquivo': 'csvs/*PA*.csv',
+        'arquivo': '../csvs/*PA*.csv',
         'colunas': {
             'orgao': 'Orgao',
             'valor_pago': 'Pago',
@@ -140,7 +140,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'PA'
         }
     },    'PB': {  # Paraíba
-        'arquivo': 'csvs/*PB*.csv',
+        'arquivo': '../csvs/*PB*.csv',
         'colunas': {
             'orgao': 'ORGAO',
             'valor_pago': 'VALOR PAGO',
@@ -150,7 +150,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
         }
     },
     'PR': {  # Paraná
-        'arquivo': 'csvs/*PR*.csv',
+        'arquivo': '../csvs/*PR*.csv',
         'colunas': {
             'orgao': None,  # Precisará ser verificado no arquivo real
             'valor_pago': None,
@@ -160,7 +160,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
         }
     },
     'PE': {  # Pernambuco
-        'arquivo': 'csvs/*PE*.csv',
+        'arquivo': '../csvs/*PE*.csv',
         'colunas': {
             'orgao': None,  # Precisará ser verificado no arquivo real
             'valor_pago': None,
@@ -169,7 +169,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'PE'
         }
     },    'PI': {  # Piauí
-        'arquivo': 'csvs/*PI*.csv',
+        'arquivo': '../csvs/*PI*.csv',
         'colunas': {
             'orgao': 'Orgão',
             'valor_pago': 'Pago',
@@ -178,7 +178,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'PI'
         }
     },    'RJ': {  # Rio de Janeiro
-        'arquivo': 'csvs/*RJ*.csv',
+        'arquivo': '../csvs/*RJ*.csv',
         'colunas': {
             'orgao': 'Função',
             'valor_pago': None,  # RJ não tem valor pago
@@ -187,7 +187,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'RJ'
         }
     },    'RN': {  # Rio Grande do Norte
-        'arquivo': 'csvs/*RN*.csv',
+        'arquivo': '../csvs/*RN*.csv',
         'colunas': {
             'orgao': 'Função',
             'valor_pago': 'Valor Pagamento',
@@ -196,7 +196,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'RN'
         }
     },    'RS': {  # Rio Grande do Sul
-        'arquivo': 'csvs/*RS*.csv',
+        'arquivo': '../csvs/*RS*.csv',
         'colunas': {
             'orgao': 'Órgão',
             'valor_pago': 'Valor',  # RS parece ter apenas um campo "Valor"
@@ -205,7 +205,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'RS'
         }
     },    'RO': {  # Rondônia
-        'arquivo': 'csvs/*RO*.csv',
+        'arquivo': '../csvs/*RO*.csv',
         'colunas': {
             'orgao': 'Secretaria',
             'valor_pago': 'DespesaPaga',
@@ -214,7 +214,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'RO'
         }
     },    'RR': {  # Roraima
-        'arquivo': 'csvs/*RR*.csv',
+        'arquivo': '../csvs/*RR*.csv',
         'colunas': {
             'orgao': 'desOrgao',
             'valor_pago': 'valorPago',
@@ -223,7 +223,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'RR'
         }
     },    'SC': {  # Santa Catarina
-        'arquivo': 'csvs/*SC*.csv',
+        'arquivo': '../csvs/*SC*.csv',
         'colunas': {
             'orgao': 'nmunidadegestora',
             'valor_pago': 'vlpago',
@@ -232,7 +232,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'SC'
         }
     },    'SP': {  # São Paulo
-        'arquivo': 'csvs/*SP*.csv',
+        'arquivo': '../csvs/*SP*.csv',
         'colunas': {
             'orgao': 'Ação',  # SP pode usar Função ou Ação
             'valor_pago': None,  # SP não tem valor pago
@@ -241,7 +241,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'SP'
         }
     },    'SE': {  # Sergipe
-        'arquivo': 'csvs/*SE*.csv',
+        'arquivo': '../csvs/*SE*.csv',
         'colunas': {
             'orgao': 'UNIDADE GOVERNAMENTAL',
             'valor_pago': 'PAGO',
@@ -250,7 +250,7 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
             'estado': 'SE'
         }
     },    'TO': {  # Tocantins - Parece ter colunas duplicadas, usar as primeiras
-        'arquivo': 'csvs/*TO*.csv',
+        'arquivo': '../csvs/*TO*.csv',
         'colunas': {
             'orgao': 'FUNÇÃO',
             'valor_pago': 'PAGO',
@@ -588,6 +588,12 @@ def verificar_banco():
     Verifica se o banco existe e cria a tabela se necessário.
     """
     try:
+        # Garantir que a pasta database existe
+        database_dir = os.path.dirname(NOME_BANCO)
+        if not os.path.exists(database_dir):
+            os.makedirs(database_dir)
+            print(f"📁 Pasta criada: {database_dir}")
+        
         conn = sqlite3.connect(NOME_BANCO)
         cursor = conn.cursor()
         
