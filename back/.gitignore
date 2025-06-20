@@ -159,11 +159,6 @@ cython_debug/
 #  separate JetBrains.gitignore file and include it from the global .gitignore.
 .idea/
 
-# Database files
-*.db
-*.sqlite
-*.sqlite3
-
 # Configuration files that might contain sensitive data
 config.py
 settings.py
@@ -189,3 +184,4 @@ Thumbs.db
 # Logs
 logs/
 *.log
+
