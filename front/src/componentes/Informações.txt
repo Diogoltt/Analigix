@@ -1,0 +1,28 @@
+INFORMAÇÕES SOBRE A ESTRUTURA DE COMPONENTES - PROJETO ANALIGIX
+
+Estrutura baseada em funcionalidades. Cada pasta representa um grupo específico de componentes com uma função bem definida.
+
+1. botoes/
+   - Botões principais
+   - Botões com ícones
+   - Botões de ação (ex: salvar, deletar)
+
+2. modal/
+   - Modal de confirmação
+   - Modal de detalhes
+   - Modal customizado para gráficos, filtros etc.
+
+3. graficos/
+   - Gráficos de perfil
+   - Gráficos de pizza
+
+
+4. mapas/
+   - Mapa interativo com marcadores
+   
+
+5. svg/
+   - Logos
+   - Ícones vetoriais personalizados
+
+
