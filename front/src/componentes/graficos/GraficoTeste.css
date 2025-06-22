@@ -1,0 +1,22 @@
+.radar-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.radar-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  color: #0f766e;
+  margin-bottom: 24px;
+}
+
+.radar-chart-wrapper {
+  width: 100%;
+  height: 400px;
+}

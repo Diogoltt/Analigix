@@ -1,0 +1,107 @@
+/* TelaBrasil.css */
+
+.navbar {
+    background-color: #5b228d;
+    /* border: 1px solid #5b228d; */
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+.container-mapa-ranking {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 2rem;
+    padding: 2rem;
+    height: 100%;
+    box-sizing: border-box;
+    border-radius: 20px;
+
+}
+
+.mapaBrasil {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid rgb(30, 30, 30, .1);
+    border-radius: 20px;
+    max-width: 600px;
+    height: auto;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+}
+
+.info-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+
+.info-nacional {
+    border: 1px solid rgb(30, 30, 30, .1);
+    border-radius: 20px;
+    padding: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.conteudo-ranking-grafico {
+    border: 1px solid rgb(30, 30, 30, .1);
+    border-radius: 20px;
+    padding: 0.5rem;
+    width: 100%;
+    flex-grow: 1;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+/* * cards informativos*/
+.container-cards {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+    gap: 20rem;
+}
+
+.card {
+    flex: 1 1 200px;
+    max-width: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+    border: 1px solid rgb(30, 30, 30, .1);
+    border-radius: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+}
+
+/** Novos produtos */
+.container-novos-Produtos {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    height: 100%;
+}
+
+.novos-produtos-info {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgb(30, 30, 30, .1);
+    border-radius: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+}
