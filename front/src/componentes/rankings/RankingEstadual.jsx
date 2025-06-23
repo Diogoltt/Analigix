@@ -1,56 +1,46 @@
-import React, { useState } from "react";
-import '../botoes/Botoes.css';
-
-import DetalhesInvestimento from "../modal/DetalhesInvestimento";
-
-const posicoes = ["1°", "2°", "3°", "4°", "5°"];
-
-const RankingEstadual = ({ items, compareFn }) => {
-  const sortedItems = [...items].sort(compareFn);
-
-  const [itemSelecionado, setItemSelecionado] = useState(null);
-
-  const abrirModal = (item) => setItemSelecionado(item);
-  const fecharModal = () => setItemSelecionado(null);
+import React from 'react';
+const RankingEstadual = ({ items, page, perPage }) => {
+  if (!items || items.length === 0) {
+    return (
+      <p style={{ textAlign: 'center', color: '#555' }}>
+        Nenhum dado encontrado para este filtro.
+      </p>
+    );
+  }
 
   return (
-    <>
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {sortedItems.map((item, index) => (
+    <ul style={{ listStyle: 'none', padding: 0 }}>
+      {items.map((item, index) => {
+        const posicaoGlobal = (page - 1) * perPage + index + 1;
+
+        return (
           <li
-            key={item.id}
+            key={item.categoria_padronizada}
             style={{
-              borderBottom: "1px solid #ccc",
-              padding: "1rem 0",
-              color: "#5B228D",
-              fontFamily: "Arial, sans-serif",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
+              borderBottom: '1px solid #ccc',
+              padding: '1rem 0',
+              color: '#5B228D',
+              fontFamily: 'Arial, sans-serif',
             }}
           >
             <div>
-              <strong style={{ color: "#cc0066" }}>
-                {posicoes[index]} - {item.categoria} ({item.sigla})
+              <strong style={{ color: '#cc0066' }}>
+                {/* Usando a nova variável para a posição correta */}
+                {`${posicaoGlobal}°`} - {item.categoria_padronizada}
               </strong>
-              <div style={{ marginTop: "0.3rem" }}>
-                <strong>Investido:</strong> {item.investimento}
+              <div style={{ marginTop: '0.3rem' }}>
+                <strong>Investido:</strong>
+                {' R$ ' +
+                  (item.total_gasto || 0).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
               </div>
             </div>
-
-            <button className="btn" onClick={() => abrirModal(item)}>Ver Mais</button>
           </li>
-        ))}
-      </ul>
-
-      {itemSelecionado && (
-        <DetalhesInvestimento
-          isOpen={true}
-          onClose={fecharModal}
-          item={itemSelecionado}
-        />
-      )}
-    </>
+        );
+      })}
+    </ul>
   );
 };
 

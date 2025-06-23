@@ -1,7 +1,14 @@
 from flask import Flask
-from .routes import main_routes
+from flask_cors import CORS
+import os
 
-def create_app():
-    app = Flask(__name__)
-    app.register_blueprint(main_routes)
-    return app
+app = Flask(__name__)
+
+CORS(app)
+
+
+basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+app.config['DATABASE_PATH'] = os.path.join(basedir, 'database', 'despesas_brasil.db')
+app.config['TABLE_NAME'] = 'despesas' 
+
+from app import routes
