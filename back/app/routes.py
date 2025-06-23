@@ -153,3 +153,36 @@ def get_dados_paginados():
     except Exception as e:
         print(f"Ocorreu um erro na rota /api/dados: {e}")
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/api/ranking-nacional', methods=['GET'])
+def get_ranking_nacional():
+    """
+    Calcula o total investido por estado, ordena, e retorna o Top 5.
+    """
+    try:
+        # A consulta agrupa por 'estado' (que contém a sigla), soma os valores,
+        # ordena pelo total e pega os 5 maiores.
+        query = """
+            SELECT
+                estado,
+                SUM(valor) AS total_investido
+            FROM
+                despesas
+            GROUP BY
+                estado
+            ORDER BY
+                total_investido DESC
+            LIMIT 5
+        """
+        
+        db_path = app.config['DATABASE_PATH']
+        conn = sqlite3.connect(db_path)
+        df = pd.read_sql_query(query, conn)
+        conn.close()
+
+        # Retorna a lista do Top 5
+        return jsonify(df.to_dict(orient='records'))
+
+    except Exception as e:
+        print(f"Ocorreu um erro na rota /api/ranking-nacional: {e}")
+        return jsonify({"error": str(e)}), 500

@@ -1,15 +1,27 @@
 import React from 'react';
 
+// Pequeno dicionário para traduzir a sigla para o nome completo, se precisar.
+const nomesDosEstados = {
+    'AC': 'Acre', 'AL': 'Alagoas', 'AP': 'Amapá', 'AM': 'Amazonas', 'BA': 'Bahia',
+    'CE': 'Ceará', 'DF': 'Distrito Federal', 'ES': 'Espírito Santo', 'GO': 'Goiás',
+    'MA': 'Maranhão', 'MT': 'Mato Grosso', 'MS': 'Mato Grosso do Sul', 'MG': 'Minas Gerais',
+    'PA': 'Pará', 'PB': 'Paraíba', 'PR': 'Paraná', 'PE': 'Pernambuco', 'PI': 'Piauí',
+    'RJ': 'Rio de Janeiro', 'RN': 'Rio Grande do Norte', 'RS': 'Rio Grande do Sul',
+    'RO': 'Rondônia', 'RR': 'Roraima', 'SC': 'Santa Catarina', 'SP': 'São Paulo',
+    'SE': 'Sergipe', 'TO': 'Tocantins'
+};
+
 const medalhas = ['🥇', '🥈', '🥉', '4°', '5°'];
 
-const RankingNacional = ({ items, compareFn }) => {
-  const sortedItems = [...items].sort(compareFn);
+// O componente agora só precisa da prop 'items'. A ordenação já foi feita na API.
+const RankingNacional = ({ items }) => {
 
   return (
     <ul style={{ listStyle: 'none', padding: 0 }}>
-      {sortedItems.map((item, index) => (
+      {items.map((item, index) => (
         <li
-          key={item.id}
+          // A key agora é o estado (sigla), que é único neste ranking.
+          key={item.estado}
           style={{
             borderBottom: '1px solid #ccc',
             padding: '1rem 0',
@@ -18,15 +30,20 @@ const RankingNacional = ({ items, compareFn }) => {
           }}
         >
           <strong style={{ color: '#cc0066' }}>
-            {medalhas[index]} - {item.estado} ({item.sigla})
+            {/* Usamos a sigla (item.estado) para pegar o nome completo no dicionário */}
+            {medalhas[index]} - {nomesDosEstados[item.estado]} ({item.estado})
           </strong>
           <div style={{ marginTop: '0.3rem' }}>
-            <strong>Investido:</strong> {item.investimento}
+            <strong>Investido:</strong> 
+            {/* Exibimos o total_investido que veio da API, formatado como moeda */}
+            {' R$ ' + (item.total_investido || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </div>
-          <div style={{ marginTop: '0.3rem' }}>
+
+          {/* A API atual não nos diz os setores de destaque, então removemos essa parte por enquanto */}
+          {/* <div style={{ marginTop: '0.3rem' }}>
             ° Destaca-se pelo setor de{' '}
             <strong>{item.setores.join(' e ')}</strong>
-          </div>
+          </div> */}
         </li>
       ))}
     </ul>

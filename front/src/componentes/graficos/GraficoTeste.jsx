@@ -15,7 +15,7 @@ export default function GraficoTeste({ chartData }) {
     if (!chartData || chartData.length === 0) {
       return [];
     }
-
+  
     const top5Data = chartData.slice(0, 5);
 
     const maxGasto = Math.max(...top5Data.map((item) => item.total_gasto));
