@@ -1,0 +1,23 @@
+.grafico-container {
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  max-width: 1000px;
+  margin: 2rem auto;
+}
+
+.barras-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #4c2885;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.barras-chart-wrapper {
+  width: 100%;
+  height: auto;
+  min-height: 400px;
+  
+}

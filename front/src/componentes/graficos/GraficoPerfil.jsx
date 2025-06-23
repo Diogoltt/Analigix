@@ -1,5 +1,5 @@
 import React from "react";
-import './GraficoTeste.css';
+import './GraficoPerfil.css';
 
 import {
   Radar,

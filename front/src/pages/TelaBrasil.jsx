@@ -1,21 +1,33 @@
 import React, { useState } from "react";
-import "./css/TelaBrasil.css"
-//todo - import de svg
+import "./css/TelaBrasil.css";
+import { ESTADOS_BR } from '../util/Estados';
+
 import { ReactComponent as LogoAnaligixAzul } from '../componentes/logo/logoAnaligixAzul.svg';
 import { ReactComponent as Moradia } from '../componentes/svg/moradia.svg';
 import { ReactComponent as Educacao } from '../componentes/svg/educacao.svg';
 import { ReactComponent as Saude } from '../componentes/svg/saude.svg';
 
-
-
-//todo - import de funções?
 import BtnVerGrafico from "../componentes/botoes/BtnVerGrafico";
+import BtnBuscaEstado from "../componentes/botoes/BtnBuscaEstado";
+import BtnComparar from "../componentes/botoes/BtnComparar";
+
 import MapaBrasil from "../componentes/mapas/MapaBrasil";
-import GraficoTeste from "../componentes/graficos/GraficoTeste";
+import GraficoBarras from "../componentes/graficos/GraficoBarras";
+import GraficoTornado from "../componentes/graficos/GraficoTornado";
+
 import RankingNacional from "../componentes/rankings/RankingNacional";
 
 export default function TelaBrasil() {
   const [mostrarGrafico, setMostrarGrafico] = useState(false);
+  const [buscaEstado, setBuscaEstado] = useState("");
+
+  const [estadoA, setEstadoA] = useState("");
+  const [estadoB, setEstadoB] = useState("");
+  const [ufsComparadas, setUfsComparadas] = useState(null); // ex: ["SP", "RJ"]
+
+  const handleBuscaChange = (e) => {
+    setBuscaEstado(e.target.value);
+  };
 
   const dados = [
     { id: 1, estado: "São Paulo", sigla: "SP", investimento: "2,3 milhões", setores: ["Transporte público", "Tecnologia"] },
@@ -25,17 +37,36 @@ export default function TelaBrasil() {
     { id: 5, estado: "Santa Catarina", sigla: "SC", investimento: "860 mil", setores: ["Tecnologia"] },
   ];
 
+
   const compararInvestimento = (a, b) => {
     const parse = valor => parseFloat(valor.replace(/[^\d,]/g, "").replace(",", "."));
     return parse(b.investimento) - parse(a.investimento);
   };
 
+
+
   //? RETORNANDO A FUNÇÃO PARA ALTERNAR ENTRE GRÁFICO E RANKING
   return (
     <div>
       <nav className="navbar">
-       <a href="/analigix"><LogoAnaligixAzul width="200px" height="80px" /></a>
+        <a href="/analigix"><LogoAnaligixAzul width="200px" height="80px" /></a>
       </nav>
+
+      <div className="BuscaEstado">
+        <input
+          type="text"
+          placeholder="🔍︎ Digite o estado ou sigla"
+          value={buscaEstado}
+          onChange={handleBuscaChange}
+          list="estados-list"
+        />
+        <datalist id="estados-list">
+          {Object.entries(ESTADOS_BR).map(([nome, sigla]) => (
+            <option key={sigla} value={nome}>{`${nome} (${sigla})`}</option>
+          ))}
+        </datalist>
+        <BtnBuscaEstado estado={buscaEstado} />
+      </div>
 
       <div className="container-mapa-ranking">
         <div className="mapaBrasil">
@@ -52,7 +83,7 @@ export default function TelaBrasil() {
 
           <div className="conteudo-ranking-grafico">
             {mostrarGrafico ? (
-              <GraficoTeste />
+              <GraficoBarras />
             ) : (
               <RankingNacional items={dados} compareFn={compararInvestimento} />
             )}
@@ -83,18 +114,48 @@ export default function TelaBrasil() {
       </div>
 
       <div className="container-novos-Produtos">
-          <div className="novos-Produtos-titulo">
-            <h1 style={{color:"#2C006A"}}>Sugestão de áreas para Novos Produtos</h1>
+        <div className="novos-Produtos-titulo">
+          <h1 style={{ color: "#2C006A" }}>Comparação entre estados</h1>
+        </div>
+        <div className="forms-Grafico">
+          <form>
+            <label className="campo-Grafico">Selecione o Estado A: </label>
+            <input
+              className="select-Grafico"
+              type="text"
+              list="estados-list"
+              name="estadoA"
+              placeholder="Digite ou selecione um estado"
+            />
+            <datalist id="estados-list">
+              {Object.entries(ESTADOS_BR).map(([nome, sigla]) => (
+                <option key={sigla} value={nome}>
+                  {`${nome} (${sigla})`}
+                </option>
+              ))}
+            </datalist>
+
+            <label className="campo-Grafico">Selecione o Estado B: </label>
+            <input
+              className="select-Grafico"
+              type="text"
+              list="estados-list"
+              name="estadoA"
+              placeholder="Digite ou selecione um estado"
+            />
+            <datalist id="estados-list">
+              {Object.entries(ESTADOS_BR).map(([nome, sigla]) => (
+                <option key={sigla} value={nome}>
+                  {`${nome} (${sigla})`}
+                </option>
+              ))}
+            </datalist>
+            <BtnComparar />
+          </form>
+          <div className="grafico-Comparacao">
+            <GraficoTornado />
           </div>
-          <div className="novos-produtos-info">
-            <h2>Lero lero titulo de possível investimento</h2>
-            <p>
-              Lero lero trazer a análise de dados aqui para previsões futuras <br />
-              lero lero numeros <br />
-              lero lero mais numeros <br />
-              lero lero estado <br />
-            </p>
-          </div>
+        </div>
       </div>
     </div> // todo fim do return
   );

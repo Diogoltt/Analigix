@@ -9,7 +9,7 @@ import { ReactComponent as Filtro } from '../componentes/svg/filtro.svg';
 import BtnVoltar from '../componentes/botoes/BtnVoltarTela.jsx';
 import RankingEstadual from '../componentes/rankings/RankingEstadual.jsx';
 
-import GraficoTeste from "../componentes/graficos/GraficoTeste";
+import GraficoPerfil from "../componentes/graficos/GraficoPerfil.jsx";
 
 //? Estados:
 import MapaAC from '../componentes/mapas/Acre.jsx';
@@ -117,7 +117,7 @@ export default function TelaEstado() {
                         {MapaComponente ? <MapaComponente className="mapa-Estado-Svg" /> : <p>Mapa não disponível</p>}
                     </div>
                     <div className='grafico-Estado'>
-                        <GraficoTeste />
+                        <GraficoPerfil />
                     </div>
                 </div>
             </div>
