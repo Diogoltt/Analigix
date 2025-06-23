@@ -220,7 +220,7 @@ export default function TelaEstado() {
             )}
           </div>
           <div className="grafico-Estado">
-            <GraficoTeste />
+            <GraficoTeste chartData={rankingData} />
           </div>
         </div>
       </div>
