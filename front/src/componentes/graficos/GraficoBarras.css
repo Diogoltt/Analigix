@@ -1,3 +1,13 @@
+.categoria-graficoBarras{
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #333;
+  outline: none;
+  transition: border 0.2s ease;
+}
 .grafico-container {
   padding: 2rem;
   background-color: #fff;

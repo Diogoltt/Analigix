@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+
 import "./GraficoBarras.css";
 
 import {
@@ -44,24 +45,51 @@ const data = [
 ];
 
 export default function GraficoBarrasEstados() {
-  return (
-    <div className="grafico-container">
-      <h2 className="barras-title">Comparação dos 27 Estados em números</h2>
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState("");
 
-      
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart
-            data={data}
-            margin={{ top: 20, right: 30, left: 40, bottom: 20 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <YAxis type="number" label={{ value: "R$ (bilhões", angle: -90, position: "insideLeft", offset: 20 }} />
-            <XAxis dataKey="estado" type="category" width={40} />
-            <Tooltip formatter={(value) => `R$ ${value} bi`} />
-            <Legend />
-            <Bar dataKey="investimento" fill="#0EC0D1" name="Investimento" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+  const handleCategoriaChange = (e) => {
+    setCategoriaSelecionada(e.target.value);
+  };
+
+  return (
+    <div className="grafico-container" style={{ minHeight: "500px" }}>
+      {/* Selector de Categoria */}
+      <select
+        id="categoria-select"
+        className="categoria-graficoBarras"
+        value={categoriaSelecionada}
+        onChange={handleCategoriaChange}
+      >
+        <option value="" disabled>
+          Selecione a Categoria
+        </option>
+        <option value="Educação">Educação</option>
+        <option value="Saúde">Saúde</option>
+        <option value="Infraestrutura">Infraestrutura</option>
+        <option value="habitação">Habitação</option>
+        <option value="Tecnologia">Tecnologia</option>
+      </select>
+
+      {/* Título dinâmico */}
+      <h2 className="barras-title">
+        {categoriaSelecionada
+          ? `Comparação dos 27 Estados em ${categoriaSelecionada}`
+          : "Selecione uma categoria para visualizar o gráfico"}
+      </h2>
+
+      <ResponsiveContainer width="100%" height={400}>
+        <BarChart
+          data={data}
+          margin={{ top: 20, right: 30, left: 40, bottom: 20 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <YAxis type="number" label={{ value: "R$ (bilhões", angle: -90, position: "insideLeft", offset: 20 }} />
+          <XAxis dataKey="estado" type="category" width={40} />
+          <Tooltip formatter={(value) => `R$ ${value} bi`} />
+          <Legend />
+          <Bar dataKey="investimento" fill="#0EC0D1" name="Investimento" />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   );
 }

@@ -16,7 +16,7 @@ export default function BtnComparar({ estadoA, estadoB, onComparar }) {
   };
 
   return (
-    <button className="btn" onClick={handleClick}>
+    <button className="btn" onClick={handleClick} type="button">
       Comparar Estados
     </button>
   );

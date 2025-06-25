@@ -1,4 +1,6 @@
 import React from "react";
+import { buscarEstado } from "../../util/Estados";
+
 import {
   BarChart,
   Bar,
@@ -40,10 +42,11 @@ const data = [
   },
 ];
 
-export default function GraficoComparacao({ ufA = "Estado A", ufB = "Estado B" }) {
+export default function GraficoComparacao({ ufA = "MS", ufB = "SP" }) {
+  
   return (
     <div style={{ width: "100%", height: 500 }}>
-      <h2 style={{ textAlign: "center", color: "#C8009C" }}>
+      <h2 style={{ textAlign: "center", color: "#5B228D" }}>
         Comparativo de investimento entre os estados {ufA} e {ufB} (categorias)
       </h2>
 
@@ -63,13 +66,13 @@ export default function GraficoComparacao({ ufA = "Estado A", ufB = "Estado B" }
             tick={{ fontSize: 14 }}
           />
           <Tooltip formatter={(value) => `${value} milhões`} />
-          <Legend verticalAlign="middle" align="left" layout="vertical" />
+          <Legend verticalAlign="middle" align="left" layout="vertical" wrapperStyle={{ left: 0, top: 100, paddingRight: 60 }} />
 
           {/* Estado A (barra para esquerda com valor negativo) */}
           <Bar
             dataKey={(entry) => -entry.estadoA}
             name={`Investimento - ${ufA}`}
-            fill="#F2855A"
+            fill="#0EC0D1"
             isAnimationActive={false}
           >
             <LabelList dataKey={(entry) => -entry.estadoA} position="insideLeft" formatter={(v) => `${Math.abs(v)}`} />

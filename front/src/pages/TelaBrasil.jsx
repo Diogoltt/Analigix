@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./css/TelaBrasil.css";
 import { ESTADOS_BR } from '../util/Estados';
 
@@ -13,22 +13,29 @@ import BtnComparar from "../componentes/botoes/BtnComparar";
 
 import MapaBrasil from "../componentes/mapas/MapaBrasil";
 import GraficoBarras from "../componentes/graficos/GraficoBarras";
-import GraficoTornado from "../componentes/graficos/GraficoTornado";
+import GraficoComparacao from "../componentes/graficos/GraficoComparacao";
 
 import RankingNacional from "../componentes/rankings/RankingNacional";
 
 export default function TelaBrasil() {
-  const [mostrarGrafico, setMostrarGrafico] = useState(false);
+  //=========== BUSCA PRINCIPAL ===========
   const [buscaEstado, setBuscaEstado] = useState("");
+  const [mostrarSugestoes, setMostrarSugestoes] = useState(false);
+  const [estadosFiltrados, setEstadosFiltrados] = useState([]);
+  const inputRef = useRef(null);
 
-  const [estadoA, setEstadoA] = useState("");
-  const [estadoB, setEstadoB] = useState("");
-  const [ufsComparadas, setUfsComparadas] = useState(null); // ex: ["SP", "RJ"]
+  useEffect(() => {
+    setEstadosFiltrados(filterEstados(buscaEstado));
+  }, [buscaEstado]);
 
-  const handleBuscaChange = (e) => {
-    setBuscaEstado(e.target.value);
+    const handleSelectEstado = (nome) => {
+    setBuscaEstado(nome);
+    setMostrarSugestoes(false);
+    inputRef.current.focus();
   };
 
+  //=========== RANKING ===========
+  const [mostrarGrafico, setMostrarGrafico] = useState(false);
   const dados = [
     { id: 1, estado: "São Paulo", sigla: "SP", investimento: "2,3 milhões", setores: ["Transporte público", "Tecnologia"] },
     { id: 2, estado: "Minas Gerais", sigla: "MG", investimento: "1,1 milhão", setores: ["Educação", "Agropecuário"] },
@@ -37,37 +44,105 @@ export default function TelaBrasil() {
     { id: 5, estado: "Santa Catarina", sigla: "SC", investimento: "860 mil", setores: ["Tecnologia"] },
   ];
 
+  //=========== COMPARAÇÃO ===========
+  const [estadoA, setEstadoA] = useState("");
+  const [estadoB, setEstadoB] = useState("");
+  const [mostrarSugestoesA, setMostrarSugestoesA] = useState(false);
+  const [mostrarSugestoesB, setMostrarSugestoesB] = useState(false);
+  const [estadosFiltradosA, setEstadosFiltradosA] = useState([]);
+  const [estadosFiltradosB, setEstadosFiltradosB] = useState([]);
+  const inputRefA = useRef(null);
+  const inputRefB = useRef(null);
+  const [mostrarComparacao, setMostrarComparacao] = useState(false);
+  const [ufsComparadas, setUfsComparadas] = useState([]);
 
+
+  const filterEstados = (termo) => {
+    if (!termo.trim()) return [];
+    
+    return Object.entries(ESTADOS_BR)
+      .filter(([nome, sigla]) =>
+        nome.toLowerCase().includes(termo.toLowerCase()) ||
+        sigla.toLowerCase().includes(termo.toLowerCase())
+      )
+      .slice(0, 5);
+  };
+
+
+  useEffect(() => {
+    setEstadosFiltradosA(filterEstados(estadoA));
+  }, [estadoA]);
+
+
+  useEffect(() => {
+    setEstadosFiltradosB(filterEstados(estadoB));
+  }, [estadoB]);
+
+
+  const handleSelectEstadoA = (nome) => {
+    setEstadoA(nome);
+    setMostrarSugestoesA(false);
+    inputRefA.current.focus();
+  };
+
+  const handleSelectEstadoB = (nome) => {
+    setEstadoB(nome);
+    setMostrarSugestoesB(false);
+    inputRefB.current.focus();
+  };
+
+  // Handler para comparação
+  const handleComparar = (ufA, ufB) => {
+    setUfsComparadas([ufA, ufB]);
+    setMostrarComparacao(true);
+  };
+
+  // Função para comparar investimentos --> contém dados fictios
   const compararInvestimento = (a, b) => {
     const parse = valor => parseFloat(valor.replace(/[^\d,]/g, "").replace(",", "."));
     return parse(b.investimento) - parse(a.investimento);
   };
 
-
-
-  //? RETORNANDO A FUNÇÃO PARA ALTERNAR ENTRE GRÁFICO E RANKING
   return (
     <div>
       <nav className="navbar">
         <a href="/analigix"><LogoAnaligixAzul width="200px" height="80px" /></a>
+        <a href="/Portais-da-Transparencia" style={{color: "white"}}>Portais da Transparência</a>
       </nav>
 
+      {/* Busca de estado */}
       <div className="BuscaEstado">
         <input
+          ref={inputRef}
+          className="busca-input"
           type="text"
           placeholder="🔍︎ Digite o estado ou sigla"
           value={buscaEstado}
-          onChange={handleBuscaChange}
-          list="estados-list"
+          onChange={(e) => {
+            setBuscaEstado(e.target.value);
+            setMostrarSugestoes(true);
+          }}
+          onFocus={() => setMostrarSugestoes(true)}
+          onBlur={() => setTimeout(() => setMostrarSugestoes(false), 200)}
         />
-        <datalist id="estados-list">
-          {Object.entries(ESTADOS_BR).map(([nome, sigla]) => (
-            <option key={sigla} value={nome}>{`${nome} (${sigla})`}</option>
-          ))}
-        </datalist>
+        {mostrarSugestoes && estadosFiltrados.length > 0 && (
+          <div className="sugestoes-container">
+            {estadosFiltrados.map(([nome, sigla]) => (
+              <div
+                key={`busca-${sigla}`}
+                className="sugestao-item"
+                onClick={() => handleSelectEstado(nome)}
+                onMouseDown={(e) => e.preventDefault()}
+              >
+                {nome} ({sigla})
+              </div>
+            ))}
+          </div>
+        )}
         <BtnBuscaEstado estado={buscaEstado} />
       </div>
 
+      {/* Mapa e ranking */}
       <div className="container-mapa-ranking">
         <div className="mapaBrasil">
           <MapaBrasil style={{ maxWidth: "100%", height: "auto" }} />
@@ -75,7 +150,7 @@ export default function TelaBrasil() {
 
         <div className="info-container">
           <div className="info-nacional">
-            <h1 style={{ color: "#2C006A", textAlign: "center", marginBottom: "1.5rem" }}>
+            <h1 style={{ color: "#5B228D", textAlign: "center", marginBottom: "1.5rem" }}>
               Exemplo: No último ano o País investiu mais em <strong style={{ color: "#0EC0D1" }}>#</strong> e <strong style={{ color: "#0EC0D1" }}>#</strong>
             </h1>
             <BtnVerGrafico mostrarGrafico={mostrarGrafico} setMostrarGrafico={setMostrarGrafico} text={mostrarGrafico ? "Ranking" : "Grafico"} />
@@ -91,7 +166,7 @@ export default function TelaBrasil() {
         </div>
       </div>
 
-
+      {/* Cards */}
       <div className="container-cards">
         <div className="card">
           <Moradia width="80px" height="80px" />
@@ -113,50 +188,90 @@ export default function TelaBrasil() {
         </div>
       </div>
 
-      <div className="container-novos-Produtos">
-        <div className="novos-Produtos-titulo">
-          <h1 style={{ color: "#2C006A" }}>Comparação entre estados</h1>
+      {/* Comparação */}
+      <div className="container-comparacao">
+        <div className="titulo-comparacao">
+          <h1 style={{ color: "#5B228D" }}>Comparação entre estados</h1>
         </div>
-        <div className="forms-Grafico">
-          <form>
-            <label className="campo-Grafico">Selecione o Estado A: </label>
-            <input
-              className="select-Grafico"
-              type="text"
-              list="estados-list"
-              name="estadoA"
-              placeholder="Digite ou selecione um estado"
-            />
-            <datalist id="estados-list">
-              {Object.entries(ESTADOS_BR).map(([nome, sigla]) => (
-                <option key={sigla} value={nome}>
-                  {`${nome} (${sigla})`}
-                </option>
-              ))}
-            </datalist>
+        <div>
+          <form className="forms-Grafico" onSubmit={(e) => e.preventDefault()}>
+            <div className="input-container">
+              <label className="campo-Grafico">Selecione o Estado A: </label>
+              <input
+                ref={inputRefA}
+                className="busca-input"
+                type="text"
+                value={estadoA}
+                onChange={(e) => {
+                  setEstadoA(e.target.value);
+                  setMostrarSugestoesA(true);
+                }}
+                onFocus={() => setMostrarSugestoesA(true)}
+                onBlur={() => setTimeout(() => setMostrarSugestoesA(false), 200)}
+                placeholder="Digite ou selecione um estado"
+              />
+              {mostrarSugestoesA && estadosFiltradosA.length > 0 && (
+                <div className="sugestoes-containerA">
+                  {estadosFiltradosA.map(([nome, sigla]) => (
+                    <div
+                      key={`A-${sigla}`}
+                      className="sugestao-item"
+                      onClick={() => handleSelectEstadoA(nome)}
+                      onMouseDown={(e) => e.preventDefault()}
+                    >
+                      {nome} ({sigla})
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
-            <label className="campo-Grafico">Selecione o Estado B: </label>
-            <input
-              className="select-Grafico"
-              type="text"
-              list="estados-list"
-              name="estadoA"
-              placeholder="Digite ou selecione um estado"
-            />
-            <datalist id="estados-list">
-              {Object.entries(ESTADOS_BR).map(([nome, sigla]) => (
-                <option key={sigla} value={nome}>
-                  {`${nome} (${sigla})`}
-                </option>
-              ))}
-            </datalist>
-            <BtnComparar />
+            <div className="input-container">
+              <label className="campo-Grafico">Selecione o Estado B: </label>
+              <input
+                ref={inputRefB}
+                className="busca-input"
+                type="text"
+                value={estadoB}
+                onChange={(e) => {
+                  setEstadoB(e.target.value);
+                  setMostrarSugestoesB(true);
+                }}
+                onFocus={() => setMostrarSugestoesB(true)}
+                onBlur={() => setTimeout(() => setMostrarSugestoesB(false), 200)}
+                placeholder="Digite ou selecione um estado"
+              />
+              {mostrarSugestoesB && estadosFiltradosB.length > 0 && (
+                <div className="sugestoes-containerA">
+                  {estadosFiltradosB.map(([nome, sigla]) => (
+                    <div
+                      key={`B-${sigla}`}
+                      className="sugestao-item"
+                      onClick={() => handleSelectEstadoB(nome)}
+                      onMouseDown={(e) => e.preventDefault()}
+                    >
+                      {nome} ({sigla})
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <BtnComparar estadoA={estadoA} estadoB={estadoB} onComparar={handleComparar} />
           </form>
-          <div className="grafico-Comparacao">
-            <GraficoTornado />
-          </div>
         </div>
+        {mostrarComparacao && (
+          <div className="grafico-insights">
+            <div className="grafico-Comparacao">
+              <GraficoComparacao ufA={ufsComparadas[0]} ufB={ufsComparadas[1]} />
+            </div>
+            <div className="insights">
+              <h2>Exemplo de insight com base no gráfico de comparação</h2>
+              {/* Trazer a análise de dados aqui */}
+            </div>
+          </div>
+        )}
       </div>
-    </div> // todo fim do return
+    </div>
   );
 }
