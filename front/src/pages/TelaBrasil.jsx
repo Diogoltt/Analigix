@@ -28,7 +28,7 @@ export default function TelaBrasil() {
     setEstadosFiltrados(filterEstados(buscaEstado));
   }, [buscaEstado]);
 
-    const handleSelectEstado = (nome) => {
+  const handleSelectEstado = (nome) => {
     setBuscaEstado(nome);
     setMostrarSugestoes(false);
     inputRef.current.focus();
@@ -59,12 +59,16 @@ export default function TelaBrasil() {
 
   const filterEstados = (termo) => {
     if (!termo.trim()) return [];
+
+    const termoLower = termo.toLowerCase();
     
     return Object.entries(ESTADOS_BR)
-      .filter(([nome, sigla]) =>
-        nome.toLowerCase().includes(termo.toLowerCase()) ||
-        sigla.toLowerCase().includes(termo.toLowerCase())
-      )
+      .filter(([nome, sigla]) => {
+        const nomeLower = nome.toLowerCase();
+        const siglaLower = sigla.toLowerCase();
+        return nomeLower.startsWith(termoLower) ||
+          siglaLower === termoLower; // Comparação exata para sigla
+      })
       .slice(0, 5);
   };
 
@@ -107,7 +111,7 @@ export default function TelaBrasil() {
     <div>
       <nav className="navbar">
         <a href="/analigix"><LogoAnaligixAzul width="200px" height="80px" /></a>
-        <a href="/Portais-da-Transparencia" style={{color: "white"}}>Portais da Transparência</a>
+        <a href="/Portais-da-Transparencia" style={{ color: "white" }}>Portais da Transparência</a>
       </nav>
 
       {/* Busca de estado */}
