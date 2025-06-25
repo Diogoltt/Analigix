@@ -125,9 +125,9 @@ MAPEAMENTO_COLUNAS = {    'AC': {  # Acre
     },    'MG': {  # Minas Gerais
         'arquivo': '../csvs/*MG*.csv',
         'colunas': {
-            'orgao': 'Órgão ',
-            'valor_pago': 'Valor Pago ',
-            'valor_empenhado': 'Valor Empenhado ',
+            'orgao': 'Órgão\xa0',
+            'valor_pago': 'Valor Pago\xa0',
+            'valor_empenhado': 'Valor Empenhado\xa0',
             'ano': None,
             'estado': 'MG'
         }
@@ -272,7 +272,7 @@ def mapear_categoria_padronizada(orgao):
     orgao_lower = str(orgao).lower()
     
     # Mapeamento de órgãos para categorias padronizadas
-    if any(palavra in orgao_lower for palavra in ['educação', 'educacao', 'escola', 'ensino', 'universidade', 'educacional']):
+    if any(palavra in orgao_lower for palavra in ['educação', 'educacao', 'educaçao', 'escola', 'ensino', 'universidade', 'educacional']):
         return 'Educação'
     elif any(palavra in orgao_lower for palavra in ['saúde', 'saude', 'hospital', 'médico', 'medico', 'sus']):
         return 'Saúde'
@@ -290,10 +290,24 @@ def mapear_categoria_padronizada(orgao):
         return 'Agricultura e Desenvolvimento Rural'
     elif any(palavra in orgao_lower for palavra in ['turismo', 'cultura', 'esporte', 'lazer']):
         return 'Cultura, Esporte e Turismo'
+    elif any(palavra in orgao_lower for palavra in ['habitação','habitacao', 'moradia', 'urbanismo', 'cidade', 'desenvolvimento urbano']):
+        return 'Habitação e Urbanismo'
+    elif any(palavra in orgao_lower for palavra in ['trabalho', 'emprego', 'qualificação', 'profissionalização', 'carteira assinada']):
+        return 'Trabalho e Emprego'
+    elif any(palavra in orgao_lower for palavra in ['indústria', 'industrial', 'comércio', 'comercio', 'junta comercial', 'desenvolvimento econômico', 'empreendedorismo']):
+        return 'Indústria e Comércio'
+    elif any(palavra in orgao_lower for palavra in ['tecnologia', 'informação', 'informacao', 'informaçao', 'informatica', 'tic', 'inovação', 'inovacao', 'ciência', 'ciencia']):
+        return 'Tecnologia da Informação e Inovação'
+    elif any(palavra in orgao_lower for palavra in ['saneamento', 'água', 'agua', 'esgoto', 'hídrico', 'hidrico', 'recursos hídricos']):
+        return 'Saneamento e Recursos Hídricos'
+    elif any(palavra in orgao_lower for palavra in ['direitos humanos', 'igualdade', 'diversidade', 'mulher', 'racial', 'gênero', 'genero']):
+        return 'Direitos Humanos e Igualdade'
     elif any(palavra in orgao_lower for palavra in ['energia', 'energética', 'energetica']):
         return 'Energia'
     elif any(palavra in orgao_lower for palavra in ['comunicação', 'comunicacao', 'rádio', 'radio', 'televisão', 'televisao']):
         return 'Comunicação'
+    elif any(palavra in orgao_lower for palavra in ['administração', 'gestão', 'servidor', 'recursos humanos', 'rh', 'pessoal', 'administração pública']):
+        return 'Administração e Gestão Pública'
     elif any(palavra in orgao_lower for palavra in ['legislativa', 'assembleia', 'câmara', 'camara']):
         return 'Poder Legislativo'
     elif any(palavra in orgao_lower for palavra in ['judiciário', 'judiciario', 'tribunal', 'justiça', 'justica']):
@@ -306,10 +320,9 @@ def mapear_categoria_padronizada(orgao):
         return 'Reserva de Contingência'
     elif any(palavra in orgao_lower for palavra in ['dívida', 'divida', 'encargo', 'financiamento', 'amortização', 'amortizacao']):
         return 'Encargos da Dívida'
-    elif any(palavra in orgao_lower for palavra in ['comercial', 'comércio', 'comercio', 'junta comercial']):
-        return 'Comércio e Serviços'
     else:
         return 'Outros'
+
 
 def detectar_colunas_csv(df, sigla_estado):
     """
