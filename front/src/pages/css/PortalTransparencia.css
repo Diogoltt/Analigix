@@ -1,0 +1,192 @@
+/* Container principal que organiza as duas colunas */
+.portal-container {
+  display: flex;
+  flex-direction: row;
+  gap: 40px; /* Espaço entre as colunas */
+  padding: 20px 40px;
+  font-family: 'Inter', sans-serif;
+  width: 100%;
+  box-sizing: border-box;
+  /* background-color: #f9fafb; Um fundo levemente cinza */
+  min-height: calc(100vh - 80px); /* Altura da tela menos a altura do seu header */
+}
+
+.titulo-coluna {
+  font-size: 22px;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #111827;
+}
+
+/* Coluna da esquerda (lista de portais) */
+.coluna-portais {
+  flex: 1; 
+  max-width: 50%;
+}
+
+.lista-portais {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; 
+  max-height: 75vh;
+  overflow-y: auto; 
+  padding-right: 15px;
+}
+
+.link-portal {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #374151;
+  transition: all 0.2s ease-in-out;
+}
+
+.link-portal:hover {
+  border-color: #5B228D;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.link-portal-uf {
+  font-weight: 700;
+  font-size: 16px;
+  color: #5B228D;
+  margin-right: 15px;
+  width: 40px;
+}
+
+.link-portal-nome {
+  flex-grow: 1;
+}
+
+.link-portal-icone {
+  font-size: 20px;
+  color: #9ca3af;
+  transition: color 0.2s;
+}
+
+.link-portal:hover .link-portal-icone {
+  color: #5B228D;
+}
+
+
+
+.coluna-acoes {
+  flex: 1; 
+  max-width: 50%;
+}
+
+.box-acoes {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  height: fit-content; 
+}
+
+.label-filtro {
+  display: block;
+  margin-bottom: 8px;
+  margin-top: 20px; 
+  font-weight: 500;
+  color: #4b5563;
+  font-size: 14px;
+}
+
+.label-filtro:first-of-type {
+  margin-top: 0; 
+}
+
+.seletor-filtro {
+  width: 100%;
+  padding: 12px;
+  border-radius: 5px;
+  border: 1px solid #d1d5db;
+  background-color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+
+.upload-box {
+  position: relative;
+  margin-top: 5px; 
+}
+
+.upload-input {
+  
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.upload-label {
+ 
+  display: flex;
+  flex-direction: column;   
+  justify-content: center; 
+  align-items: center;    
+  text-align: center;     
+  padding: 10px; 
+  width: 98%;
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: #f9fafb;
+  min-height: 430px;
+}
+
+.upload-label:hover {
+  border-color: #5B228D;
+  background-color: #f3eff7;
+}
+
+.upload-icone {
+  font-size: 32px; 
+  margin-bottom: 15px; 
+  color: #5B228D;
+}
+
+.upload-texto {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.upload-texto-destaque {
+  color: #5B228D;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+
+.botao-buscar {
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #5B228D; 
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  margin-top: 30px; 
+}
+
+.botao-buscar:hover {
+  background-color: #4c1c75; 
+}
