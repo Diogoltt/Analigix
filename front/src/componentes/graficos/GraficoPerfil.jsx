@@ -11,7 +11,7 @@ import {
 } from 'recharts';
 
 export default function GraficoTeste({ chartData }) {
-  const processedData = useMemo(() => {
+  const processedData = React.useMemo(() => {
     if (!chartData || chartData.length === 0) {
       return [];
     }
@@ -31,15 +31,12 @@ export default function GraficoTeste({ chartData }) {
 
   return (
     <div className="radar-container">
-      {/* O título pode ser dinâmico também, mas vamos manter simples por enquanto */}
       <h2 className="radar-title">Perfil de Investimentos</h2>
       <div className="radar-chart-wrapper">
         <ResponsiveContainer width="100%" height="100%">
-          {/* O gráfico agora usa os dados processados e normalizados */}
           <RadarChart cx="50%" cy="50%" outerRadius="80%" data={processedData}>
             <PolarGrid stroke="#ccc" />
             <PolarAngleAxis dataKey="area" stroke="#333" fontSize={12} />
-            {/* O eixo de raio agora vai de 0 a 100, representando a porcentagem */}
             <PolarRadiusAxis
               angle={30}
               domain={[0, 100]}

@@ -18,22 +18,18 @@ import GraficoComparacao from '../componentes/graficos/GraficoComparacao';
 import RankingNacional from '../componentes/rankings/RankingNacional';
 
 export default function TelaBrasil() {
-    //=========== ESTADOS PARA DADOS DA API (da primeira versão) ===========
     const [topAreasNacional, setTopAreasNacional] = useState([]);
     const [rankingNacionalData, setRankingNacionalData] = useState([]);
     const [topStateInfo, setTopStateInfo] = useState({ uf: '...', categoria: '...' });
     const [loading, setLoading] = useState(true);
 
-    //=========== ESTADOS PARA BUSCA PRINCIPAL (da segunda versão) ===========
     const [buscaEstado, setBuscaEstado] = useState("");
     const [mostrarSugestoes, setMostrarSugestoes] = useState(false);
     const [estadosFiltrados, setEstadosFiltrados] = useState([]);
     const inputRef = useRef(null);
 
-    //=========== ESTADO PARA O GRÁFICO/RANKING TOGGLE (comum a ambas) ===========
     const [mostrarGrafico, setMostrarGrafico] = useState(false);
 
-    //=========== ESTADOS PARA COMPARAÇÃO (da segunda versão) ===========
     const [estadoA, setEstadoA] = useState("");
     const [estadoB, setEstadoB] = useState("");
     const [mostrarSugestoesA, setMostrarSugestoesA] = useState(false);
@@ -45,13 +41,12 @@ export default function TelaBrasil() {
     const [mostrarComparacao, setMostrarComparacao] = useState(false);
     const [ufsComparadas, setUfsComparadas] = useState([]);
 
-    //=========== LÓGICA DE BUSCA DE DADOS (da primeira versão) ===========
     useEffect(() => {
         const fetchInitialData = async () => {
             try {
                 const [analiseResponse, rankingResponse] = await Promise.all([
-                    fetch('http://127.0.0.1:5000/api/analise'), // Top 2 do Brasil
-                    fetch('http://127.0.0.1:5000/api/ranking-nacional') // Top 5 estados
+                    fetch('http://127.0.0.1:5000/api/analise'), 
+                    fetch('http://127.0.0.1:5000/api/ranking-nacional')
                 ]);
 
                 const analiseData = await analiseResponse.json();
@@ -93,7 +88,6 @@ export default function TelaBrasil() {
         }
     }, [rankingNacionalData]);
 
-    //=========== LÓGICA DE FILTRO E BUSCA (da segunda versão) ===========
     const filterEstados = (termo) => {
         if (!termo.trim()) return [];
         const termoLower = termo.toLowerCase();
@@ -144,13 +138,9 @@ export default function TelaBrasil() {
 
     return (
         <div>
-            {/* Navbar da segunda versão (com mais links) */}
             <nav className="navbar">
                 <a href="/analigix"><LogoAnaligixAzul width="200px" height="80px" /></a>
-                {/* Você pode adicionar outros links aqui se necessário */}
             </nav>
-
-            {/* Busca de estado da segunda versão */}
             <div className="BuscaEstado">
                 <input
                     ref={inputRef}
@@ -181,8 +171,6 @@ export default function TelaBrasil() {
                 )}
                 <BtnBuscaEstado estado={buscaEstado} />
             </div>
-
-            {/* Mapa e ranking (layout combinado) */}
             <div className="container-mapa-ranking">
                 <div className="mapaBrasil">
                     <MapaBrasil style={{ maxWidth: '100%', height: 'auto' }} />
@@ -190,7 +178,6 @@ export default function TelaBrasil() {
 
                 <div className="info-container">
                     <div className="info-nacional">
-                        {/* Título dinâmico da primeira versão */}
                         <h1 style={{ color: '#2C006A', textAlign: 'center', marginBottom: '1.5rem' }}>
                             No último ano o País investiu mais em{' '}
                             <strong style={{ color: '#0EC0D1' }}>
@@ -210,17 +197,13 @@ export default function TelaBrasil() {
 
                     <div className="conteudo-ranking-grafico">
                         {mostrarGrafico ? (
-                            // Usando GraficoBarras da segunda versão
                             <GraficoBarras />
                         ) : (
-                            // Usando RankingNacional com dados da API (da primeira versão)
                             <RankingNacional items={rankingNacionalData} />
                         )}
                     </div>
                 </div>
             </div>
-
-            {/* Cards (com dados dinâmicos da primeira versão) */}
             <div className="container-cards">
                 <div className="card">
                     <Moradia width="80px" height="80px" />
@@ -228,8 +211,7 @@ export default function TelaBrasil() {
                         O estado campeão de investimentos, <strong>{loading ? '...' : topStateInfo.uf}</strong>,
                         destaca-se pelos gastos na área de <strong>{loading ? '...' : topStateInfo.categoria}</strong>.
                     </p>
-                </div>
-                {/* Cards com placeholders, como na primeira versão. Idealmente, seriam populados com mais dados da API */}
+                </div>             
                 <div className="card">
                     <Educacao width="80px" height="80px" />
                     <p>
@@ -245,8 +227,6 @@ export default function TelaBrasil() {
                     </p>
                 </div>
             </div>
-            
-            {/* Seção de Comparação (da segunda versão) */}
             <div className="container-comparacao">
                 <div className="titulo-comparacao">
                     <h1 style={{ color: "#2C006A" }}>Comparação entre estados</h1>
@@ -324,29 +304,10 @@ export default function TelaBrasil() {
                         </div>
                         <div className="insights">
                             <h2>Exemplo de insight com base no gráfico de comparação</h2>
-                            {/* Aqui você traria a análise de dados da comparação */}
                         </div>
                     </div>
                 )}
-            </div>
-
-            {/* Seção de Novos Produtos (da primeira versão) */}
-            <div className="container-novos-Produtos">
-                <div className="novos-Produtos-titulo">
-                    <h1 style={{ color: '#2C006A' }}>
-                        Sugestão de áreas para Novos Produtos
-                    </h1>
-                </div>
-                <div className="novos-produtos-info">
-                    <h2>Lero lero titulo de possível investimento</h2>
-                    <p>
-                        Lero lero trazer a análise de dados aqui para previsões futuras <br />
-                        lero lero numeros <br />
-                        lero lero mais numeros <br />
-                        lero lero estado <br />
-                    </p>
-                </div>
-            </div>
+            </div>   
         </div>
     );
 }

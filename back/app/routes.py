@@ -1,188 +1,193 @@
+# Arquivo: back/app/routes.py (VERSÃO FINAL E TOTALMENTE REATORADA)
+
 from app import app
 from flask import jsonify, request 
 import sqlite3
 import pandas as pd
+
+# ==============================================================================
+# FUNÇÃO AJUDANTE (HELPER) PARA CONSTRUIR A CLÁUSULA WHERE
+# Centraliza toda a lógica de filtros para todas as rotas.
+# ==============================================================================
+def construir_clausula_where(filtros):
+    """
+    Constrói a string da cláusula WHERE e a lista de parâmetros com base nos filtros.
+    Filtros é um dicionário, ex: {'uf': 'SP', 'ano': 2024}
+    """
+    where_conditions = []
+    params = []
+
+    # Mapeia os filtros da URL para as colunas reais do banco de dados
+    mapa_filtros = {
+        'uf': 'estado',
+        'ano': 'ano',
+        'categoria': 'categoria_padronizada'
+    }
+
+    for chave, valor in filtros.items():
+        if valor: # Apenas adiciona o filtro se ele tiver um valor
+            nome_coluna = mapa_filtros.get(chave)
+            if nome_coluna:
+                where_conditions.append(f"{nome_coluna} = ?")
+                # Converte para maiúsculas se for string (para UFs), senão usa o valor como está (para anos)
+                params.append(valor.upper() if isinstance(valor, str) else valor)
+
+    if not where_conditions:
+        return "", []
+
+    return " WHERE " + " AND ".join(where_conditions), params
+
+
+# ==============================================================================
+# NOSSAS ROTAS, AGORA TODAS USANDO O HELPER
+# ==============================================================================
+
+# ROTA 1: Para a análise do "Top 2" na tela nacional
 @app.route('/api/analise', methods=['GET'])
 def get_analysis():
     try:
-        uf_filter = request.args.get('uf')
-        ano_filter = request.args.get('ano', type=int)
+        filtros = {'uf': request.args.get('uf'), 'ano': request.args.get('ano', type=int)}
+        string_where, params = construir_clausula_where(filtros)
         
-        base_query = "SELECT categoria_padronizada, SUM(valor) as total_gasto FROM despesas"
-        where_conditions = ["categoria_padronizada != ?"]
-        params = ["Outros"]
-        
-        if uf_filter:
-            where_conditions.append("estado = ?") 
-            params.append(uf_filter.upper())
-        
-        if ano_filter:
-            where_conditions.append("ano = ?")
-            params.append(ano_filter)
-            
-        base_query += " WHERE " + " AND ".join(where_conditions)
-        final_query = base_query + " GROUP BY categoria_padronizada ORDER BY total_gasto DESC LIMIT 2"
-        
-        db_path = app.config['DATABASE_PATH']
-        conn = sqlite3.connect(db_path)
-        df = pd.read_sql_query(final_query, conn, params=tuple(params))
-        conn.close()
-        return jsonify(df.to_dict(orient='records'))
-    except Exception as e:
-        print(f"Ocorreu um erro na rota /api/analise: {e}")
-        return jsonify({"error": str(e)}), 500
+        # Constrói a cláusula WHERE completa, incluindo o filtro "Outros"
+        if not string_where:
+            final_where = " WHERE area_de_atuacao != ?"
+            final_params = ["Outros"]
+        else:
+            final_where = string_where + " AND area_de_atuacao != ?"
+            final_params = params + ["Outros"]
 
-
-@app.route('/api/estatisticas/total', methods=['GET'])
-def get_total_investimento():
-    try:
-        uf_filter = request.args.get('uf')
-        ano_filter = request.args.get('ano', type=int)
-        
-        base_query = "SELECT SUM(valor) as valor_total FROM despesas"
-        where_conditions, params = [], []
-        
-        if uf_filter:
-            where_conditions.append("estado = ?")
-            params.append(uf_filter.upper())
-        
-        if ano_filter:
-            where_conditions.append("ano = ?")
-            params.append(ano_filter)
-            
-        if where_conditions:
-            base_query += " WHERE " + " AND ".join(where_conditions)
-
-        db_path = app.config['DATABASE_PATH']
-        conn = sqlite3.connect(db_path)
-        df = pd.read_sql_query(base_query, conn, params=tuple(params))
-        conn.close()
-        total_value = df['valor_total'].iloc[0]
-        return jsonify({"valor_total": float(total_value or 0)})
-    except Exception as e:
-        print(f"Ocorreu um erro na rota /api/estatisticas/total: {e}")
-        return jsonify({"error": str(e)}), 500
-
-
-@app.route('/api/ranking', methods=['GET'])
-def get_ranking_data():
-    try:
-        page = request.args.get('page', 1, type=int)
-        per_page = request.args.get('per_page', 10, type=int)
-        uf_filter = request.args.get('uf')
-        ano_filter = request.args.get('ano', type=int)
-        
-        base_query = "SELECT categoria_padronizada, SUM(valor) as total_gasto FROM despesas"
-        where_conditions = ["categoria_padronizada != ?"]
-        params = ["Outros"]
-
-        if uf_filter:
-            where_conditions.append("estado = ?")
-            params.append(uf_filter.upper())
-        
-        if ano_filter:
-            where_conditions.append("ano = ?")
-            params.append(ano_filter)
-            
-        base_query += " WHERE " + " AND ".join(where_conditions)
-        final_query = base_query + " GROUP BY categoria_padronizada ORDER BY total_gasto DESC"
-        
-        db_path = app.config['DATABASE_PATH']
-        conn = sqlite3.connect(db_path)
-        
-        
-        full_df = pd.read_sql_query(final_query, conn, params=tuple(params))
-        conn.close()
-
-        
-        offset = (page - 1) * per_page
-        paginated_df = full_df.iloc[offset : offset + per_page]
-
-        
-        total_items = len(full_df)
-        
-        
-        return jsonify({
-            'total_registros': total_items,
-            'pagina_atual': page,
-            'dados': paginated_df.to_dict(orient='records')
-        })
-
-    except Exception as e:
-        print(f"Ocorreu um erro na rota /api/ranking: {e}")
-        return jsonify({"error": str(e)}), 500
-
-
-@app.route('/api/dados', methods=['GET'])
-def get_dados_paginados():
-    try:
-        page = request.args.get('page', 1, type=int)
-        per_page = request.args.get('per_page', 100, type=int)
-        uf_filter = request.args.get('uf')
-        ano_filter = request.args.get('ano', type=int)
-        offset = (page - 1) * per_page
-
-        base_query = "SELECT * FROM despesas"
-        where_conditions, params = [], []
-
-        if uf_filter:
-            where_conditions.append("estado = ?")
-            params.append(uf_filter.upper())
-        
-        if ano_filter:
-            where_conditions.append("ano = ?")
-            params.append(ano_filter)
-            
-        if where_conditions:
-            base_query += " WHERE " + " AND ".join(where_conditions)
-        
-        count_query = base_query.replace("SELECT *", "SELECT COUNT(*)")
-        final_query = base_query + f" ORDER BY valor DESC LIMIT {per_page} OFFSET {offset}"
-
-        db_path = app.config['DATABASE_PATH']
-        conn = sqlite3.connect(db_path)
-        df = pd.read_sql_query(final_query, conn, params=tuple(params))
-        total_rows = pd.read_sql_query(count_query, conn, params=tuple(params)).iloc[0,0]
-        conn.close()
-        
-        return jsonify({
-            'total_registros': int(total_rows),
-            'pagina_atual': page,
-            'dados': df.to_dict(orient='records')
-        })
-    except Exception as e:
-        print(f"Ocorreu um erro na rota /api/dados: {e}")
-        return jsonify({"error": str(e)}), 500
-    
-@app.route('/api/ranking-nacional', methods=['GET'])
-def get_ranking_nacional():
-    """
-    Calcula o total investido por estado, ordena, e retorna o Top 5.
-    """
-    try:
-        # A consulta agrupa por 'estado' (que contém a sigla), soma os valores,
-        # ordena pelo total e pega os 5 maiores.
-        query = """
-            SELECT
-                estado,
-                SUM(valor) AS total_investido
-            FROM
-                despesas
-            GROUP BY
-                estado
-            ORDER BY
-                total_investido DESC
-            LIMIT 5
+        query = f"""
+            SELECT area_de_atuacao, SUM(valor_gasto) as total_gasto
+            FROM Despesas_Estados
+            {final_where}
+            GROUP BY area_de_atuacao ORDER BY total_gasto DESC LIMIT 2
         """
         
         db_path = app.config['DATABASE_PATH']
         conn = sqlite3.connect(db_path)
+        df = pd.read_sql_query(query, conn, params=tuple(final_params))
+        conn.close()
+        return jsonify(df.to_dict(orient='records'))
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+# ROTA 2: Para o cálculo do VALOR TOTAL investido
+@app.route('/api/estatisticas/total', methods=['GET'])
+def get_total_investimento():
+    try:
+        filtros = {'uf': request.args.get('uf'), 'ano': request.args.get('ano', type=int)}
+        string_where, params = construir_clausula_where(filtros)
+        
+        query = f"SELECT SUM(valor_gasto) as valor_total FROM Despesas_Estados {string_where}"
+
+        db_path = app.config['DATABASE_PATH']
+        conn = sqlite3.connect(db_path)
+        df = pd.read_sql_query(query, conn, params=tuple(params))
+        conn.close()
+        total_value = df['valor_total'].iloc[0]
+        return jsonify({"valor_total": float(total_value or 0)})
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+# ROTA 3: Para alimentar o RANKING ESTADUAL (paginado)
+@app.route('/api/ranking', methods=['GET'])
+def get_ranking_data():
+    try:
+        filtros = {'uf': request.args.get('uf'), 'ano': request.args.get('ano', type=int)}
+        string_where, params = construir_clausula_where(filtros)
+        
+        if not string_where:
+            final_where = " WHERE area_de_atuacao != ?"
+            final_params = ["Outros"]
+        else:
+            final_where = string_where + " AND area_de_atuacao != ?"
+            final_params = params + ["Outros"]
+        
+        base_query = f"SELECT area_de_atuacao, SUM(valor_gasto) as total_gasto FROM Despesas_Estados {final_where} GROUP BY area_de_atuacao"
+        
+        db_path = app.config['DATABASE_PATH']
+        conn = sqlite3.connect(db_path)
+        
+        count_query = f"SELECT COUNT(*) FROM ({base_query})"
+        total_items = pd.read_sql_query(count_query, conn, params=tuple(final_params)).iloc[0,0]
+
+        paginated_query = base_query + f" ORDER BY total_gasto DESC LIMIT {request.args.get('per_page', 10, type=int)} OFFSET {(request.args.get('page', 1, type=int) - 1) * request.args.get('per_page', 10, type=int)}"
+        df = pd.read_sql_query(paginated_query, conn, params=tuple(final_params))
+        conn.close()
+        
+        return jsonify({
+            'total_registros': int(total_items),
+            'pagina_atual': request.args.get('page', 1, type=int),
+            'dados': df.to_dict(orient='records')
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+# ROTA 4: Para o GRÁFICO DE BARRAS COMPARATIVO
+@app.route('/api/comparativo-nacional', methods=['GET'])
+def get_comparativo_nacional():
+    try:
+        filtros = {'categoria': request.args.get('categoria')}
+        string_where, params = construir_clausula_where(filtros)
+
+        if not string_where: # Precisa de uma categoria para funcionar
+            return jsonify([])
+
+        query = f"""
+            SELECT uf, SUM(valor_gasto) AS total_investido
+            FROM Despesas_Estados
+            {string_where}
+            GROUP BY uf ORDER BY total_investido DESC
+        """
+        
+        db_path = app.config['DATABASE_PATH']
+        conn = sqlite3.connect(db_path)
+        df = pd.read_sql_query(query, conn, params=params)
+        conn.close()
+        return jsonify(df.to_dict(orient='records'))
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+# ROTA 5: Para o RANKING NACIONAL (Top 5 estados)
+@app.route('/api/ranking-nacional', methods=['GET'])
+def get_ranking_nacional():
+    try:
+        query = """
+            SELECT uf AS estado, SUM(valor_gasto) AS total_investido
+            FROM Despesas_Estados
+            GROUP BY uf ORDER BY total_investido DESC LIMIT 5
+        """
+        db_path = app.config['DATABASE_PATH']
+        conn = sqlite3.connect(db_path)
         df = pd.read_sql_query(query, conn)
         conn.close()
-
-        # Retorna a lista do Top 5
         return jsonify(df.to_dict(orient='records'))
-
     except Exception as e:
-        print(f"Ocorreu um erro na rota /api/ranking-nacional: {e}")
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": str(e)})
+
+# ROTA 6: Para listar despesas individuais com paginação
+@app.route('/api/dados', methods=['GET'])
+def get_dados_paginados():
+    try:
+        filtros = {'uf': request.args.get('uf'),'ano': request.args.get('ano', type=int)}
+        string_where, params = construir_clausula_where(filtros)
+
+        base_query = f"SELECT * FROM Despesas_Estados {string_where}"
+        count_query = base_query.replace("SELECT *", "SELECT COUNT(*)")
+        
+        db_path = app.config['DATABASE_PATH']
+        conn = sqlite3.connect(db_path)
+        total_rows = pd.read_sql_query(count_query, conn, params=tuple(params)).iloc[0,0]
+        
+        paginated_query = base_query + f" ORDER BY valor_gasto DESC LIMIT {request.args.get('per_page', 100, type=int)} OFFSET {(request.args.get('page', 1, type=int) - 1) * request.args.get('per_page', 100, type=int)}"
+        df = pd.read_sql_query(paginated_query, conn, params=tuple(params))
+        conn.close()
+        
+        return jsonify({
+            'total_registros': int(total_rows),
+            'pagina_atual': request.args.get('page', 1, type=int),
+            'dados': df.to_dict(orient='records')
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)})
