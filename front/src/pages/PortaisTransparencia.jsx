@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './css/PortalTransparencia.css'; 
+import './css/PortalTransparencia.css';
+
 
 
 const portaisEstaduais = [
@@ -38,20 +39,51 @@ export default function PortalTransparencia() {
   const [anoSelecionado, setAnoSelecionado] = useState('');
   const [nomeArquivo, setNomeArquivo] = useState('');
 
+  const [file, setFile] = useState(null);
   
   const handleFileChange = (event) => {
-    if (event.target.files && event.target.files[0]) {
-      setNomeArquivo(event.target.files[0].name);
+  const selectedFile = event.target.files[0];
+  if (selectedFile) {
+    setFile(selectedFile);
+    setNomeArquivo(selectedFile.name);
+  } else {
+    setFile(null);
+    setNomeArquivo('');
+  }
+};
+
+
+  const handleBuscaClick = async () => {
+  if (!estadoSelecionado || !anoSelecionado) {
+    alert('Selecione um estado e um ano antes de continuar.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('estado', estadoSelecionado);
+  formData.append('ano', anoSelecionado);
+
+  if (file) {
+    formData.append('file', file);
+  }
+
+  try {
+    const response = await fetch('http://localhost:5000/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (response.ok) {
+      alert('Arquivo enviado com sucesso!');
     } else {
-      setNomeArquivo('');
+      alert('Erro ao enviar o arquivo.');
     }
-  };
+  } catch (error) {
+    console.error('Erro ao enviar:', error);
+    alert('Erro de conexão com o servidor.');
+  }
+};
 
-
-  const handleBuscaClick = () => {
-   
-    alert(`Buscando dados...\nEstado: ${estadoSelecionado}\nAno: ${anoSelecionado}\nArquivo: ${nomeArquivo || 'Nenhum'}`);
-  };
 
   return (
     <div className="portal-container">
