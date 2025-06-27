@@ -16,14 +16,12 @@ const portaisEstaduais = [
     { nome: 'Distrito Federal', uf: 'DF', url: 'http://www.transparencia.df.gov.br/' },
     { nome: 'Espírito Santo', uf: 'ES', url: 'https://transparencia.es.gov.br/' },
     { nome: 'Goiás', uf: 'GO', url: 'https://goias.gov.br/transparencia/' },
-    { nome: 'Maranhão', uf: 'MA', url: 'http://www.transparencia.ma.gov.br/' },
     { nome: 'Mato Grosso', uf: 'MT', url: 'http://www.transparenciamatogrosso.mt.gov.br/' },
     { nome: 'Mato Grosso do Sul', uf: 'MS', url: 'https://www.transparencia.ms.gov.br/' },
     { nome: 'Minas Gerais', uf: 'MG', url: 'http://www.transparencia.mg.gov.br/' },
     { nome: 'Pará', uf: 'PA', url: 'https://www.transparencia.pa.gov.br/' },
     { nome: 'Paraíba', uf: 'PB', url: 'https://transparencia.pb.gov.br/' },
     { nome: 'Paraná', uf: 'PR', url: 'http://www.transparencia.pr.gov.br/' },
-    { nome: 'Pernambuco', uf: 'PE', url: 'https://www.transparencia.pe.gov.br/' },
     { nome: 'Piauí', uf: 'PI', url: 'http://www.transparencia.pi.gov.br/' },
     { nome: 'Rio de Janeiro', uf: 'RJ', url: 'http://www.transparencia.rj.gov.br/' },
     { nome: 'Rio Grande do Norte', uf: 'RN', url: 'http://www.transparencia.rn.gov.br/' },
@@ -32,7 +30,6 @@ const portaisEstaduais = [
     { nome: 'Roraima', uf: 'RR', url: 'https://www.transparencia.rr.gov.br/' },
     { nome: 'Santa Catarina', uf: 'SC', url: 'http://www.transparencia.sc.gov.br/' },
     { nome: 'São Paulo', uf: 'SP', url: 'http://www.transparencia.sp.gov.br/' },
-    { nome: 'Sergipe', uf: 'SE', url: 'https://sergipe.se.gov.br/transparencia-sergipe/' },
     { nome: 'Tocantins', uf: 'TO', url: 'https://transparencia.to.gov.br/' },
 ];
 

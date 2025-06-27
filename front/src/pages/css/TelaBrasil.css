@@ -6,7 +6,8 @@
     display: flex;
     justify-content: start;
     align-items: center;
-    padding: 1px;
+    /* padding: 5px; */
+    padding-left: 200px;
 }
 a {
   text-decoration: none;
