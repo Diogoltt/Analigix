@@ -13,7 +13,6 @@ import {
   LabelList,
 } from "recharts";
 
-// Dados fictícios para visualização (valores em milhões)
 const data = [
   {
     categoria: "Educação",
@@ -63,19 +62,18 @@ export default function GraficoComparacao({ ufA = "MS", ufB = "SP" }) {
             type="category"
             axisLine={false}
             tickLine={false}
-            tick={{ fontSize: 14 }}
+            tick={{ fontSize: 14}}
           />
           <Tooltip formatter={(value) => `${value} milhões`} />
           <Legend verticalAlign="middle" align="left" layout="vertical" wrapperStyle={{ left: 0, top: 100, paddingRight: 60 }} />
 
-          {/* Estado A (barra para esquerda com valor negativo) */}
           <Bar
-            dataKey={(entry) => -entry.estadoA}
+            dataKey={(entry) => entry.estadoA}
             name={`Investimento - ${ufA}`}
             fill="#0EC0D1"
             isAnimationActive={false}
           >
-            <LabelList dataKey={(entry) => -entry.estadoA} position="insideLeft" formatter={(v) => `${Math.abs(v)}`} />
+            <LabelList dataKey={(entry) => -entry.estadoA} position="insideLeft" formatter={(v) => `${Math.abs(v)}`} style={{ fill: "#ffffff" }}/>
           </Bar>
 
           {/* Estado B */}
@@ -85,7 +83,7 @@ export default function GraficoComparacao({ ufA = "MS", ufB = "SP" }) {
             fill="#FFCC4D"
             isAnimationActive={false}
           >
-            <LabelList dataKey="estadoB" position="insideRight" />
+            <LabelList dataKey="estadoB" position="insideLeft" />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
