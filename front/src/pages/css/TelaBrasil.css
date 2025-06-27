@@ -6,6 +6,43 @@
     display: flex;
     justify-content: start;
     align-items: center;
+    padding: 1px;
+}
+/* Container principal da busca */
+.BuscaEstado {
+  position: relative;
+  display: inline-block; /* Para o container se ajustar ao conteúdo */
+}
+
+/* Input de busca */
+.busca-input {
+  width: 100%;
+  padding: 10px; /* Garante que padding não aumente a largura */
+}
+
+
+/* Container de sugestões */
+.sugestoes-container {
+  position: absolute;
+  top: 70%; 
+  background: white;
+  border: 1px solid #ddd;
+  border-top: none; 
+  border-radius: 0 0 4px 4px; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  max-height: 200px;
+
+}
+
+.sugestao-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.sugestao-item:hover {
+  background-color: #FF5A1F;
+  color: white
 }
 
 .container-mapa-ranking {
@@ -19,6 +56,38 @@
     border-radius: 20px;
 
 }
+
+/* * Busca de estados*/
+/* Corrigindo nome da classe (era .buscaEstado com minúscula) */
+.BuscaEstado {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  flex-wrap: wrap;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #ddd;
+}
+
+.busca-input {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 16px;
+  width: 300px;
+  max-width: 90%;
+  color: #333;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  transition: all 0.2s ease-in-out;
+}
+
+.busca-input:focus {
+  border-color: #5b228d;
+  box-shadow: 0 0 0 3px rgba(91, 34, 141, 0.1);
+}
+
 
 .mapaBrasil {
     flex: 1;
@@ -88,20 +157,101 @@
 
 }
 
-/** Novos produtos */
-.container-novos-Produtos {
-    margin-top: 3rem;
+/** Grafico de comparação */
+
+
+.container-comparacao {
+    padding: 3rem 2rem;
     display: flex;
     flex-direction: column;
-    padding: 2rem;
-    height: 100%;
+    gap: 2rem;
+  background-color: #f9f9f9;
+border-top:  1px solid #ddd;
+    margin-top: 4rem;
+    border-radius: 20px;
 }
 
-.novos-produtos-info {
+.titulo-comparacao {
+    text-align: center;
+    
+}
+
+.forms-Grafico {
     display: flex;
     flex-direction: column;
-    border: 1px solid rgb(30, 30, 30, .1);
-    border-radius: 20px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    gap: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
     padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    background-color: #ffffff;
+}
+
+.campo-Grafico {
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+    color: #333;
+}
+.input-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.sugestoes-containerA {
+ position: absolute;
+  left: 56%;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 0 0 4px 4px; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  max-height: 200px;
+}
+.select-Grafico {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #333;
+    outline: none;
+    transition: border 0.2s ease;
+    width: 100%;
+}
+
+.grafico-insights {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 2rem;
+    padding: 1rem 0;
+}
+
+.grafico-Comparacao {
+    flex: 3;
+    height: 600px;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+}
+
+.insights {
+    flex: 1;
+    height: auto;
+    padding: 1.2rem;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }

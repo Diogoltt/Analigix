@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import './GraficoTeste.css';
+import React from "react";
+import './GraficoPerfil.css';
 
 import {
   Radar,

@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Home from "../pages/Inicio";
 import TelaBrasil from '../pages/TelaBrasil';
 import TelaEstado from '../pages/TelaEstado';
+import PortalTransparencia from '../pages/PortaisTransparencia';
+
 import NotFound from '../pages/NotFound';
 
 
@@ -13,8 +15,9 @@ export default function AppRoutes(){
 
             <Route path="/analigix" element={<Home />} />
             <Route path="/nacional" element={<TelaBrasil />} />
-            <Route path="/estadual/:uf" element={<TelaEstado />} /> //* qualquer caminho que eu clicar ele vai levar a mesma TelaEstado MAS vai carregar as informaçoes dinamicamente
-            <Route path="*" element={<NotFound />} />
+            <Route path="/estadual/:uf" element={<TelaEstado />} />
+            <Route path="/Portais-da-Transparencia" element={<PortalTransparencia />} />
+            <Route path="*" element={<Home />} />
 
             </Routes>
         </Router>
