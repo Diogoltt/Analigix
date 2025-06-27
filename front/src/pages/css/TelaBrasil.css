@@ -8,6 +8,11 @@
     align-items: center;
     padding: 1px;
 }
+a {
+  text-decoration: none;
+  font-weight: bold;
+}
+
 /* Container principal da busca */
 .BuscaEstado {
   position: relative;

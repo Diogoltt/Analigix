@@ -72,6 +72,8 @@ export default function TelaEstado() {
         <div>
             <nav className="navbar">
                 <a href="/nacional"><LogoAnaligixAzul width="200px" height="80px" /></a>
+                <a href="/Portais-da-Transparencia" style={{ color: "white", font: "" }}>Portais da Transparência</a>
+
             </nav>
             <div className='container-Principal'>
                 <div className="container-1">
@@ -85,7 +87,6 @@ export default function TelaEstado() {
                         </h1>
 
                         {/* Filtro Ano */}
-                        <Filtro className="icon" />
                         <select className="filtro" name="ano" id="ano">
                             <option value="">Selecione o ano</option>
                             <option value="2025">2025</option>
@@ -94,7 +95,6 @@ export default function TelaEstado() {
                         </select>
 
                         {/* Filtro Categoria */}
-                        <Filtro className="icon" />
                         <select className="filtro" name="categoria" id="categoria">
                             <option value="">Selecione a categoria</option>
                             <option value="saude">Saúde</option>
