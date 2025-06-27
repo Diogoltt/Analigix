@@ -75,7 +75,7 @@
 }
 
 
-/* Coluna da direita (filtros e upload) - AJUSTADA */
+
 .coluna-acoes {
   flex: 1; 
   max-width: 50%;
@@ -86,20 +86,20 @@
   padding: 30px;
   border-radius: 10px;
   border: 1px solid #e5e7eb;
-  height: fit-content; /* Altura se ajusta ao conteúdo */
+  height: fit-content; 
 }
 
 .label-filtro {
   display: block;
   margin-bottom: 8px;
-  margin-top: 20px; /* Adiciona espaço acima de cada label */
+  margin-top: 20px; 
   font-weight: 500;
   color: #4b5563;
   font-size: 14px;
 }
 
 .label-filtro:first-of-type {
-  margin-top: 0; /* Remove o espaço extra do primeiro label */
+  margin-top: 0; 
 }
 
 .seletor-filtro {
@@ -112,14 +112,14 @@
   cursor: pointer;
 }
 
-/* Estilo personalizado para o campo de upload */
+
 .upload-box {
   position: relative;
   margin-top: 5px; 
 }
 
 .upload-input {
-  /* Esconde o input padrão, mas o mantém funcional */
+  
   width: 0.1px;
   height: 0.1px;
   opacity: 0;
@@ -151,8 +151,8 @@
 }
 
 .upload-icone {
-  font-size: 32px; /* Ícone maior */
-  margin-bottom: 15px; /* Espaço abaixo do ícone */
+  font-size: 32px; 
+  margin-bottom: 15px; 
   color: #5B228D;
 }
 
@@ -165,28 +165,28 @@
   text-overflow: ellipsis;
 }
 
-/* Estilo para a parte "clique para selecionar" */
+
 .upload-texto-destaque {
   color: #5B228D;
   font-weight: 600;
   text-decoration: underline;
 }
 
-/* Estilo para o botão de busca */
+
 .botao-buscar {
   width: 100%;
   padding: 12px 20px;
   font-size: 16px;
   font-weight: 600;
   color: #fff;
-  background-color: #5B228D; /* Cor principal roxa */
+  background-color: #5B228D; 
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
-  margin-top: 30px; /* Espaço generoso acima do botão */
+  margin-top: 30px; 
 }
 
 .botao-buscar:hover {
-  background-color: #4c1c75; /* Um roxo um pouco mais escuro */
+  background-color: #4c1c75; 
 }

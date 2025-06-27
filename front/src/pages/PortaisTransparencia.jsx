@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import './css/PortalTransparencia.css'; // Importa o CSS dedicado
+import './css/PortalTransparencia.css'; 
 
-// Lista de estados com seus nomes, siglas e URLs dos portais
+
 const portaisEstaduais = [
-    // ... (a lista de 27 estados continua a mesma da resposta anterior) ...
+    
   { nome: 'Acre', uf: 'AC', url: 'https://transparencia.ac.gov.br/' },
   { nome: 'Alagoas', uf: 'AL', url: 'http://transparencia.al.gov.br/' },
   { nome: 'Amapá', uf: 'AP', url: 'https://transparencia.ap.gov.br/' },
@@ -38,7 +38,7 @@ export default function PortalTransparencia() {
   const [anoSelecionado, setAnoSelecionado] = useState('');
   const [nomeArquivo, setNomeArquivo] = useState('');
 
-  // Função para lidar com a mudança no input de arquivo
+  
   const handleFileChange = (event) => {
     if (event.target.files && event.target.files[0]) {
       setNomeArquivo(event.target.files[0].name);
@@ -47,9 +47,9 @@ export default function PortalTransparencia() {
     }
   };
 
-  // Função para o botão "Buscar"
+
   const handleBuscaClick = () => {
-    // Adicione a lógica de validação e busca aqui
+   
     alert(`Buscando dados...\nEstado: ${estadoSelecionado}\nAno: ${anoSelecionado}\nArquivo: ${nomeArquivo || 'Nenhum'}`);
   };
 
@@ -80,7 +80,7 @@ export default function PortalTransparencia() {
         <div className="box-acoes">
           
           
-          {/* Filtro de Estado */}
+          
           <label htmlFor="estado-select" className="label-filtro">Selecione o Estado</label>
           <select 
             id="estado-select"
@@ -109,7 +109,7 @@ export default function PortalTransparencia() {
             <option value="2022">2022</option>
           </select>
 
-          {/* Campo de Upload */}
+         
           <label htmlFor="csv-upload" className="label-filtro">Anexar Arquivo CSV (Opcional)</label>
             <div className="upload-box">
             <input 
@@ -120,7 +120,7 @@ export default function PortalTransparencia() {
                 onChange={handleFileChange}
             />
             <label htmlFor="csv-upload" className="upload-label">
-                {/* Usamos um operador ternário: se tiver um nome de arquivo, mostra o nome. Senão, mostra o texto padrão. */}
+               
                 {nomeArquivo ? (
                 <span className="upload-texto">{nomeArquivo}</span>
                 ) : (
