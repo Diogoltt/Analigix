@@ -1,52 +1,41 @@
-# Arquivo: back/app/routes.py (VERSÃO COM A CORREÇÃO FINAL)
-
 from app import app
 from flask import jsonify, request 
 import sqlite3
 import pandas as pd
 
-# (A função construir_clausula_where continua a mesma e está correta)
 def construir_clausula_where(filtros):
-    where_conditions, params = [], []
+    where_conditions = []
+    params = []
+
+
     mapa_filtros = {
         'uf': 'estado',
-        'ano': 'ano',
         'categoria': 'categoria_padronizada'
     }
+
     for chave, valor in filtros.items():
-        if valor:
+        if chave != 'ano' and valor:
             nome_coluna = mapa_filtros.get(chave)
             if nome_coluna:
                 where_conditions.append(f"{nome_coluna} = ?")
                 params.append(valor.upper() if chave == 'uf' else valor)
+
+    ano_filter = filtros.get('ano')
+    if ano_filter:
+        where_conditions.append("strftime('%Y', data) = ?")
+        params.append(str(ano_filter))
+        
     if not where_conditions:
         return "", []
+
     return " WHERE " + " AND ".join(where_conditions), params
 
-# ROTA DO GRÁFICO DE BARRAS COMPARATIVO
-@app.route('/api/comparativo-geral', methods=['GET'])
-def get_comparativo_geral():
-    try:
-        filtros = {'categoria': request.args.get('categoria')}
-        string_where, params = construir_clausula_where(filtros)
-        
-        query = f"SELECT estado, SUM(valor) AS total_investido FROM despesas{string_where} GROUP BY estado ORDER BY total_investido DESC"
-        
-        db_path = app.config['DATABASE_PATH']
-        conn = sqlite3.connect(db_path)
-        df = pd.read_sql_query(query, conn, params=params)
-        conn.close()
-        return jsonify(df.to_dict(orient='records'))
-    except Exception as e:
-        print(f"Ocorreu um erro na rota /api/comparativo-geral: {e}")
-        return jsonify({"error": str(e)}), 500
 
-# Adicionando as outras rotas também corrigidas para garantir consistência
 
 @app.route('/api/analise', methods=['GET'])
 def get_analysis():
     try:
-        filtros = {'uf': request.args.get('uf'), 'ano': request.args.get('ano', type=int)}
+        filtros = {'uf': request.args.get('uf'), 'ano': request.args.get('ano')}
         string_where, params = construir_clausula_where(filtros)
         
         final_params = ["Outros"] + params
@@ -62,12 +51,13 @@ def get_analysis():
         conn.close()
         return jsonify(df.to_dict(orient='records'))
     except Exception as e:
-        return jsonify({"error": str(e)})
+        print(f"Ocorreu um erro na rota /api/analise: {e}")
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/estatisticas/total', methods=['GET'])
 def get_total_investimento():
     try:
-        filtros = {'uf': request.args.get('uf'), 'ano': request.args.get('ano', type=int)}
+        filtros = {'uf': request.args.get('uf'), 'ano': request.args.get('ano')}
         string_where, params = construir_clausula_where(filtros)
         
         query = f"SELECT SUM(valor) as valor_total FROM despesas{string_where}"
@@ -78,14 +68,15 @@ def get_total_investimento():
         total_value = df['valor_total'].iloc[0]
         return jsonify({"valor_total": float(total_value or 0)})
     except Exception as e:
-        return jsonify({"error": str(e)})
+        print(f"Ocorreu um erro na rota /api/estatisticas/total: {e}")
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/ranking', methods=['GET'])
 def get_ranking_data():
     try:
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
-        filtros = {'uf': request.args.get('uf'), 'ano': request.args.get('ano', type=int)}
+        filtros = {'uf': request.args.get('uf'), 'ano': request.args.get('ano')}
         string_where, params = construir_clausula_where(filtros)
 
         final_params = ["Outros"] + params
@@ -110,25 +101,51 @@ def get_ranking_data():
         print(f"Ocorreu um erro na rota /api/ranking: {e}")
         return jsonify({"error": str(e)})
 
+@app.route('/api/comparativo-geral', methods=['GET'])
+def get_comparativo_geral():
+    try:
+        filtros = {'categoria': request.args.get('categoria'), 'ano': request.args.get('ano')}
+        string_where, params = construir_clausula_where(filtros)
+
+        query = f"SELECT estado, SUM(valor) AS total_investido FROM despesas{string_where} GROUP BY estado ORDER BY total_investido DESC"
+        
+        db_path = app.config['DATABASE_PATH']
+        conn = sqlite3.connect(db_path)
+        df = pd.read_sql_query(query, conn, params=params)
+        conn.close()
+        return jsonify(df.to_dict(orient='records'))
+    except Exception as e:
+        print(f"Ocorreu um erro na rota /api/comparativo-geral: {e}")
+        return jsonify({"error": str(e)})
 
 @app.route('/api/ranking-nacional', methods=['GET'])
 def get_ranking_nacional():
     try:
-        query = "SELECT estado, SUM(valor) AS total_investido FROM despesas GROUP BY estado ORDER BY total_investido DESC LIMIT 5"
+        filtros = {'ano': request.args.get('ano')}
+        string_where, params = construir_clausula_where(filtros)
+
+    
+        query = f"SELECT estado, SUM(valor) AS total_investido FROM despesas{string_where} GROUP BY estado ORDER BY total_investido DESC LIMIT 5"
+        
         db_path = app.config['DATABASE_PATH']
         conn = sqlite3.connect(db_path)
-        df = pd.read_sql_query(query, conn)
+        df = pd.read_sql_query(query, conn, params=params)
         conn.close()
+        
+    
         return jsonify(df.to_dict(orient='records'))
+
     except Exception as e:
+        print(f"Ocorreu um erro na rota /api/ranking-nacional: {e}")
         return jsonify({"error": str(e)})
+
 
 @app.route('/api/dados', methods=['GET'])
 def get_dados_paginados():
     try:
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 100, type=int)
-        filtros = {'uf': request.args.get('uf'),'ano': request.args.get('ano', type=int)}
+        filtros = {'uf': request.args.get('uf'),'ano': request.args.get('ano')}
         string_where, params = construir_clausula_where(filtros)
 
         base_query = f"SELECT * FROM despesas{string_where}"
@@ -147,4 +164,5 @@ def get_dados_paginados():
             'total_registros': int(total_rows), 'pagina_atual': page, 'dados': df.to_dict(orient='records')
         })
     except Exception as e:
+        print(f"Ocorreu um erro na rota /api/dados: {e}")
         return jsonify({"error": str(e)})
