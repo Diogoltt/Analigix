@@ -10,7 +10,29 @@
   /* background-color: #f9fafb; Um fundo levemente cinza */
   min-height: calc(100vh - 80px); /* Altura da tela menos a altura do seu header */
 }
+.navbar {
+    background-color: #5b228d;
+    /* border: 1px solid #5b228d; */
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding: 1px;
+    padding-left: 20px;
+}
 
+a {
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.container-Principal{
+   display: flex;
+  flex-direction: row;
+  gap: 24px; /* ou 1.5rem, igual nos outros */
+  padding: 24px;
+  box-sizing: border-box;
+
+}
 .titulo-coluna {
   font-size: 22px;
   font-weight: 600;
@@ -179,7 +201,7 @@
   font-size: 16px;
   font-weight: 600;
   color: #fff;
-  background-color: #5B228D; 
+  background-color: #FF5A1F; 
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -188,5 +210,5 @@
 }
 
 .botao-buscar:hover {
-  background-color: #4c1c75; 
+  background-color: #d64e1c; 
 }
