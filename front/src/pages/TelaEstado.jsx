@@ -116,8 +116,8 @@ export default function TelaEstado() {
             <nav className="navbar">
                 <a href="/nacional">
                     <LogoAnaligixAzul width="200px" height="80px" />
-                    <a href="/Portais-da-Transparencia" style={{ color: "white", font: "" }}>Portais da Transparência</a>
-                </a>
+                    </a>
+                <a href="/Portais-da-Transparencia" style={{ color: "white", font: "" }}>Portais da Transparência</a>
             </nav>
             <div className="container-Principal">
                 <div className="container-1">

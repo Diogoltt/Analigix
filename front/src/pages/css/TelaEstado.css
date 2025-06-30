@@ -5,6 +5,19 @@ body {
   margin: 0;
   padding: 0;
 }
+.navbar {
+    background-color: #5b228d;
+    /* border: 1px solid #5b228d; */
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    /* padding: 5px; */
+    padding-left: 200px;
+}
+a {
+  text-decoration: none;
+  font-weight: bold;
+}
 
 .container-Principal {
   display: flex;

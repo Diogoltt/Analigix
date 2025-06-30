@@ -16,7 +16,7 @@ export default function AppRoutes(){
             <Route path="/analigix" element={<Home />} />
             <Route path="/nacional" element={<TelaBrasil />} />
             <Route path="/estadual/:uf" element={<TelaEstado />} />
-            <Route path="/Portais-da-Transparencia" element={<PortalTransparencia />} />
+            <Route path="/portais-da-Transparencia" element={<PortalTransparencia />} />
             <Route path="*" element={<Home />} />
 
             </Routes>
