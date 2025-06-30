@@ -4,8 +4,8 @@
 
     export default function MapaBrasil() {
     //? Fazer a função que traz as informações de investimento conforme o mouse passa
-    const navigate = useNavigate();
-
+    const navigate = useNavigate()
+    
     const handleClick = (uf) =>{
         navigate(`/estadual/${uf}`);
     };
