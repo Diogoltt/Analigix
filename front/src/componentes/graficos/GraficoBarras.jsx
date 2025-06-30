@@ -12,54 +12,50 @@ import {
     Legend,
 } from "recharts";
 
+// FUNÇÃO INTELIGENTE PARA FORMATAR NÚMEROS GRANDES
+const formatarNumero = (num) => {
+    if (!num) return 'R$ 0';
+    if (num >= 1e12) { // Trilhão
+        return `R$ ${(num / 1e12).toFixed(2)} tri`;
+    }
+    if (num >= 1e9) { // Bilhão
+        return `R$ ${(num / 1e9).toFixed(2)} bi`;
+    }
+    if (num >= 1e6) { // Milhão
+        return `R$ ${(num / 1e6).toFixed(2)} mi`;
+    }
+    if (num >= 1e3) { // Mil
+        return `R$ ${(num / 1e3).toFixed(1)} mil`;
+    }
+    return `R$ ${num.toFixed(2)}`;
+};
+
 export default function GraficoBarrasEstados() {
     const [categoriaSelecionada, setCategoriaSelecionada] = useState("");
     const [chartData, setChartData] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // --- DEBUG PONTO 1: O useEffect foi acionado? ---
-        console.log(`[DEBUG-GRAFICO] useEffect disparado. Categoria agora é: '${categoriaSelecionada}'`);
-
-        if (!categoriaSelecionada) {
-            setChartData([]); // Limpa os dados se nenhuma categoria for selecionada
-            return; // Para a execução aqui
-        }
-
         const fetchDataForChart = async () => {
             setLoading(true);
-            try {
-                const apiUrl = `http://127.0.0.1:5000/api/comparativo-nacional?categoria=${categoriaSelecionada}`;
-                
-                // --- DEBUG PONTO 2: A URL está correta? ---
-                console.log(`[DEBUG-GRAFICO] Buscando dados na URL: ${apiUrl}`);
+            let apiUrl = 'http://127.0.0.1:5000/api/comparativo-geral';
 
+            if (categoriaSelecionada) {
+                apiUrl += `?categoria=${encodeURIComponent(categoriaSelecionada)}`;
+            }
+
+            try {
                 const response = await fetch(apiUrl);
                 const data = await response.json();
 
-                // --- DEBUG PONTO 3: O que a API realmente retornou? ---
-                // Esta é a linha mais importante.
-                console.log("[DEBUG-GRAFICO] Dados brutos recebidos da API:", data);
-
-                // Verifica se a API não retornou um erro
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-
-                // Converte os valores para milhões
-                const dataInMillions = data.map(item => ({
-                    ...item,
-                    total_investido: item.total_investido / 1000000 
-                }));
+                if (data.error) throw new Error(data.error);
                 
-                // --- DEBUG PONTO 4: Os dados foram processados corretamente? ---
-                console.log("[DEBUG-GRAFICO] Dados processados (em milhões):", dataInMillions);
-
-                setChartData(dataInMillions);
+                // Agora, simplesmente passamos os dados brutos, a formatação será feita no gráfico
+                setChartData(data);
 
             } catch (error) {
-                // --- DEBUG PONTO 5: Aconteceu algum erro no processo? ---
-                console.error("[DEBUG-GRAFICO] Falha na busca ou processamento:", error);
+                console.error("Erro ao buscar dados para o gráfico:", error);
+                setChartData([]);
             } finally {
                 setLoading(false);
             }
@@ -68,49 +64,55 @@ export default function GraficoBarrasEstados() {
         fetchDataForChart();
     }, [categoriaSelecionada]);
 
-    const handleCategoriaChange = (e) => {
-        setCategoriaSelecionada(e.target.value);
-    };
-    
-    // --- DEBUG PONTO 6: Qual o estado final dos dados antes de renderizar? ---
-    console.log("[DEBUG-GRAFICO] Estado 'chartData' antes do return:", chartData);
-
     return (
         <div className="grafico-container" style={{ minHeight: "500px" }}>
             <select
-                id="categoria-select"
                 className="categoria-graficoBarras"
                 value={categoriaSelecionada}
-                onChange={handleCategoriaChange}
+                onChange={(e) => setCategoriaSelecionada(e.target.value)}
             >
-                <option value="" disabled>Selecione a Categoria</option>
-                <option value="EDUCACAO">Educação</option>
-                <option value="SAUDE">Saúde</option>
-                <option value="ADMINISTRACAO">Administração</option>
-                <option value="TRANSPORTE">Transporte</option>
-                <option value="SEGURANCA PUBLICA">Segurança Pública</option>
+                <option value="">Geral (Todas as Categorias)</option>
+                <option value="Educação">Educação</option>
+                <option value="Saúde">Saúde</option>
+                <option value="Segurança Pública">Segurança Pública</option>
+                <option value="Infraestrutura e Transporte">Infraestrutura e Transporte</option>
+                <option value="Administração e Gestão Pública">Administração e Gestão Pública</option>
+                <option value="Tecnologia da Informação e Inovação">Tecnologia da Informação e Inovação</option>
+
+                {/* Adicione outras categorias do seu banco aqui */}
             </select>
             
             <h2 className="barras-title">
                 {categoriaSelecionada
-                    ? `Comparação de Investimentos em ${categoriaSelecionada}`
-                    : "Selecione uma categoria para visualizar o gráfico"}
+                    ? `Comparativo de Investimentos em ${categoriaSelecionada}`
+                    : "Comparativo de Investimentos Totais por Estado"}
             </h2>
 
             <ResponsiveContainer width="100%" height={400}>
                 {loading ? (
-                    <p style={{textAlign: 'center'}}>Carregando dados...</p>
-                ) : chartData.length > 0 ? (
-                    <BarChart data={chartData} /* ... */ >
+                    <p style={{textAlign: 'center'}}>Carregando...</p>
+                ) : (
+                    <BarChart data={chartData} margin={{ top: 20, right: 30, left: 80, bottom: 20 }}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <YAxis type="number" label={{ value: "R$ (milhões)", angle: -90, position: "insideLeft" }} />
+                        
+                        {/* O Eixo Y usa a função 'tickFormatter' para exibir os números de forma inteligente */}
+                        <YAxis 
+                            type="number" 
+                            dataKey="total_investido" 
+                            tickFormatter={formatarNumero} 
+                            width={100}
+                        />
+
                         <XAxis dataKey="estado" type="category" interval={0} angle={-45} textAnchor="end" height={60} />
-                        <Tooltip formatter={(value) => `R$ ${value.toFixed(2)} mi`} />
+                        
+                        {/* O Tooltip também usa a função para formatar */}
+                        <Tooltip formatter={formatarNumero} />
+                        
                         <Legend />
+                        
+                        {/* O dataKey usa o valor bruto que veio da API */}
                         <Bar dataKey="total_investido" fill="#0EC0D1" name="Investimento" />
                     </BarChart>
-                ) : (
-                    <p style={{textAlign: 'center'}}>Sem dados para exibir para esta categoria.</p>
                 )}
             </ResponsiveContainer>
         </div>
