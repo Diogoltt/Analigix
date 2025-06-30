@@ -7,3 +7,7 @@ e adicionar os csvs dentro desse novo diretório.
     -- csvs (crie esse diretório)
     -- database
     -- etl
+
+pip install flask-cors
+npm install recharts  
+npm install react-router-dom
