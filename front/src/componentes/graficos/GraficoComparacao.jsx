@@ -250,7 +250,7 @@ Use linguagem clara e profissional, sem jargões técnicos.`;
                     'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}` // Você precisará adicionar sua API key aqui
                 },
                 body: JSON.stringify({
-                    model: 'gpt-4o',
+                    model: 'gpt-4.1-nano',
                     messages: [
                         {
                             role: 'system',
