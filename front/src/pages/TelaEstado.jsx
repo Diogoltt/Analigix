@@ -9,35 +9,7 @@ import { ReactComponent as Filtro } from '../componentes/svg/filtro.svg';
 import BtnVoltar from '../componentes/botoes/BtnVoltarTela.jsx';
 import RankingEstadual from '../componentes/rankings/RankingEstadual.jsx';
 import GraficoPerfil from "../componentes/graficos/GraficoPerfil.jsx"; // Trocado de GraficoTeste para GraficoPerfil
-
-// Imports dos mapas dos estados
-import MapaAC from '../componentes/mapas/Acre.jsx';
-import MapaAL from '../componentes/mapas/Alagoas.jsx';
-import MapaAP from '../componentes/mapas/Amapa.jsx';
-import MapaAM from '../componentes/mapas/Amazonas.jsx';
-import MapaBA from '../componentes/mapas/Bahia.jsx';
-import MapaCE from '../componentes/mapas/Ceara.jsx';
-import MapaDF from '../componentes/mapas/Distrito-Federal.jsx';
-import MapaES from '../componentes/mapas/Espirito-Santo.jsx';
-import MapaGO from '../componentes/mapas/Goias.jsx';
-import MapaMA from '../componentes/mapas/Maranhao.jsx';
-import MapaMT from '../componentes/mapas/Mato-Grosso.jsx';
-import MapaMS from '../componentes/mapas/Mato-Grosso-do-Sul.jsx';
-import MapaMG from '../componentes/mapas/Minas-Gerais.jsx';
-import MapaPA from '../componentes/mapas/Para.jsx';
-import MapaPB from '../componentes/mapas/Paraiba.jsx';
-import MapaPR from '../componentes/mapas/Parana.jsx';
-import MapaPE from '../componentes/mapas/Pernambuco.jsx';
-import MapaPI from '../componentes/mapas/Piaui.jsx';
-import MapaRJ from '../componentes/mapas/Rio-de-Janeiro.jsx';
-import MapaRN from '../componentes/mapas/Rio-Grande-do-Norte.jsx';
-import MapaRS from '../componentes/mapas/Rio-Grande-do-Sul.jsx';
-import MapaRO from '../componentes/mapas/Rondonia.jsx';
-import MapaRR from '../componentes/mapas/Roraima.jsx';
-import MapaSC from '../componentes/mapas/Santa-Catarina.jsx';
-import MapaSP from '../componentes/mapas/Sao-Paulo.jsx';
-import MapaSE from '../componentes/mapas/Sergipe.jsx';
-import MapaTO from '../componentes/mapas/Tocantins.jsx';
+import GraficoPizza from "../componentes/graficos/GraficoPizza.jsx"; // Novo componente de gráfico de pizza
 
 export default function TelaEstado() {
     // Hooks de roteamento e estado (Base da primeira versão)
@@ -53,17 +25,6 @@ export default function TelaEstado() {
     const [rankingPage, setRankingPage] = useState(1);
     const [totalRankingItems, setTotalRankingItems] = useState(0);
     const recordsPerPage = 10;
-
-    // Mapeamento dos componentes de mapa (Comum a ambas as versões)
-    const mapas = {
-        AC: MapaAC, AL: MapaAL, AP: MapaAP, AM: MapaAM, BA: MapaBA,
-        CE: MapaCE, DF: MapaDF, ES: MapaES, GO: MapaGO, MA: MapaMA,
-        MT: MapaMT, MS: MapaMS, MG: MapaMG, PA: MapaPA, PB: MapaPB,
-        PR: MapaPR, PE: MapaPE, PI: MapaPI, RJ: MapaRJ, RN: MapaRN,
-        RS: MapaRS, RO: MapaRO, RR: MapaRR, SC: MapaSC, SP: MapaSP,
-        SE: MapaSE, TO: MapaTO,
-    };
-    const MapaComponente = mapas[uf];
 
     // Efeitos para buscar dados e resetar paginação (Lógica da primeira versão)
     useEffect(() => {
@@ -179,11 +140,7 @@ export default function TelaEstado() {
                 </div>
                 <div className="container-2">
                     <div className="mapa-Estado">
-                        {MapaComponente ? (
-                            <MapaComponente className="mapa-Estado-Svg" />
-                        ) : (
-                            <p>Mapa não disponível</p>
-                        )}
+                        <GraficoPizza uf={uf} anoSelecionado={anoSelecionado} />
                     </div>
                     <div className="grafico-Estado">
                         {/* Componente de gráfico trocado para GraficoPerfil, recebendo os dados da API */}
