@@ -12,19 +12,19 @@ import {
     Legend,
 } from "recharts";
 
-// FUNÇÃO INTELIGENTE PARA FORMATAR NÚMEROS GRANDES
+//
 const formatarNumero = (num) => {
     if (!num) return 'R$ 0';
-    if (num >= 1e12) { // Trilhão
+    if (num >= 1e12) { 
         return `R$ ${(num / 1e12).toFixed(2)} tri`;
     }
-    if (num >= 1e9) { // Bilhão
+    if (num >= 1e9) { 
         return `R$ ${(num / 1e9).toFixed(2)} bi`;
     }
-    if (num >= 1e6) { // Milhão
+    if (num >= 1e6) { 
         return `R$ ${(num / 1e6).toFixed(2)} mi`;
     }
-    if (num >= 1e3) { // Mil
+    if (num >= 1e3) { 
         return `R$ ${(num / 1e3).toFixed(1)} mil`;
     }
     return `R$ ${num.toFixed(2)}`;
@@ -50,7 +50,7 @@ export default function GraficoBarrasEstados({ ano = 2024 }) {
 
                 if (data.error) throw new Error(data.error);
                 
-                // Agora, simplesmente passamos os dados brutos, a formatação será feita no gráfico
+                
                 setChartData(data);
 
             } catch (error) {
@@ -79,7 +79,6 @@ export default function GraficoBarrasEstados({ ano = 2024 }) {
                 <option value="Administração e Gestão Pública">Administração e Gestão Pública</option>
                 <option value="Tecnologia da Informação e Inovação">Tecnologia da Informação e Inovação</option>
 
-                {/* Adicione outras categorias do seu banco aqui */}
             </select>
             
             <h2 className="barras-title">
@@ -94,8 +93,6 @@ export default function GraficoBarrasEstados({ ano = 2024 }) {
                 ) : (
                     <BarChart data={chartData} margin={{ top: 20, right: 30, left: 80, bottom: 20 }}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        
-                        {/* O Eixo Y usa a função 'tickFormatter' para exibir os números de forma inteligente */}
                         <YAxis 
                             type="number" 
                             dataKey="total_investido" 
@@ -104,13 +101,9 @@ export default function GraficoBarrasEstados({ ano = 2024 }) {
                         />
 
                         <XAxis dataKey="estado" type="category" interval={0} angle={-45} textAnchor="end" height={60} />
-                        
-                        {/* O Tooltip também usa a função para formatar */}
                         <Tooltip formatter={formatarNumero} />
                         
                         <Legend />
-                        
-                        {/* O dataKey usa o valor bruto que veio da API */}
                         <Bar dataKey="total_investido" fill="#0EC0D1" name="Investimento" />
                     </BarChart>
                 )}

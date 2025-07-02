@@ -18,7 +18,6 @@ const TypewriterText = ({ text, speed = 50, onComplete }) => {
     }, [currentIndex, text, speed, onComplete]);
 
     useEffect(() => {
-        // Reset quando o texto mudar
         setDisplayText('');
         setCurrentIndex(0);
     }, [text]);

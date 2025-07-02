@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './css/TelaBrasil.css';
 
-// Imports de SVGs e Utilitários de ambas as versões
 import { ReactComponent as LogoAnaligixAzul } from '../componentes/logo/logoAnaligixAzul.svg';
 import { ReactComponent as Moradia } from '../componentes/svg/moradia.svg';
 import { ReactComponent as Educacao } from '../componentes/svg/educacao.svg';
 import { ReactComponent as Saude } from '../componentes/svg/saude.svg';
 import { ESTADOS_BR } from '../util/Estados';
 
-// Imports de Componentes de ambas as versões
 import BtnVerGrafico from '../componentes/botoes/BtnVerGrafico';
 import BtnBuscaEstado from '../componentes/botoes/BtnBuscaEstado';
 import BtnComparar from '../componentes/botoes/BtnComparar';
@@ -139,7 +137,7 @@ export default function TelaBrasil() {
 
     const handleComparar = (ufA, ufB) => {
         setMostrarComparacao(true);
-        // Reset insight quando nova comparação é feita
+        
         setInsightTexto('');
         setMostrarTypewriter(false);
         setInsightCarregando(false);
@@ -161,7 +159,7 @@ export default function TelaBrasil() {
         setMostrarTypewriter(false);
 
         try {
-            // Construir URL com categorias selecionadas se disponíveis
+            
             let url = `http://127.0.0.1:5000/api/insight-comparacao?ufA=${ESTADOS_BR[estadoA]}&ufB=${ESTADOS_BR[estadoB]}&ano=${anoSelecionado}`;
 
             if (categoriasSelecionadas.length > 0) {
@@ -179,13 +177,12 @@ export default function TelaBrasil() {
             if (data.insight) {
                 handleInsightGenerated(data.insight, false);
             } else {
-                // Fallback para insight genérico se não houver dados
                 const insight = `Comparação entre ${estadoA} e ${estadoB}: Análise dos dados de ${anoSelecionado} mostra padrões distintos de investimento público. Os estados apresentam diferentes estratégias de alocação de recursos, refletindo suas prioridades regionais e necessidades específicas.`;
                 handleInsightGenerated(insight, false);
             }
+            
         } catch (error) {
             console.error('Erro ao gerar insight:', error);
-            // Fallback em caso de erro
             const insight = `Comparação entre ${estadoA} e ${estadoB}: Não foi possível acessar dados detalhados no momento. Recomenda-se verificar a conectividade e tentar novamente para uma análise mais precisa dos padrões de investimento.`;
             handleInsightGenerated(insight, false);
         }

@@ -10,7 +10,7 @@ import {
     ResponsiveContainer,
     LabelList,
 } from 'recharts';
-import { buscarEstado } from "../../util/Estados"; // Não esqueça de importar corretamente
+import { buscarEstado } from "../../util/Estados"; 
 
 const formatarValorCompleto = (valor) => {
     if (!valor) return 'R$ 0';
@@ -27,7 +27,7 @@ const formatarLabelCondicional = (valor) => {
     return "";
 };
 
-// Função para calcular métricas interessantes da comparação
+
 const calcularMetricas = (data, ufA, ufB) => {
     let totalA = 0, totalB = 0;
     let maiorDiferenca = { categoria: '', valor: 0, favorito: '' };
@@ -41,7 +41,7 @@ const calcularMetricas = (data, ufA, ufB) => {
         totalA += valorA;
         totalB += valorB;
 
-        // Encontrar maior diferença absoluta
+        
         const diferenca = Math.abs(valorA - valorB);
         if (diferenca > maiorDiferenca.valor) {
             maiorDiferenca = {
@@ -51,7 +51,7 @@ const calcularMetricas = (data, ufA, ufB) => {
             };
         }
 
-        // Encontrar categoria onde cada estado mais investe
+        
         if (valorA > categoriaLiderA.valor) {
             categoriaLiderA = { categoria: item.categoria, valor: valorA };
         }
@@ -79,7 +79,6 @@ export default function GraficoComparacao({ ufA, ufB, ano = 2024, onInsightGener
     const [categoriasSelecionadas, setCategoriasSelecionadas] = useState(new Set());
     const [loading, setLoading] = useState(true);
 
-    // Novos estados para métricas interessantes
     const [metricas, setMetricas] = useState({
         totalA: 0,
         totalB: 0,
@@ -112,7 +111,6 @@ export default function GraficoComparacao({ ufA, ufB, ano = 2024, onInsightGener
                 const dataA = resultA.dados || [];
                 const dataB = resultB.dados || [];
 
-                // Buscar TODAS as categorias disponíveis (combinando ambos os estados)
                 const todasCategorias = new Map();
 
                 [...dataA, ...dataB].forEach(item => {
@@ -127,14 +125,12 @@ export default function GraficoComparacao({ ufA, ufB, ano = 2024, onInsightGener
                     }
                 });
 
-                // Criar array com todas as categorias ordenadas por valor total
                 const categoriasOrdenadas = Array.from(todasCategorias.entries())
                     .sort((a, b) => b[1] - a[1])
                     .map(([categoria, _]) => categoria);
 
                 const mergedDataMap = {};
 
-                // Criar estrutura para TODAS as categorias (não apenas as top 8)
                 categoriasOrdenadas.forEach(cat => {
                     mergedDataMap[cat] = { categoria: cat, [ufA]: 0, [ufB]: 0 };
                 });
@@ -157,7 +153,6 @@ export default function GraficoComparacao({ ufA, ufB, ano = 2024, onInsightGener
                     return totalB - totalA;
                 });
 
-                // Salvar dados completos e selecionar as top 8 categorias inicialmente
                 setDadosCompletos(finalData);
                 const topCategorias = finalData.slice(0, 8).map(item => item.categoria);
                 setCategoriasSelecionadas(new Set(topCategorias));
@@ -173,21 +168,19 @@ export default function GraficoComparacao({ ufA, ufB, ano = 2024, onInsightGener
         fetchDataForComparison();
     }, [ufA, ufB, ano]);
 
-    // Filtrar dados baseado nas categorias selecionadas
     useEffect(() => {
         const dadosFiltrados = dadosCompletos.filter(item =>
             categoriasSelecionadas.has(item.categoria)
         );
         setChartData(dadosFiltrados);
 
-        // Atualizar métricas baseado nos dados visualizados
+
         if (dadosFiltrados.length > 0) {
             const novasMetricas = calcularMetricas(dadosFiltrados, ufA, ufB);
             setMetricas(novasMetricas);
         }
     }, [dadosCompletos, categoriasSelecionadas, ufA, ufB]);
 
-    // Comunicar categorias selecionadas para o componente pai
     useEffect(() => {
         if (onCategoriasChange && categoriasSelecionadas.size > 0) {
             onCategoriasChange(Array.from(categoriasSelecionadas));
@@ -211,13 +204,10 @@ export default function GraficoComparacao({ ufA, ufB, ano = 2024, onInsightGener
 
     return (
         <div style={{ width: "100%", height: "100%" }}>
-            {/* Cabeçalho com título e métricas */}
             <div style={{ marginBottom: "1rem" }}>
                 <h2 style={{ textAlign: "center", color: "#5B228D", marginBottom: "1rem" }}>
                     Comparativo: {nomeEstadoA} vs {nomeEstadoB}
                 </h2>
-
-                {/* Seletor de Categorias */}
                 {!loading && dadosCompletos.length > 0 && (
                     <div style={{
                         marginBottom: '15px',
@@ -286,7 +276,6 @@ export default function GraficoComparacao({ ufA, ufB, ano = 2024, onInsightGener
                     </div>
                 )}
 
-                {/* Painel de métricas rápidas */}
                 {!loading && chartData.length > 0 && (
                     <div style={{
                         display: "flex",

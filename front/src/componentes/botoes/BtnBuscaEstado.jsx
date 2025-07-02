@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./Botoes.css";
-import { buscarEstado } from '../../util/Estados'; // Verifique se este caminho está correto
+import { buscarEstado } from '../../util/Estados';
 
 export default function BtnBuscaEstado({ estado }) {
   const navigate = useNavigate();

@@ -82,7 +82,6 @@ export default function PortalTransparencia() {
             const file = files[0];
             if (validateFile(file)) {
                 setNomeArquivo(file.name);
-                // Atualizar o input file com o arquivo arrastado
                 const inputFile = document.getElementById("csv-upload");
                 inputFile.files = files;
             }
@@ -106,7 +105,6 @@ export default function PortalTransparencia() {
         const inputFile = document.getElementById("csv-upload");
         const file = inputFile.files[0];
 
-        // Verificar se é um arquivo CSV
         if (!file.name.toLowerCase().endsWith('.csv')) {
             alert("Por favor, selecione apenas arquivos CSV.");
             return;
@@ -130,8 +128,7 @@ export default function PortalTransparencia() {
             }
 
             alert(`Arquivo enviado com sucesso! Salvo como: ${result.arquivo}`);
-            
-            // Limpar os campos após o sucesso
+
             setEstadoSelecionado('');
             setAnoSelecionado('');
             setNomeArquivo('');
@@ -153,8 +150,7 @@ return (
             </div>
         </div>
         <div className="portal-container">
-            
-            {/* Coluna da Esquerda (Lista de Links) */}
+
             <div className="coluna-portais">
                 <h2 className="titulo-coluna" style={{color: '#5B228D'}}>Portais da Transparência</h2>
                 <div className="lista-portais">
@@ -181,8 +177,7 @@ return (
                         <strong>Atenção:</strong> Os estados do Maranhão (MA), Pernambuco (PE) e Sergipe (SE) ainda não possuem suporte para análise automática.
                     </div>
                 </div>
-                
-                {/* Caixa de Ações com Filtros e Upload */}
+
                 <div className="box-acoes">
                     <h2 className="titulo-coluna" style={{color: '#5B228D'}}>Área de Ações</h2>
 

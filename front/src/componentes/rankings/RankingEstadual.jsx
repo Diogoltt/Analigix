@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import '../botoes/Botoes.css';
-
 import DetalhesInvestimento from '../modal/DetalhesInvestimento';
 
-// 1. RECEBENDO 'uf' e 'ano' como props
 const RankingEstadual = ({ items, page, perPage, uf, ano }) => {
     const [itemSelecionado, setItemSelecionado] = useState(null);
 
@@ -64,7 +62,6 @@ const RankingEstadual = ({ items, page, perPage, uf, ano }) => {
                 })}
             </ul>
 
-            {/* 2. AGORA 'uf' e 'ano' existem aqui e podem ser passados para o modal */}
             {itemSelecionado && (
                 <DetalhesInvestimento
                     isOpen={true}

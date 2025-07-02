@@ -1,18 +1,18 @@
-/* Container principal que organiza as duas colunas */
+
 .portal-container {
   display: flex;
   flex-direction: row;
-  gap: 40px; /* Espaço entre as colunas */
+  gap: 40px; 
   padding: 20px 40px;
   font-family: 'Inter', sans-serif;
   width: 100%;
   box-sizing: border-box;
-  /* background-color: #f9fafb; Um fundo levemente cinza */
-  min-height: calc(100vh - 80px); /* Altura da tela menos a altura do seu header */
+  
+  min-height: calc(100vh - 80px); 
 }
 .navbar {
     background-color: #5b228d;
-    /* border: 1px solid #5b228d; */
+    
     display: flex;
     justify-content: start;
     align-items: center;
@@ -28,7 +28,7 @@ a {
 .container-Principal{
    display: flex;
   flex-direction: row;
-  gap: 24px; /* ou 1.5rem, igual nos outros */
+  gap: 24px; 
   padding: 24px;
   box-sizing: border-box;
 
@@ -41,7 +41,7 @@ a {
   color: #111827;
 }
 
-/* Coluna da esquerda (lista de portais) */
+
 .coluna-portais {
   flex: 1; 
   max-width: 50%;

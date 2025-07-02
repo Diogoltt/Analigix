@@ -7,8 +7,6 @@ import {
     Tooltip,
     Legend
 } from 'recharts';
-
-// Cores para o gráfico de pizza
 const CORES = [
     '#5B228D', '#0EC0D1', '#FFCC4D', '#e74c3c', '#27ae60',
     '#f39c12', '#9b59b6', '#34495e', '#e67e22', '#1abc9c',
@@ -50,21 +48,21 @@ const GraficoPizza = ({ uf, anoSelecionado }) => {
 
                 const dadosRanking = resultado.dados || [];
 
-                // Calcular total geral
+                
                 const total = dadosRanking.reduce((soma, item) => soma + (item.total_gasto || 0), 0);
                 setTotalGeral(total);
 
-                // Processar dados para o gráfico de pizza
+                
                 const dadosProcessados = dadosRanking
-                    .filter(item => item.categoria_padronizada !== 'Outros') // Filtrar "Outros"
+                    .filter(item => item.categoria_padronizada !== 'Outros') 
                     .map(item => ({
                         name: item.categoria_padronizada || 'Sem Categoria',
                         value: item.total_gasto || 0,
                         percentual: total > 0 ? ((item.total_gasto || 0) / total * 100).toFixed(1) : 0
                     }))
-                    .filter(item => item.value > 0) // Remover valores zerados
-                    .sort((a, b) => b.value - a.value) // Ordenar por valor decrescente
-                    .slice(0, 8); // Pegar apenas os top 8
+                    .filter(item => item.value > 0) 
+                    .sort((a, b) => b.value - a.value) 
+                    .slice(0, 8); 
 
                 setDados(dadosProcessados);
 
@@ -106,7 +104,6 @@ const GraficoPizza = ({ uf, anoSelecionado }) => {
     };
 
     const renderLabel = ({ percentual, name }) => {
-        // Mostrar label apenas se for maior que 3%
         if (parseFloat(percentual) > 3) {
             return `${percentual}%`;
         }

@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './css/TelaEstado.css';
-
-// Imports de SVGs e Componentes de ambas as versões
 import { ReactComponent as LogoAnaligixAzul } from '../componentes/logo/logoAnaligixAzul.svg';
 import { ReactComponent as AlfineteMapa } from '../componentes/svg/alfinete.svg';
 import { ReactComponent as Filtro } from '../componentes/svg/filtro.svg';
 import BtnVoltar from '../componentes/botoes/BtnVoltarTela.jsx';
 import RankingEstadual from '../componentes/rankings/RankingEstadual.jsx';
-import GraficoPerfil from '../componentes/graficos/GraficoPerfil.jsx'; // Trocado de GraficoTeste para GraficoPerfil
-import GraficoPizza from '../componentes/graficos/GraficoPizza.jsx'; // Novo componente de gráfico de pizza
+import GraficoPerfil from '../componentes/graficos/GraficoPerfil.jsx';
+import GraficoPizza from '../componentes/graficos/GraficoPizza.jsx';
+
 
 export default function TelaEstado() {
-  // Hooks de roteamento e estado (Base da primeira versão)
+ 
   const { uf } = useParams();
   const navigate = useNavigate();
   const handleClick = () => navigate('/nacional');
@@ -26,7 +25,7 @@ export default function TelaEstado() {
   const [totalRankingItems, setTotalRankingItems] = useState(0);
   const recordsPerPage = 10;
 
-  // Efeitos para buscar dados e resetar paginação (Lógica da primeira versão)
+ 
   useEffect(() => {
     setRankingPage(1);
   }, [anoSelecionado]);
@@ -71,7 +70,7 @@ export default function TelaEstado() {
 
   const totalPages = Math.ceil(totalRankingItems / recordsPerPage);
 
-  // Estrutura JSX completa, funcional e limpa (Base da primeira versão)
+  
   return (
     <div>
       <nav className="navbar">
@@ -141,8 +140,8 @@ export default function TelaEstado() {
                 items={rankingData}
                 page={rankingPage}
                 perPage={recordsPerPage}
-                uf={uf} // <-- ADICIONE ESTA LINHA
-                ano={anoSelecionado} // <-- ADICIONE ESTA LINHA
+                uf={uf}
+                ano={anoSelecionado}
               />
             )}
 
@@ -175,7 +174,6 @@ export default function TelaEstado() {
             <GraficoPizza uf={uf} anoSelecionado={anoSelecionado} />
           </div>
           <div className="grafico-Estado">
-            {/* Componente de gráfico trocado para GraficoPerfil, recebendo os dados da API */}
             <GraficoPerfil chartData={rankingData} />
           </div>
         </div>

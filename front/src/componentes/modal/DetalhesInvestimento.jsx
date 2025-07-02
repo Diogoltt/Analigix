@@ -18,7 +18,6 @@ export default function DetalhesInvestimento({ isOpen, onClose, item, uf, ano })
             
             const params = new URLSearchParams();
             params.append('uf', uf);
-            // CORRIGIDO DE VOLTA: Usa a chave correta que vem do componente de Ranking
             params.append('categoria', item.categoria_padronizada); 
             if (ano) {
                 params.append('ano', ano);
@@ -79,10 +78,7 @@ export default function DetalhesInvestimento({ isOpen, onClose, item, uf, ano })
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <button className="modal-close" onClick={onClose}>✖</button>
-                
-                {/* CORRIGIDO DE VOLTA: Usa a chave correta que vem do componente de Ranking */}
                 <h2>{item.categoria_padronizada}</h2>
-                
                 <p className="info-modal">
                     <strong>Total na Categoria:</strong> {formatarMoeda(item.total_gasto)}
                 </p>
