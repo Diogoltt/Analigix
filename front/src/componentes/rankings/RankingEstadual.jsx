@@ -3,14 +3,8 @@ import '../botoes/Botoes.css';
 
 import DetalhesInvestimento from "../modal/DetalhesInvestimento";
 
-// Esta função não é mais necessária aqui, pois a ordenação vem da API,
-// mas se outro componente precisar dela, ela pode ficar.
-// const compararFn = ... 
-
-
-
-
 const RankingEstadual = ({ items, page, perPage }) => {
+  const [itemSelecionado, setItemSelecionado] = useState(null);
   if (!items || items.length === 0) {
     return (
       <p style={{ textAlign: 'center', color: '#555' }}>
@@ -18,9 +12,6 @@ const RankingEstadual = ({ items, page, perPage }) => {
       </p>
     );
   }
-
-
-  const [itemSelecionado, setItemSelecionado] = useState(null);
 
   const abrirModal = (item) => setItemSelecionado(item);
   const fecharModal = () => setItemSelecionado(null);
