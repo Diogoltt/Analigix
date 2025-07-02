@@ -45,50 +45,92 @@
     border-color: #0aa8b8;
     box-shadow: 0 0 0 3px rgba(14, 192, 209, 0.1);
 }
+
 a {
-  text-decoration: none;
-  font-weight: bold;
+    text-decoration: none;
+    font-weight: bold;
 }
 
 /* Container principal da busca */
 .BuscaEstado {
-  position: relative;
-  display: inline-block; /* Para o container se ajustar ao conteúdo */
+    position: relative;
+    display: inline-block;
+    /* Para o container se ajustar ao conteúdo */
 }
 
 /* Input de busca */
 .busca-input {
-  width: 100%;
-  padding: 10px; /* Garante que padding não aumente a largura */
+    width: 100%;
+    padding: 10px;
+    /* Garante que padding não aumente a largura */
+}
+
+/* * Busca de estados*/
+/* Corrigindo nome da classe (era .buscaEstado com minúscula) */
+.BuscaEstado {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    flex-wrap: wrap;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+}
+
+.busca-input {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 16px;
+    width: 300px;
+    max-width: 90%;
+    color: #333;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+}
+
+.busca-input:focus {
+    border-color: #5b228d;
+    box-shadow: 0 0 0 3px rgba(91, 34, 141, 0.1);
 }
 
 
 /* Container de sugestões */
 .sugestoes-container {
-  position: absolute;
-  top: 70%; 
-  background: white;
-  border: 1px solid #ddd;
-  border-top: none; 
-  border-radius: 0 0 4px 4px; 
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  max-height: 200px;
+    position: absolute;
+    top: 70%;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
 
 }
 
 .sugestao-item {
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: background-color 0.2s;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
 }
 
 .sugestao-item:hover {
-  background-color: #FF5A1F;
-  color: white
+    background-color: #FF5A1F;
+    color: white
 }
 
 .container-mapa-ranking {
     display: flex;
+    flex-direction: column;
+    padding: 2rem;
+
+}
+
+.mapa-ranking {
+    display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: stretch;
     gap: 2rem;
@@ -96,39 +138,8 @@ a {
     height: 100%;
     box-sizing: border-box;
     border-radius: 20px;
-
 }
 
-/* * Busca de estados*/
-/* Corrigindo nome da classe (era .buscaEstado com minúscula) */
-.BuscaEstado {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  padding: 2rem;
-  flex-wrap: wrap;
-  background-color: #f9f9f9;
-  border-bottom: 1px solid #ddd;
-}
-
-.busca-input {
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 10px 16px;
-  font-size: 16px;
-  width: 300px;
-  max-width: 90%;
-  color: #333;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-  transition: all 0.2s ease-in-out;
-}
-
-.busca-input:focus {
-  border-color: #5b228d;
-  box-shadow: 0 0 0 3px rgba(91, 34, 141, 0.1);
-}
 
 
 .mapaBrasil {
@@ -207,15 +218,15 @@ a {
     display: flex;
     flex-direction: column;
     gap: 2rem;
-  background-color: #f9f9f9;
-border-top:  1px solid #ddd;
+    background-color: #f9f9f9;
+    border-top: 1px solid #ddd;
     margin-top: 4rem;
     border-radius: 20px;
 }
 
 .titulo-comparacao {
     text-align: center;
-    
+
 }
 
 .forms-Grafico {
@@ -236,21 +247,24 @@ border-top:  1px solid #ddd;
     margin-bottom: 0.3rem;
     color: #333;
 }
+
 .input-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
+
 .sugestoes-containerA {
- position: absolute;
-  left: 56%;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 0 0 4px 4px; 
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  max-height: 200px;
+    position: absolute;
+    left: 56%;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
 }
+
 .select-Grafico {
     background-color: #fff;
     border: 1px solid #ccc;
@@ -349,6 +363,11 @@ border-top:  1px solid #ddd;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }

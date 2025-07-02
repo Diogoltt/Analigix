@@ -5,15 +5,17 @@ body {
   margin: 0;
   padding: 0;
 }
+
 .navbar {
-    background-color: #5b228d;
-    /* border: 1px solid #5b228d; */
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    /* padding: 5px; */
-    padding-left: 200px;
+  background-color: #5b228d;
+  /* border: 1px solid #5b228d; */
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  /* padding: 5px; */
+  padding-left: 200px;
 }
+
 a {
   text-decoration: none;
   font-weight: bold;
@@ -70,7 +72,7 @@ a {
 }
 
 .filtro {
-    background-color: #fff;
+  background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 10px 16px;
@@ -78,12 +80,12 @@ a {
   width: 300px;
   max-width: 90%;
   color: #333;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease-in-out;
 }
 
 .filtro:focus {
-    border-color: #5b228d;
+  border-color: #5b228d;
   box-shadow: 0 0 0 3px rgba(91, 34, 141, 0.1);
 }
 
@@ -101,6 +103,25 @@ a {
   padding: 1rem;
   flex-grow: 1;
   overflow-y: auto;
+}
+
+.btn-ranking {
+  background-color: #FF5A1F;
+  color: white;
+  padding: 8px 12px;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 6px;
+  font-Size: 15px;
+  font-family: "Open-sans", sans-serif;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+.btn-ranking:hover {
+  background-color: #d64e1c;
 }
 
 .mapa-Estado {

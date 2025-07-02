@@ -43,7 +43,7 @@ export default function TelaBrasil() {
     const inputRefB = useRef(null);
     const [mostrarComparacao, setMostrarComparacao] = useState(false);
     const [ufsComparadas, setUfsComparadas] = useState([]);
-    
+
     // Estados para insights
     const [insightTexto, setInsightTexto] = useState('');
     const [insightCarregando, setInsightCarregando] = useState(false);
@@ -53,7 +53,7 @@ export default function TelaBrasil() {
         const fetchInitialData = async () => {
             try {
                 const [analiseResponse, rankingResponse] = await Promise.all([
-                    fetch(`http://127.0.0.1:5000/api/analise?ano=${anoSelecionado}`), 
+                    fetch(`http://127.0.0.1:5000/api/analise?ano=${anoSelecionado}`),
                     fetch(`http://127.0.0.1:5000/api/ranking-nacional?ano=${anoSelecionado}`)
                 ]);
 
@@ -160,30 +160,7 @@ export default function TelaBrasil() {
         <div>
             <nav className="navbar">
                 <a href="/analigix"><LogoAnaligixAzul width="200px" height="80px" /></a>
-                <div className="filtro-ano">
-                    <label htmlFor="seletor-ano" style={{ color: 'white', marginRight: '10px' }}>Ano:</label>
-                    <select 
-                        id="seletor-ano"
-                        value={anoSelecionado} 
-                        onChange={(e) => setAnoSelecionado(parseInt(e.target.value))}
-                        style={{
-                            padding: '5px 10px',
-                            borderRadius: '5px',
-                            border: '1px solid #0EC0D1',
-                            backgroundColor: 'white',
-                            color: '#2C006A',
-                            fontSize: '16px',
-                            fontWeight: 'bold'
-                        }}
-                    >
-                        <option value={2024}>2024</option>
-                        <option value={2023}>2023</option>
-                        <option value={2022}>2022</option>
-                        <option value={2021}>2021</option>
-                        <option value={2020}>2020</option>
-                    </select>
-                </div>
-               <a href="/Portais-da-Transparencia" style={{ color: "white", font: "" }}>Portais da Transparência</a>
+                <a href="/Portais-da-Transparencia" style={{ color: "white", font: "" }}>Portais da Transparência</a>
             </nav>
             <div className="BuscaEstado">
                 <input
@@ -216,38 +193,66 @@ export default function TelaBrasil() {
                 <BtnBuscaEstado estado={buscaEstado} />
             </div>
             <div className="container-mapa-ranking">
-                <div className="mapaBrasil">
-                    <MapaBrasil style={{ maxWidth: '100%', height: 'auto' }} />
+                <div className="filtro-ano">
+                    <label htmlFor="seletor-ano" style={{ color: '#2C006A', marginRight: '1px' }}>Ano de análise:</label>
+                    <select
+                        className='seletor-ano'
+                        id="seletor-ano"
+                        value={anoSelecionado}
+                        onChange={(e) => setAnoSelecionado(parseInt(e.target.value))}
+                        style={{
+                            backgroundColor: '#fff',
+                            border: '1px solid #ccc',
+                            borderRadius: '8px',
+                            padding: '10px 16px',
+                            fontSize: '16px',
+                            maxWidth: '90%',
+                            color: '#333',
+                            boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+                            transition: 'all 0.2s ease-in-out'
+                        }}
+                    >
+                        <option value={2024}>2024</option>
+                        <option value={2023}>2023</option>
+                        <option value={2022}>2022</option>
+                        <option value={2021}>2021</option>
+                        <option value={2020}>2020</option>
+                    </select>
                 </div>
-
-                <div className="info-container">
-                    <div className="info-nacional">
-                        <h1 style={{ color: '#2C006A', textAlign: 'center', marginBottom: '1.5rem' }}>
-                            No ano <strong style={{ color: '#0EC0D1' }}>{anoSelecionado}</strong> o País investiu mais em{' '}
-                            <strong style={{ color: '#0EC0D1' }}>
-                                {loading || topAreasNacional.length < 1 ? '...' : topAreasNacional[0].categoria_padronizada}
-                            </strong>{' '}
-                            e{' '}
-                            <strong style={{ color: '#0EC0D1' }}>
-                                {loading || topAreasNacional.length < 2 ? '...' : topAreasNacional[1].categoria_padronizada}
-                            </strong>
-                        </h1>
-                        <BtnVerGrafico
-                            mostrarGrafico={mostrarGrafico}
-                            setMostrarGrafico={setMostrarGrafico}
-                            text={mostrarGrafico ? 'Ranking' : 'Grafico'}
-                        />
+                <div className='mapa-ranking'>
+                    <div className="mapaBrasil">
+                        <MapaBrasil style={{ maxWidth: '100%', height: 'auto' }} />
                     </div>
+                    <div className="info-container">
+                        <div className="info-nacional">
+                            <h1 style={{ color: '#2C006A', textAlign: 'center', marginBottom: '1.5rem' }}>
+                                No ano <strong style={{ color: '#0EC0D1' }}>{anoSelecionado}</strong> o País investiu mais em{' '}
+                                <strong style={{ color: '#0EC0D1' }}>
+                                    {loading || topAreasNacional.length < 1 ? '...' : topAreasNacional[0].categoria_padronizada}
+                                </strong>{' '}
+                                e{' '}
+                                <strong style={{ color: '#0EC0D1' }}>
+                                    {loading || topAreasNacional.length < 2 ? '...' : topAreasNacional[1].categoria_padronizada}
+                                </strong>
+                            </h1>
+                            <BtnVerGrafico
+                                mostrarGrafico={mostrarGrafico}
+                                setMostrarGrafico={setMostrarGrafico}
+                                text={mostrarGrafico ? 'Ranking' : 'Grafico'}
+                            />
+                        </div>
 
-                    <div className="conteudo-ranking-grafico">
-                        {mostrarGrafico ? (
-                            <GraficoBarras ano={anoSelecionado} />
-                        ) : (
-                            <RankingNacional items={rankingNacionalData} />
-                        )}
+                        <div className="conteudo-ranking-grafico">
+                            {mostrarGrafico ? (
+                                <GraficoBarras ano={anoSelecionado} />
+                            ) : (
+                                <RankingNacional items={rankingNacionalData} />
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
+
             <div className="container-cards">
                 <div className="card">
                     <Moradia width="80px" height="80px" />
@@ -255,7 +260,7 @@ export default function TelaBrasil() {
                         O estado campeão de investimentos, <strong>{loading ? '...' : topStateInfo.uf}</strong>,
                         destaca-se pelos gastos na área de <strong>{loading ? '...' : topStateInfo.categoria}</strong>.
                     </p>
-                </div>             
+                </div>
                 <div className="card">
                     <Educacao width="80px" height="80px" />
                     <p>
@@ -290,7 +295,7 @@ export default function TelaBrasil() {
                                 }}
                                 onFocus={() => setMostrarSugestoesA(true)}
                                 onBlur={() => setTimeout(() => setMostrarSugestoesA(false), 200)}
-                                placeholder="Digite ou selecione um estado"
+                                placeholder="Digite o estado ou sigla"
                             />
                             {mostrarSugestoesA && estadosFiltradosA.length > 0 && (
                                 <div className="sugestoes-containerA">
@@ -321,7 +326,7 @@ export default function TelaBrasil() {
                                 }}
                                 onFocus={() => setMostrarSugestoesB(true)}
                                 onBlur={() => setTimeout(() => setMostrarSugestoesB(false), 200)}
-                                placeholder="Digite ou selecione um estado"
+                                placeholder="Digite o estado ou sigla"
                             />
                             {mostrarSugestoesB && estadosFiltradosB.length > 0 && (
                                 <div className="sugestoes-containerA">
@@ -344,9 +349,9 @@ export default function TelaBrasil() {
                 {mostrarComparacao && (
                     <div className="grafico-insights">
                         <div className="grafico-Comparacao">
-                            <GraficoComparacao 
-                                ufA={ESTADOS_BR[estadoA]} 
-                                ufB={ESTADOS_BR[estadoB]} 
+                            <GraficoComparacao
+                                ufA={ESTADOS_BR[estadoA]}
+                                ufB={ESTADOS_BR[estadoB]}
                                 ano={anoSelecionado}
                                 onInsightGenerated={handleInsightGenerated}
                             />
@@ -356,7 +361,7 @@ export default function TelaBrasil() {
                                 💡 Insights da Comparação
                                 <span className="insights-badge">Gerado por IA</span>
                             </h2>
-                            
+
                             {insightCarregando ? (
                                 <div className="insights-loading">
                                     <div className="loading-spinner"></div>
@@ -365,8 +370,8 @@ export default function TelaBrasil() {
                             ) : insightTexto ? (
                                 <p className="insights-content">
                                     {mostrarTypewriter ? (
-                                        <TypewriterText 
-                                            text={insightTexto} 
+                                        <TypewriterText
+                                            text={insightTexto}
                                             speed={30}
                                             onComplete={() => console.log('Typewriter finalizado')}
                                         />
@@ -382,7 +387,7 @@ export default function TelaBrasil() {
                         </div>
                     </div>
                 )}
-            </div>   
-        </div>
+            </div>
+        </div >
     );
 }

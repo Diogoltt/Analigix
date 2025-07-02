@@ -99,7 +99,6 @@ export default function TelaEstado() {
                                     })}`}
                             </span>
                         </h1>
-                        <Filtro className="icon" />
                         <select
                             className="filtro"
                             name="ano"
@@ -128,13 +127,13 @@ export default function TelaEstado() {
                         )}
 
                         <div className="pagination-ranking" style={{ textAlign: 'center', marginTop: '1rem' }}>
-                            <button onClick={() => setRankingPage(rankingPage - 1)} disabled={rankingPage <= 1 || loading}>
+                            <button className='btn-ranking' onClick={() => setRankingPage(rankingPage - 1)} disabled={rankingPage <= 1 || loading}>
                                 Anterior
                             </button>
                             <span style={{ margin: '0 1rem' }}>
                                 Página {rankingPage} de {totalPages || 1}
                             </span>
-                            <button onClick={() => setRankingPage(rankingPage + 1)} disabled={rankingPage >= totalPages || loading}>
+                            <button className='btn-ranking' onClick={() => setRankingPage(rankingPage + 1)} disabled={rankingPage >= totalPages || loading}>
                                 Próximo
                             </button>
                         </div>
