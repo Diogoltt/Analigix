@@ -30,7 +30,7 @@ const formatarNumero = (num) => {
     return `R$ ${num.toFixed(2)}`;
 };
 
-export default function GraficoBarrasEstados() {
+export default function GraficoBarrasEstados({ ano = 2024 }) {
     const [categoriaSelecionada, setCategoriaSelecionada] = useState("");
     const [chartData, setChartData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -38,10 +38,10 @@ export default function GraficoBarrasEstados() {
     useEffect(() => {
         const fetchDataForChart = async () => {
             setLoading(true);
-            let apiUrl = 'http://127.0.0.1:5000/api/comparativo-geral';
+            let apiUrl = `http://127.0.0.1:5000/api/comparativo-geral?ano=${ano}`;
 
             if (categoriaSelecionada) {
-                apiUrl += `?categoria=${encodeURIComponent(categoriaSelecionada)}`;
+                apiUrl += `&categoria=${encodeURIComponent(categoriaSelecionada)}`;
             }
 
             try {
@@ -62,7 +62,7 @@ export default function GraficoBarrasEstados() {
         };
 
         fetchDataForChart();
-    }, [categoriaSelecionada]);
+    }, [categoriaSelecionada, ano]);
 
     return (
         <div className="grafico-container" style={{ minHeight: "500px" }}>

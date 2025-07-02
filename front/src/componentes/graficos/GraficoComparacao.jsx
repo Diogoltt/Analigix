@@ -108,7 +108,7 @@ const calcularMetricas = (data, ufA, ufB) => {
     };
 };
 
-export default function GraficoComparacao({ ufA, ufB, onInsightGenerated }) {
+export default function GraficoComparacao({ ufA, ufB, ano = 2024, onInsightGenerated }) {
     const [chartData, setChartData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [insight, setInsight] = useState('');
@@ -133,8 +133,8 @@ export default function GraficoComparacao({ ufA, ufB, onInsightGenerated }) {
 
         const fetchDataForComparison = async () => {
             setLoading(true);
-            const urlA = `http://127.0.0.1:5000/api/ranking?uf=${ufA}&per_page=50`;
-            const urlB = `http://127.0.0.1:5000/api/ranking?uf=${ufB}&per_page=50`;
+            const urlA = `http://127.0.0.1:5000/api/ranking?uf=${ufA}&ano=${ano}&per_page=50`;
+            const urlB = `http://127.0.0.1:5000/api/ranking?uf=${ufB}&ano=${ano}&per_page=50`;
 
             try {
                 const [responseA, responseB] = await Promise.all([fetch(urlA), fetch(urlB)]);
@@ -195,7 +195,7 @@ export default function GraficoComparacao({ ufA, ufB, onInsightGenerated }) {
         };
 
         fetchDataForComparison();
-    }, [ufA, ufB]);
+    }, [ufA, ufB, ano]);
 
     const nomeEstadoA = buscarEstado(ufA)?.nome || ufA;
     const nomeEstadoB = buscarEstado(ufB)?.nome || ufB;

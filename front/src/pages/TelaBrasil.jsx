@@ -20,6 +20,7 @@ import TypewriterText from '../componentes/efeitos/TypewriterText';
 import '../componentes/efeitos/TypewriterText.css';
 
 export default function TelaBrasil() {
+    const [anoSelecionado, setAnoSelecionado] = useState(2024); // Ano padrão
     const [topAreasNacional, setTopAreasNacional] = useState([]);
     const [rankingNacionalData, setRankingNacionalData] = useState([]);
     const [topStateInfo, setTopStateInfo] = useState({ uf: '...', categoria: '...' });
@@ -52,8 +53,8 @@ export default function TelaBrasil() {
         const fetchInitialData = async () => {
             try {
                 const [analiseResponse, rankingResponse] = await Promise.all([
-                    fetch('http://127.0.0.1:5000/api/analise'), 
-                    fetch('http://127.0.0.1:5000/api/ranking-nacional')
+                    fetch(`http://127.0.0.1:5000/api/analise?ano=${anoSelecionado}`), 
+                    fetch(`http://127.0.0.1:5000/api/ranking-nacional?ano=${anoSelecionado}`)
                 ]);
 
                 const analiseData = await analiseResponse.json();
@@ -72,14 +73,14 @@ export default function TelaBrasil() {
             }
         };
         fetchInitialData();
-    }, []);
+    }, [anoSelecionado]);
 
     useEffect(() => {
         if (rankingNacionalData.length > 0) {
             const topStateUf = rankingNacionalData[0].estado;
             const fetchTopStateCategory = async () => {
                 try {
-                    const response = await fetch(`http://127.0.0.1:5000/api/analise?uf=${topStateUf}`);
+                    const response = await fetch(`http://127.0.0.1:5000/api/analise?uf=${topStateUf}&ano=${anoSelecionado}`);
                     const data = await response.json();
                     if (data && data.length > 0) {
                         setTopStateInfo({
@@ -93,7 +94,7 @@ export default function TelaBrasil() {
             };
             fetchTopStateCategory();
         }
-    }, [rankingNacionalData]);
+    }, [rankingNacionalData, anoSelecionado]);
 
     const filterEstados = (termo) => {
         if (!termo.trim()) return [];
@@ -159,8 +160,30 @@ export default function TelaBrasil() {
         <div>
             <nav className="navbar">
                 <a href="/analigix"><LogoAnaligixAzul width="200px" height="80px" /></a>
+                <div className="filtro-ano">
+                    <label htmlFor="seletor-ano" style={{ color: 'white', marginRight: '10px' }}>Ano:</label>
+                    <select 
+                        id="seletor-ano"
+                        value={anoSelecionado} 
+                        onChange={(e) => setAnoSelecionado(parseInt(e.target.value))}
+                        style={{
+                            padding: '5px 10px',
+                            borderRadius: '5px',
+                            border: '1px solid #0EC0D1',
+                            backgroundColor: 'white',
+                            color: '#2C006A',
+                            fontSize: '16px',
+                            fontWeight: 'bold'
+                        }}
+                    >
+                        <option value={2024}>2024</option>
+                        <option value={2023}>2023</option>
+                        <option value={2022}>2022</option>
+                        <option value={2021}>2021</option>
+                        <option value={2020}>2020</option>
+                    </select>
+                </div>
                <a href="/Portais-da-Transparencia" style={{ color: "white", font: "" }}>Portais da Transparência</a>
-
             </nav>
             <div className="BuscaEstado">
                 <input
@@ -200,7 +223,7 @@ export default function TelaBrasil() {
                 <div className="info-container">
                     <div className="info-nacional">
                         <h1 style={{ color: '#2C006A', textAlign: 'center', marginBottom: '1.5rem' }}>
-                            No último ano o País investiu mais em{' '}
+                            No ano <strong style={{ color: '#0EC0D1' }}>{anoSelecionado}</strong> o País investiu mais em{' '}
                             <strong style={{ color: '#0EC0D1' }}>
                                 {loading || topAreasNacional.length < 1 ? '...' : topAreasNacional[0].categoria_padronizada}
                             </strong>{' '}
@@ -218,7 +241,7 @@ export default function TelaBrasil() {
 
                     <div className="conteudo-ranking-grafico">
                         {mostrarGrafico ? (
-                            <GraficoBarras />
+                            <GraficoBarras ano={anoSelecionado} />
                         ) : (
                             <RankingNacional items={rankingNacionalData} />
                         )}
@@ -324,6 +347,7 @@ export default function TelaBrasil() {
                             <GraficoComparacao 
                                 ufA={ESTADOS_BR[estadoA]} 
                                 ufB={ESTADOS_BR[estadoB]} 
+                                ano={anoSelecionado}
                                 onInsightGenerated={handleInsightGenerated}
                             />
                         </div>
