@@ -199,29 +199,6 @@ export default function TelaBrasil() {
         <div>
             <nav className="navbar">
                 <a href="/analigix"><LogoAnaligixAzul width="200px" height="80px" /></a>
-                <div className="filtro-ano">
-                    <label htmlFor="seletor-ano" style={{ color: 'white', marginRight: '10px' }}>Ano:</label>
-                    <select
-                        id="seletor-ano"
-                        value={anoSelecionado}
-                        onChange={(e) => setAnoSelecionado(parseInt(e.target.value))}
-                        style={{
-                            padding: '5px 10px',
-                            borderRadius: '5px',
-                            border: '1px solid #0EC0D1',
-                            backgroundColor: 'white',
-                            color: '#2C006A',
-                            fontSize: '16px',
-                            fontWeight: 'bold'
-                        }}
-                    >
-                        <option value={2024}>2024</option>
-                        <option value={2023}>2023</option>
-                        <option value={2022}>2022</option>
-                        <option value={2021}>2021</option>
-                        <option value={2020}>2020</option>
-                    </select>
-                </div>
                 <a href="/Portais-da-Transparencia" style={{ color: "white", font: "" }}>Portais da Transparência</a>
             </nav>
             <div className="BuscaEstado">
@@ -312,29 +289,6 @@ export default function TelaBrasil() {
                             )}
                         </div>
                     </div>
-                </div>
-            </div>
-            <div className="container-cards">
-                <div className="card">
-                    <Moradia width="80px" height="80px" />
-                    <p>
-                        O estado campeão de investimentos, <strong>{loading ? '...' : topStateInfo.uf}</strong>,
-                        destaca-se pelos gastos na área de <strong>{loading ? '...' : topStateInfo.categoria}</strong>.
-                    </p>
-                </div>
-                <div className="card">
-                    <Educacao width="80px" height="80px" />
-                    <p>
-                        O <strong>estado X </strong> recebeu <strong>X </strong> para a área
-                        da educação
-                    </p>
-                </div>
-                <div className="card">
-                    <Saude width="80px" height="80px" />
-                    <p>
-                        O <strong>estado X </strong> disponibilizou <strong>X </strong> para
-                        a saúde
-                    </p>
                 </div>
             </div>
             <div className="container-comparacao">
