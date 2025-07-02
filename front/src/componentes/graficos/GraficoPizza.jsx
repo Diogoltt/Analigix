@@ -10,7 +10,7 @@ import {
 
 // Cores para o gráfico de pizza
 const CORES = [
-    '#5B228D', '#0EC0D1', '#FFCC4D', '#e74c3c', '#27ae60', 
+    '#5B228D', '#0EC0D1', '#FFCC4D', '#e74c3c', '#27ae60',
     '#f39c12', '#9b59b6', '#34495e', '#e67e22', '#1abc9c',
     '#3498db', '#e91e63', '#ff5722', '#795548', '#607d8b'
 ];
@@ -31,13 +31,13 @@ const GraficoPizza = ({ uf, anoSelecionado }) => {
     useEffect(() => {
         const buscarDadosPizza = async () => {
             if (!uf) return;
-            
+
             setLoading(true);
-            
+
             try {
                 const params = new URLSearchParams();
                 params.append('uf', uf);
-                params.append('per_page', 50); // Buscar mais dados para ter visão completa
+                params.append('per_page', 10);
                 if (anoSelecionado) params.append('ano', anoSelecionado);
 
                 const url = `http://127.0.0.1:5000/api/ranking?${params.toString()}`;
@@ -49,7 +49,7 @@ const GraficoPizza = ({ uf, anoSelecionado }) => {
                 }
 
                 const dadosRanking = resultado.dados || [];
-                
+
                 // Calcular total geral
                 const total = dadosRanking.reduce((soma, item) => soma + (item.total_gasto || 0), 0);
                 setTotalGeral(total);
@@ -64,9 +64,10 @@ const GraficoPizza = ({ uf, anoSelecionado }) => {
                     }))
                     .filter(item => item.value > 0) // Remover valores zerados
                     .sort((a, b) => b.value - a.value) // Ordenar por valor decrescente
-                    .slice(0, 10); // Pegar apenas os top 10 para não poluir o gráfico
+                    .slice(0, 8); // Pegar apenas os top 8
 
                 setDados(dadosProcessados);
+
             } catch (error) {
                 console.error('Erro ao buscar dados para gráfico de pizza:', error);
                 setDados([]);
@@ -145,53 +146,55 @@ const GraficoPizza = ({ uf, anoSelecionado }) => {
     }
 
     return (
-        <div style={{ width: '100%', height: '100%' }}>
-            <h3 style={{ 
-                textAlign: 'center', 
-                color: '#5B228D', 
+        <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <h3 style={{
+                textAlign: 'center',
+                color: '#5B228D',
                 marginBottom: '10px',
                 fontSize: '1.1rem'
             }}>
                 Distribuição de Despesas - {uf}
             </h3>
-            <div style={{ 
-                textAlign: 'center', 
-                fontSize: '0.85rem', 
+            <div style={{
+                textAlign: 'center',
+                fontSize: '0.85rem',
                 color: '#666',
                 marginBottom: '15px'
             }}>
                 Total: {formatarValor(totalGeral)} {anoSelecionado && `(${anoSelecionado})`}
             </div>
-            
-            <ResponsiveContainer width="100%" height="85%">
-                <PieChart>
-                    <Pie
-                        data={dados}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={renderLabel}
-                        outerRadius={100}
-                        fill="#8884d8"
-                        dataKey="value"
-                    >
-                        {dados.map((entry, index) => (
-                            <Cell 
-                                key={`cell-${index}`} 
-                                fill={CORES[index % CORES.length]} 
-                            />
-                        ))}
-                    </Pie>
-                    <Tooltip content={renderTooltip} />
-                    <Legend 
-                        wrapperStyle={{ 
-                            fontSize: '11px',
-                            lineHeight: '14px'
-                        }}
-                        iconType="square"
-                    />
-                </PieChart>
-            </ResponsiveContainer>
+
+            <div style={{ flex: 1 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                        <Pie
+                            data={dados}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            label={renderLabel}
+                            outerRadius={80}
+                            fill="#8884d8"
+                            dataKey="value"
+                        >
+                            {dados.map((entry, index) => (
+                                <Cell
+                                    key={`cell-${index}`}
+                                    fill={CORES[index % CORES.length]}
+                                />
+                            ))}
+                        </Pie>
+                        <Tooltip content={renderTooltip} />
+                        <Legend
+                            wrapperStyle={{
+                                fontSize: '10px',
+                                lineHeight: '12px'
+                            }}
+                            iconType="square"
+                        />
+                    </PieChart>
+                </ResponsiveContainer>
+            </div>
         </div>
     );
 };
