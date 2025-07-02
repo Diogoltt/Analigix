@@ -252,30 +252,6 @@ export default function TelaBrasil() {
                     </div>
                 </div>
             </div>
-
-            <div className="container-cards">
-                <div className="card">
-                    <Moradia width="80px" height="80px" />
-                    <p>
-                        O estado campeão de investimentos, <strong>{loading ? '...' : topStateInfo.uf}</strong>,
-                        destaca-se pelos gastos na área de <strong>{loading ? '...' : topStateInfo.categoria}</strong>.
-                    </p>
-                </div>
-                <div className="card">
-                    <Educacao width="80px" height="80px" />
-                    <p>
-                        O <strong>estado X </strong> recebeu <strong>X </strong> para a área
-                        da educação
-                    </p>
-                </div>
-                <div className="card">
-                    <Saude width="80px" height="80px" />
-                    <p>
-                        O <strong>estado X </strong> disponibilizou <strong>X </strong> para
-                        a saúde
-                    </p>
-                </div>
-            </div>
             <div className="container-comparacao">
                 <div className="titulo-comparacao">
                     <h1 style={{ color: "#2C006A" }}>Comparação entre estados</h1>

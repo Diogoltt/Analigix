@@ -140,7 +140,60 @@ def get_ranking_nacional():
         print(f"Ocorreu um erro na rota /api/ranking-nacional: {e}")
         return jsonify({"error": str(e)})
 
+# Em back/app/routes.py
 
+@app.route('/api/detalhes-categoria', methods=['GET'])
+def get_detalhes_categoria():
+    """
+    Para uma dada categoria e UF, retorna a lista de despesas AGRUPADA por órgão,
+    com os valores SOMADOS.
+    """
+    try:
+        # Pega os filtros da URL
+        uf_filter = request.args.get('uf')
+        categoria_filter = request.args.get('categoria')
+        ano_filter = request.args.get('ano') # Pega o ano como string
+
+        # Validação: uf e categoria são obrigatórios para esta consulta
+        if not uf_filter or not categoria_filter:
+            return jsonify({"error": "UF e Categoria são parâmetros obrigatórios."}), 400
+
+        # Usa o helper para construir a cláusula WHERE
+        filtros = {
+            'uf': uf_filter,
+            'ano': ano_filter,
+            'categoria': categoria_filter
+        }
+        string_where, params = construir_clausula_where(filtros)
+
+        # ===================================================================
+        # A MUDANÇA ESTÁ AQUI: A nova query com GROUP BY e SUM
+        # ===================================================================
+        query = f"""
+            SELECT
+                orgao,
+                SUM(valor) AS total_por_orgao
+            FROM
+                despesas
+            {string_where}
+            GROUP BY
+                orgao
+            ORDER BY
+                total_por_orgao DESC
+        """
+        
+        db_path = app.config['DATABASE_PATH']
+        conn = sqlite3.connect(db_path)
+        df = pd.read_sql_query(query, conn, params=tuple(params))
+        conn.close()
+        
+        # A API agora envia uma lista já sumarizada e sem duplicatas
+        return jsonify(df.to_dict(orient='records'))
+
+    except Exception as e:
+        print(f"Ocorreu um erro na rota /api/detalhes-categoria: {e}")
+        return jsonify({"error": str(e)}), 500
+    
 @app.route('/api/dados', methods=['GET'])
 def get_dados_paginados():
     try:

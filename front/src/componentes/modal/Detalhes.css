@@ -33,6 +33,59 @@
   font-weight: bold;
   color: #333;
 }
+.info-modal{
+  color: rgb(204, 0, 102);
+  font-weight: bold;
+  font-size: 20px;
+}
+
+
+/* Deixa o cabeçalho da tabela fixo no topo durante o scroll */
+.tabela-container {
+  max-height: 300px;
+  overflow-y: auto;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+
+  margin-top: 1rem;
+}
+
+.tabela-header th {
+  position: sticky;
+  top: 0;
+  background-color: #2c006a;
+  color: white;
+  z-index: 2;
+  padding: 8px;
+  text-align: left;
+  
+}
+.tabela-detalhes {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.tabela-detalhes td,
+.tabela-detalhes th {
+  border-bottom: 1px solid #e0e0e0;
+  padding: 10px;
+}
+
+.tabela-detalhes tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.tabela-header th {
+  position: sticky;
+  top: 0;
+  background-color: #2c006a;
+  color: white;
+  z-index: 2;
+  padding: 8px;
+  text-align: left;
+}
 
 @keyframes fadeIn {
   from {

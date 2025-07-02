@@ -106,22 +106,21 @@ a {
 }
 
 .btn-ranking {
-  background-color: #FF5A1F;
+  background-color: #2C006A;
   color: white;
   padding: 8px 12px;
   justify-content: center;
   align-items: center;
   border: none;
   border-radius: 6px;
-  font-Size: 15px;
+  font-Size: 13px;
   font-family: "Open-sans", sans-serif;
-  font-weight: bold;
   transition: background-color 0.3s;
   cursor: pointer;
 }
 
 .btn-ranking:hover {
-  background-color: #d64e1c;
+  background-color: #5500cc;
 }
 
 .mapa-Estado {
