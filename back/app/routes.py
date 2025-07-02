@@ -2,6 +2,7 @@ from app import app
 from flask import jsonify, request 
 import sqlite3
 import pandas as pd
+import os
 
 def construir_clausula_where(filtros):
     where_conditions = []
@@ -166,3 +167,45 @@ def get_dados_paginados():
     except Exception as e:
         print(f"Ocorreu um erro na rota /api/dados: {e}")
         return jsonify({"error": str(e)})
+    
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    try:
+        # Obter dados do formulário
+        estado = request.form.get('estado')
+        ano = request.form.get('ano')
+        arquivo = request.files.get('file')
+
+        # Validar se todos os campos foram preenchidos
+        if not estado or not ano:
+            return jsonify({'erro': 'Estado e ano são obrigatórios.'}), 400
+
+        if not arquivo:
+            return jsonify({'erro': 'Nenhum arquivo enviado.'}), 400
+
+        # Verificar se é um arquivo CSV
+        if not arquivo.filename.lower().endswith('.csv'):
+            return jsonify({'erro': 'Apenas arquivos CSV são aceitos.'}), 400
+
+        # Definir o caminho da pasta csvs
+        basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        upload_folder = os.path.join(basedir, 'csvs')
+        
+        # Criar a pasta se não existir
+        os.makedirs(upload_folder, exist_ok=True)
+
+        # Criar o nome do arquivo no formato SIGLAESTADO_ANO.csv
+        nome_arquivo = f"{estado.upper()}_{ano}.csv"
+        caminho_arquivo = os.path.join(upload_folder, nome_arquivo)
+
+        # Salvar o arquivo
+        arquivo.save(caminho_arquivo)
+
+        return jsonify({
+            'mensagem': 'Arquivo enviado com sucesso!',
+            'arquivo': nome_arquivo,
+            'caminho': caminho_arquivo
+        }), 200
+
+    except Exception as e:
+        return jsonify({'erro': f'Erro interno do servidor: {str(e)}'}), 500
