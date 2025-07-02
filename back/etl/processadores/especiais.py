@@ -14,11 +14,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from core.categorizador import mapear_categoria_padronizada, limpar_caracteres_especiais
 
 
-def processar_rondonia_csv_reader(arquivo, nome_banco, nome_tabela):
+def processar_rondonia_csv_reader(arquivo, nome_banco, nome_tabela, ano=2024):
     """
     Processa especificamente o CSV de Rondônia usando csv.reader para evitar problemas de parsing.
     """
-    print(f"  🔧 Processamento especial para Rondônia usando csv.reader")
+    print(f"  🔧 Processamento especial para Rondônia usando csv.reader (ano: {ano})")
     
     try:
         dados_processados = []
@@ -76,8 +76,8 @@ def processar_rondonia_csv_reader(arquivo, nome_banco, nome_tabela):
                         # Categorizar
                         categoria = mapear_categoria_padronizada(secretaria)
                         
-                        # Criar registro
-                        data = datetime(2024, 1, 1).date()
+                        # Criar registro com ano correto
+                        data = datetime(ano, 1, 1).date()
                         
                         dados_processados.append({
                             'estado': 'RO',
@@ -115,11 +115,11 @@ def processar_rondonia_csv_reader(arquivo, nome_banco, nome_tabela):
         return 0
 
 
-def processar_rs_csv_reader(arquivo, nome_banco, nome_tabela):
+def processar_rs_csv_reader(arquivo, nome_banco, nome_tabela, ano=2024):
     """
-    Processa especificamente o CSV do Rio Grande do Sul filtrando apenas dados de 2024.
+    Processa especificamente o CSV do Rio Grande do Sul filtrando dados do ano especificado.
     """
-    print(f"  🔧 Processamento especial para RS filtrando ano 2024")
+    print(f"  🔧 Processamento especial para RS filtrando ano {ano}")
     
     try:
         dados_processados = []
@@ -144,7 +144,7 @@ def processar_rs_csv_reader(arquivo, nome_banco, nome_tabela):
             print(f"    - Fase Gasto (índice {idx_fase})")
             
             contador_total = 0
-            contador_2024 = 0
+            contador_ano = 0
             contador_empenhado = 0
             contador_pago = 0
             linhas_processadas = 0
@@ -160,11 +160,11 @@ def processar_rs_csv_reader(arquivo, nome_banco, nome_tabela):
                     valor_str = linha[idx_valor] if idx_valor < len(linha) else '0'
                     fase_gasto = linha[idx_fase] if idx_fase < len(linha) else ''
                     
-                    # Filtrar apenas 2024
-                    if ano != '2024':
+                    # Filtrar apenas o ano especificado
+                    if ano != str(ano):
                         continue
                     
-                    contador_2024 += 1
+                    contador_ano += 1
                     
                     # Limpar órgão
                     orgao_limpo = limpar_caracteres_especiais(orgao)
@@ -195,8 +195,8 @@ def processar_rs_csv_reader(arquivo, nome_banco, nome_tabela):
                         # Categorizar
                         categoria = mapear_categoria_padronizada(orgao_limpo)
                         
-                        # Criar registro
-                        data = datetime(2024, 1, 1).date()
+                        # Criar registro com ano correto
+                        data = datetime(ano, 1, 1).date()
                         
                         dados_processados.append({
                             'estado': 'RS',
@@ -213,7 +213,7 @@ def processar_rs_csv_reader(arquivo, nome_banco, nome_tabela):
             print(f"  📊 Estatísticas de processamento:")
             print(f"    - Total de linhas processadas: {linhas_processadas}")
             print(f"    - Registros totais no arquivo: {contador_total}")
-            print(f"    - Registros de 2024: {contador_2024}")
+            print(f"    - Registros do ano {ano}: {contador_ano}")
             print(f"    - Registros empenhados: {contador_empenhado}")
             print(f"    - Registros pagos: {contador_pago}")
             print(f"    - Registros válidos para inserção: {len(dados_processados)}")

@@ -187,6 +187,14 @@ def upload_file():
         if not arquivo.filename.lower().endswith('.csv'):
             return jsonify({'erro': 'Apenas arquivos CSV são aceitos.'}), 400
 
+        # Validar ano
+        try:
+            ano_int = int(ano)
+            if ano_int < 2020 or ano_int > 2025:
+                return jsonify({'erro': 'Ano deve estar entre 2020 e 2025.'}), 400
+        except ValueError:
+            return jsonify({'erro': 'Ano deve ser um número válido.'}), 400
+
         # Definir o caminho da pasta csvs
         basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
         upload_folder = os.path.join(basedir, 'csvs')
@@ -201,11 +209,53 @@ def upload_file():
         # Salvar o arquivo
         arquivo.save(caminho_arquivo)
 
-        return jsonify({
-            'mensagem': 'Arquivo enviado com sucesso!',
-            'arquivo': nome_arquivo,
-            'caminho': caminho_arquivo
-        }), 200
+        # Processar o arquivo automaticamente com ETL
+        try:
+            import sys
+            etl_path = os.path.join(basedir, 'etl')
+            if etl_path not in sys.path:
+                sys.path.append(etl_path)
+            
+            from etl.run_etl import processar_novo_arquivo
+            
+            print(f"🚀 Iniciando processamento ETL para {estado.upper()}_{ano}.csv")
+            sucesso_etl = processar_novo_arquivo(estado.upper(), ano_int)
+            
+            if sucesso_etl:
+                # Deletar o arquivo CSV após processamento bem-sucedido
+                try:
+                    os.remove(caminho_arquivo)
+                    print(f"🗑️ Arquivo {nome_arquivo} deletado após processamento bem-sucedido")
+                    arquivo_deletado = True
+                except Exception as delete_error:
+                    print(f"⚠️ Erro ao deletar arquivo {nome_arquivo}: {delete_error}")
+                    arquivo_deletado = False
+                
+                return jsonify({
+                    'mensagem': 'Arquivo enviado, processado com sucesso e removido!',
+                    'arquivo': nome_arquivo,
+                    'etl_processado': True,
+                    'arquivo_deletado': arquivo_deletado
+                }), 200
+            else:
+                return jsonify({
+                    'mensagem': 'Arquivo enviado, mas houve erro no processamento ETL.',
+                    'arquivo': nome_arquivo,
+                    'caminho': caminho_arquivo,
+                    'etl_processado': False,
+                    'aviso': 'Os dados podem não estar disponíveis no dashboard. Arquivo mantido para depuração.'
+                }), 200
+                
+        except Exception as etl_error:
+            print(f"❌ Erro no processamento ETL: {etl_error}")
+            return jsonify({
+                'mensagem': 'Arquivo enviado, mas houve erro no processamento ETL.',
+                'arquivo': nome_arquivo,
+                'caminho': caminho_arquivo,
+                'etl_processado': False,
+                'erro_etl': str(etl_error),
+                'aviso': 'Os dados podem não estar disponíveis no dashboard.'
+            }), 200
 
     except Exception as e:
         return jsonify({'erro': f'Erro interno do servidor: {str(e)}'}), 500
