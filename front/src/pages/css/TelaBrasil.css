@@ -65,8 +65,6 @@ a {
     /* Garante que padding não aumente a largura */
 }
 
-/* * Busca de estados*/
-/* Corrigindo nome da classe (era .buscaEstado com minúscula) */
 .BuscaEstado {
     display: flex;
     justify-content: center;
@@ -95,9 +93,6 @@ a {
     border-color: #5b228d;
     box-shadow: 0 0 0 3px rgba(91, 34, 141, 0.1);
 }
-
-
-/* Container de sugestões */
 .sugestoes-container {
     position: absolute;
     top: 70%;
@@ -140,6 +135,36 @@ a {
     border-radius: 20px;
 }
 
+/* * Busca de estados*/
+/* Corrigindo nome da classe (era .buscaEstado com minúscula) */
+.BuscaEstado {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    flex-wrap: wrap;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+}
+
+.busca-input {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 16px;
+    width: 300px;
+    max-width: 90%;
+    color: #333;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+}
+
+.busca-input:focus {
+    border-color: #5b228d;
+    box-shadow: 0 0 0 3px rgba(91, 34, 141, 0.1);
+}
 
 
 .mapaBrasil {
@@ -290,7 +315,7 @@ a {
 
 .grafico-Comparacao {
     flex: 3;
-    height: 600px;
+    height: 850px;
     padding: 1rem;
     border: 1px solid #ddd;
     border-radius: 16px;

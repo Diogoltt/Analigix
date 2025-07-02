@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './css/TelaBrasil.css';
 
 // Imports de SVGs e Utilitários de ambas as versões
@@ -43,11 +43,10 @@ export default function TelaBrasil() {
     const inputRefB = useRef(null);
     const [mostrarComparacao, setMostrarComparacao] = useState(false);
     const [ufsComparadas, setUfsComparadas] = useState([]);
-
-    // Estados para insights
     const [insightTexto, setInsightTexto] = useState('');
     const [insightCarregando, setInsightCarregando] = useState(false);
     const [mostrarTypewriter, setMostrarTypewriter] = useState(false);
+    const [categoriasSelecionadas, setCategoriasSelecionadas] = useState([]);
 
     useEffect(() => {
         const fetchInitialData = async () => {
@@ -139,12 +138,11 @@ export default function TelaBrasil() {
     };
 
     const handleComparar = (ufA, ufB) => {
-        setUfsComparadas([ufA, ufB]);
         setMostrarComparacao(true);
         // Reset insight quando nova comparação é feita
         setInsightTexto('');
         setMostrarTypewriter(false);
-        setInsightCarregando(true);
+        setInsightCarregando(false);
     };
 
     const handleInsightGenerated = (insightText, isLoading) => {
@@ -155,11 +153,75 @@ export default function TelaBrasil() {
         }
     };
 
+    const gerarInsight = async () => {
+        if (!mostrarComparacao) return;
+
+        setInsightCarregando(true);
+        setInsightTexto('');
+        setMostrarTypewriter(false);
+
+        try {
+            // Construir URL com categorias selecionadas se disponíveis
+            let url = `http://127.0.0.1:5000/api/insight-comparacao?ufA=${ESTADOS_BR[estadoA]}&ufB=${ESTADOS_BR[estadoB]}&ano=${anoSelecionado}`;
+
+            if (categoriasSelecionadas.length > 0) {
+                url += `&categorias=${categoriasSelecionadas.join(',')}`;
+            }
+
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error('Erro ao gerar insight');
+            }
+
+            const data = await response.json();
+
+            if (data.insight) {
+                handleInsightGenerated(data.insight, false);
+            } else {
+                // Fallback para insight genérico se não houver dados
+                const insight = `Comparação entre ${estadoA} e ${estadoB}: Análise dos dados de ${anoSelecionado} mostra padrões distintos de investimento público. Os estados apresentam diferentes estratégias de alocação de recursos, refletindo suas prioridades regionais e necessidades específicas.`;
+                handleInsightGenerated(insight, false);
+            }
+        } catch (error) {
+            console.error('Erro ao gerar insight:', error);
+            // Fallback em caso de erro
+            const insight = `Comparação entre ${estadoA} e ${estadoB}: Não foi possível acessar dados detalhados no momento. Recomenda-se verificar a conectividade e tentar novamente para uma análise mais precisa dos padrões de investimento.`;
+            handleInsightGenerated(insight, false);
+        }
+    };
+
+    const handleCategoriasChange = useCallback((novasCategorias) => {
+        setCategoriasSelecionadas(novasCategorias);
+    }, []);
 
     return (
         <div>
             <nav className="navbar">
                 <a href="/analigix"><LogoAnaligixAzul width="200px" height="80px" /></a>
+                <div className="filtro-ano">
+                    <label htmlFor="seletor-ano" style={{ color: 'white', marginRight: '10px' }}>Ano:</label>
+                    <select
+                        id="seletor-ano"
+                        value={anoSelecionado}
+                        onChange={(e) => setAnoSelecionado(parseInt(e.target.value))}
+                        style={{
+                            padding: '5px 10px',
+                            borderRadius: '5px',
+                            border: '1px solid #0EC0D1',
+                            backgroundColor: 'white',
+                            color: '#2C006A',
+                            fontSize: '16px',
+                            fontWeight: 'bold'
+                        }}
+                    >
+                        <option value={2024}>2024</option>
+                        <option value={2023}>2023</option>
+                        <option value={2022}>2022</option>
+                        <option value={2021}>2021</option>
+                        <option value={2020}>2020</option>
+                    </select>
+                </div>
                 <a href="/Portais-da-Transparencia" style={{ color: "white", font: "" }}>Portais da Transparência</a>
             </nav>
             <div className="BuscaEstado">
@@ -252,6 +314,29 @@ export default function TelaBrasil() {
                     </div>
                 </div>
             </div>
+            <div className="container-cards">
+                <div className="card">
+                    <Moradia width="80px" height="80px" />
+                    <p>
+                        O estado campeão de investimentos, <strong>{loading ? '...' : topStateInfo.uf}</strong>,
+                        destaca-se pelos gastos na área de <strong>{loading ? '...' : topStateInfo.categoria}</strong>.
+                    </p>
+                </div>
+                <div className="card">
+                    <Educacao width="80px" height="80px" />
+                    <p>
+                        O <strong>estado X </strong> recebeu <strong>X </strong> para a área
+                        da educação
+                    </p>
+                </div>
+                <div className="card">
+                    <Saude width="80px" height="80px" />
+                    <p>
+                        O <strong>estado X </strong> disponibilizou <strong>X </strong> para
+                        a saúde
+                    </p>
+                </div>
+            </div>
             <div className="container-comparacao">
                 <div className="titulo-comparacao">
                     <h1 style={{ color: "#2C006A" }}>Comparação entre estados</h1>
@@ -330,6 +415,7 @@ export default function TelaBrasil() {
                                 ufB={ESTADOS_BR[estadoB]}
                                 ano={anoSelecionado}
                                 onInsightGenerated={handleInsightGenerated}
+                                onCategoriasChange={handleCategoriasChange}
                             />
                         </div>
                         <div className="insights">
@@ -344,26 +430,64 @@ export default function TelaBrasil() {
                                     Analisando dados e gerando insights...
                                 </div>
                             ) : insightTexto ? (
-                                <p className="insights-content">
-                                    {mostrarTypewriter ? (
-                                        <TypewriterText
-                                            text={insightTexto}
-                                            speed={30}
-                                            onComplete={() => console.log('Typewriter finalizado')}
-                                        />
-                                    ) : (
-                                        insightTexto
-                                    )}
-                                </p>
+                                <div>
+                                    <p className="insights-content">
+                                        {mostrarTypewriter ? (
+                                            <TypewriterText
+                                                text={insightTexto}
+                                                speed={30}
+                                                onComplete={() => console.log('Typewriter finalizado')}
+                                            />
+                                        ) : (
+                                            insightTexto
+                                        )}
+                                    </p>
+                                    <button
+                                        onClick={gerarInsight}
+                                        className="btn-gerar-insight"
+                                        style={{
+                                            marginTop: '15px',
+                                            padding: '8px 16px',
+                                            backgroundColor: '#5B228D',
+                                            color: '#fff',
+                                            border: 'none',
+                                            borderRadius: '6px',
+                                            cursor: 'pointer',
+                                            fontSize: '0.9rem',
+                                            fontWeight: 'bold'
+                                        }}
+                                    >
+                                        🔄 Gerar Novo Insight
+                                    </button>
+                                </div>
                             ) : (
-                                <p className="insights-content">
-                                    Selecione dois estados para ver a análise comparativa.
-                                </p>
+                                <div>
+                                    <p className="insights-content">
+                                        Clique no botão abaixo para gerar uma análise comparativa baseada nas categorias atualmente selecionadas no gráfico.
+                                    </p>
+                                    <button
+                                        onClick={gerarInsight}
+                                        className="btn-gerar-insight"
+                                        style={{
+                                            marginTop: '15px',
+                                            padding: '8px 16px',
+                                            backgroundColor: '#5B228D',
+                                            color: '#fff',
+                                            border: 'none',
+                                            borderRadius: '6px',
+                                            cursor: 'pointer',
+                                            fontSize: '0.9rem',
+                                            fontWeight: 'bold'
+                                        }}
+                                    >
+                                        🧠 Gerar Insight
+                                    </button>
+                                </div>
                             )}
                         </div>
                     </div>
                 )}
             </div>
-        </div >
+        </div>
     );
 }

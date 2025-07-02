@@ -3,6 +3,16 @@ from flask import jsonify, request
 import sqlite3
 import pandas as pd
 import os
+from dotenv import load_dotenv
+from openai import OpenAI
+
+# Carregar variáveis de ambiente
+load_dotenv()
+
+# Configurar cliente OpenAI
+client = OpenAI(
+    api_key=os.getenv('OPENAI_API_KEY')
+)
 
 def construir_clausula_where(filtros):
     where_conditions = []
@@ -312,3 +322,165 @@ def upload_file():
 
     except Exception as e:
         return jsonify({'erro': f'Erro interno do servidor: {str(e)}'}), 500
+
+@app.route('/api/insight-comparacao', methods=['GET'])
+def get_insight_comparacao():
+    try:
+        uf_a = request.args.get('ufA')
+        uf_b = request.args.get('ufB')
+        ano = request.args.get('ano', 2024)
+        categorias = request.args.get('categorias', '').split(',') if request.args.get('categorias') else []
+        
+        if not uf_a or not uf_b:
+            return jsonify({'erro': 'UFs são obrigatórias'}), 400
+            
+        db_path = app.config['DATABASE_PATH']
+        conn = sqlite3.connect(db_path)
+        
+        # Se categorias específicas foram fornecidas, filtrar por elas
+        categoria_filter = ""
+        if categorias and categorias[0]:  # Verifica se há categorias e não está vazio
+            categoria_placeholders = ','.join(['?' for _ in categorias])
+            categoria_filter = f" AND categoria_padronizada IN ({categoria_placeholders})"
+        
+        # Query para buscar dados dos dois estados
+        query = f"""
+        SELECT 
+            estado,
+            categoria_padronizada,
+            SUM(valor) as total_gasto,
+            COUNT(*) as num_despesas,
+            AVG(valor) as gasto_medio
+        FROM despesas 
+        WHERE estado IN (?, ?) 
+        AND strftime('%Y', data) = ?
+        AND categoria_padronizada != 'Outros'
+        {categoria_filter}
+        GROUP BY estado, categoria_padronizada
+        ORDER BY estado, total_gasto DESC
+        """
+        
+        params = [uf_a.upper(), uf_b.upper(), str(ano)]
+        if categorias and categorias[0]:
+            params.extend(categorias)
+            
+        df = pd.read_sql_query(query, conn, params=params)
+        conn.close()
+        
+        if df.empty:
+            return jsonify({
+                'insight': f'Não foram encontrados dados suficientes para comparar {uf_a} e {uf_b} no ano de {ano}.'
+            })
+        
+        # Análise dos dados
+        dados_a = df[df['estado'] == uf_a.upper()]
+        dados_b = df[df['estado'] == uf_b.upper()]
+        
+        total_a = dados_a['total_gasto'].sum()
+        total_b = dados_b['total_gasto'].sum()
+        
+        # Categoria com maior investimento em cada estado
+        top_categoria_a = dados_a.iloc[0] if len(dados_a) > 0 else None
+        top_categoria_b = dados_b.iloc[0] if len(dados_b) > 0 else None
+        
+        # Análise de diversificação
+        num_categorias_a = len(dados_a)
+        num_categorias_b = len(dados_b)
+        
+        # Gerar insight usando GPT-4
+        try:
+            # Preparar dados para o prompt
+            categorias_texto = ', '.join(categorias) if categorias and categorias[0] else 'todas as categorias'
+            
+            # Formatar valores para o prompt
+            total_a_formatado = f"R$ {total_a:,.2f}".replace(',', '.')
+            total_b_formatado = f"R$ {total_b:,.2f}".replace(',', '.')
+            
+            # Criar prompt estruturado para GPT-4
+            prompt = f"""
+Você é um analista especialista em políticas públicas e orçamento governamental brasileiro. 
+
+Analise os dados de investimento público de {ano} e gere um insight profissional e objetivo sobre a comparação entre os estados.
+
+DADOS DA COMPARAÇÃO:
+- Estado A: {uf_a}
+- Estado B: {uf_b}
+- Ano: {ano}
+- Categorias analisadas: {categorias_texto}
+
+VALORES INVESTIDOS:
+- {uf_a}: {total_a_formatado} (em {num_categorias_a} categorias)
+- {uf_b}: {total_b_formatado} (em {num_categorias_b} categorias)
+
+PRINCIPAIS FOCOS:
+- Principal categoria {uf_a}: {top_categoria_a['categoria_padronizada'] if top_categoria_a is not None else 'N/A'}
+- Principal categoria {uf_b}: {top_categoria_b['categoria_padronizada'] if top_categoria_b is not None else 'N/A'}
+
+INSTRUÇÕES:
+1. Gere um insight de 2-3 frases, máximo 150 palavras
+2. Seja específico com percentuais e valores quando relevante
+3. Mencione diferenças estratégicas entre os estados
+4. Use linguagem técnica mas acessível
+5. Foque nas categorias que estão sendo visualizadas no gráfico
+6. Não use bullet points, apenas texto corrido
+
+Insight:"""
+
+            # Fazer chamada para GPT-4
+            print(f"🤖 Tentando gerar insight com GPT-4 para {uf_a} vs {uf_b}...")
+            response = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {
+                        "role": "system", 
+                        "content": "Você é um analista experiente em políticas públicas brasileiras, especializado em análise orçamentária e comparações interestaduais. Suas análises são sempre objetivas, baseadas em dados e contextualmente relevantes."
+                    },
+                    {
+                        "role": "user", 
+                        "content": prompt
+                    }
+                ],
+                max_tokens=200,
+                temperature=0.7
+            )
+            
+            insight_final = response.choices[0].message.content.strip()
+            print(f"✅ Insight gerado com sucesso pela IA: {insight_final[:50]}...")
+            
+        except Exception as e:
+            print(f"❌ Erro ao gerar insight com GPT-4: {str(e)}")
+            print(f"🔄 Usando fallback baseado em dados...")
+            # Fallback para análise baseada em dados se GPT-4 falhar
+            insight_parts = []
+            
+            if total_a > total_b:
+                diferenca_pct = ((total_a - total_b) / total_b) * 100
+                insight_parts.append(f"{uf_a} investiu {diferenca_pct:.1f}% mais que {uf_b} nas categorias analisadas.")
+            elif total_b > total_a:
+                diferenca_pct = ((total_b - total_a) / total_a) * 100
+                insight_parts.append(f"{uf_b} investiu {diferenca_pct:.1f}% mais que {uf_a} nas categorias analisadas.")
+            else:
+                insight_parts.append(f"{uf_a} e {uf_b} tiveram investimentos similares nas categorias analisadas.")
+            
+            if top_categoria_a is not None and top_categoria_b is not None:
+                if top_categoria_a['categoria_padronizada'] == top_categoria_b['categoria_padronizada']:
+                    insight_parts.append(f"Ambos os estados priorizaram '{top_categoria_a['categoria_padronizada']}' como principal área de investimento.")
+                else:
+                    insight_parts.append(f"{uf_a} focou principalmente em '{top_categoria_a['categoria_padronizada']}', enquanto {uf_b} priorizou '{top_categoria_b['categoria_padronizada']}'.")
+            
+            insight_final = " ".join(insight_parts)
+        
+        return jsonify({
+            'insight': insight_final,
+            'dados_comparacao': {
+                'total_a': float(total_a),
+                'total_b': float(total_b),
+                'categorias_a': num_categorias_a,
+                'categorias_b': num_categorias_b,
+                'top_categoria_a': top_categoria_a['categoria_padronizada'] if top_categoria_a is not None else None,
+                'top_categoria_b': top_categoria_b['categoria_padronizada'] if top_categoria_b is not None else None
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({'erro': f'Erro ao gerar insight: {str(e)}'}), 500

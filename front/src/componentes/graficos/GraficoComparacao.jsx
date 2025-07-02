@@ -27,55 +27,20 @@ const formatarLabelCondicional = (valor) => {
     return "";
 };
 
-const CATEGORIAS_DE_INTERESSE = [
-    'Educação',
-    'Saúde',
-    'Tecnologia da Informação e Inovação',
-    'Segurança Pública',
-    'Infraestrutura e Transporte',
-    'Administração e Gestão Pública',
-    'Fazenda e Finanças',
-    'Meio Ambiente'
-];
-
-// Função para selecionar categorias dinamicamente baseado nos dados
-const selecionarCategoriasDinamicas = (dataA, dataB, maxCategorias = 6) => {
-    // Combinar todos os dados e ordenar por maior valor total
-    const todasCategorias = new Map();
-    
-    [...dataA, ...dataB].forEach(item => {
-        const categoria = item.categoria_padronizada;
-        const valor = item.total_gasto || 0;
-        if (categoria && categoria !== 'Outros') {
-            if (todasCategorias.has(categoria)) {
-                todasCategorias.set(categoria, todasCategorias.get(categoria) + valor);
-            } else {
-                todasCategorias.set(categoria, valor);
-            }
-        }
-    });
-    
-    // Retornar as top categorias ordenadas por valor
-    return Array.from(todasCategorias.entries())
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, maxCategorias)
-        .map(([categoria, _]) => categoria);
-};
-
 // Função para calcular métricas interessantes da comparação
 const calcularMetricas = (data, ufA, ufB) => {
     let totalA = 0, totalB = 0;
     let maiorDiferenca = { categoria: '', valor: 0, favorito: '' };
     let categoriaLiderA = { categoria: '', valor: 0 };
     let categoriaLiderB = { categoria: '', valor: 0 };
-    
+
     data.forEach(item => {
         const valorA = item[ufA] || 0;
         const valorB = item[ufB] || 0;
-        
+
         totalA += valorA;
         totalB += valorB;
-        
+
         // Encontrar maior diferença absoluta
         const diferenca = Math.abs(valorA - valorB);
         if (diferenca > maiorDiferenca.valor) {
@@ -85,7 +50,7 @@ const calcularMetricas = (data, ufA, ufB) => {
                 favorito: valorA > valorB ? ufA : ufB
             };
         }
-        
+
         // Encontrar categoria onde cada estado mais investe
         if (valorA > categoriaLiderA.valor) {
             categoriaLiderA = { categoria: item.categoria, valor: valorA };
@@ -94,10 +59,10 @@ const calcularMetricas = (data, ufA, ufB) => {
             categoriaLiderB = { categoria: item.categoria, valor: valorB };
         }
     });
-    
-    const percentualSuperioridade = totalB > 0 ? 
+
+    const percentualSuperioridade = totalB > 0 ?
         ((Math.max(totalA, totalB) - Math.min(totalA, totalB)) / Math.min(totalA, totalB) * 100) : 0;
-    
+
     return {
         totalA,
         totalB,
@@ -108,12 +73,12 @@ const calcularMetricas = (data, ufA, ufB) => {
     };
 };
 
-export default function GraficoComparacao({ ufA, ufB, ano = 2024, onInsightGenerated }) {
+export default function GraficoComparacao({ ufA, ufB, ano = 2024, onInsightGenerated, onCategoriasChange }) {
     const [chartData, setChartData] = useState([]);
+    const [dadosCompletos, setDadosCompletos] = useState([]);
+    const [categoriasSelecionadas, setCategoriasSelecionadas] = useState(new Set());
     const [loading, setLoading] = useState(true);
-    const [insight, setInsight] = useState('');
-    const [loadingInsight, setLoadingInsight] = useState(false);
-    
+
     // Novos estados para métricas interessantes
     const [metricas, setMetricas] = useState({
         totalA: 0,
@@ -147,24 +112,41 @@ export default function GraficoComparacao({ ufA, ufB, ano = 2024, onInsightGener
                 const dataA = resultA.dados || [];
                 const dataB = resultB.dados || [];
 
-                // Selecionar categorias dinamicamente baseado nos dados
-                const categoriasDinamicas = selecionarCategoriasDinamicas(dataA, dataB, 8);
-                
+                // Buscar TODAS as categorias disponíveis (combinando ambos os estados)
+                const todasCategorias = new Map();
+
+                [...dataA, ...dataB].forEach(item => {
+                    const categoria = item.categoria_padronizada;
+                    const valor = item.total_gasto || 0;
+                    if (categoria && categoria !== 'Outros') {
+                        if (todasCategorias.has(categoria)) {
+                            todasCategorias.set(categoria, todasCategorias.get(categoria) + valor);
+                        } else {
+                            todasCategorias.set(categoria, valor);
+                        }
+                    }
+                });
+
+                // Criar array com todas as categorias ordenadas por valor total
+                const categoriasOrdenadas = Array.from(todasCategorias.entries())
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([categoria, _]) => categoria);
+
                 const mergedDataMap = {};
 
-                // Usar categorias dinâmicas em vez de fixas
-                categoriasDinamicas.forEach(cat => {
+                // Criar estrutura para TODAS as categorias (não apenas as top 8)
+                categoriasOrdenadas.forEach(cat => {
                     mergedDataMap[cat] = { categoria: cat, [ufA]: 0, [ufB]: 0 };
                 });
 
                 dataA.forEach(item => {
-                    if (categoriasDinamicas.includes(item.categoria_padronizada)) {
+                    if (item.categoria_padronizada && mergedDataMap[item.categoria_padronizada]) {
                         mergedDataMap[item.categoria_padronizada][ufA] = item.total_gasto;
                     }
                 });
 
                 dataB.forEach(item => {
-                    if (categoriasDinamicas.includes(item.categoria_padronizada)) {
+                    if (item.categoria_padronizada && mergedDataMap[item.categoria_padronizada]) {
                         mergedDataMap[item.categoria_padronizada][ufB] = item.total_gasto;
                     }
                 });
@@ -175,16 +157,10 @@ export default function GraficoComparacao({ ufA, ufB, ano = 2024, onInsightGener
                     return totalB - totalA;
                 });
 
-                // Calcular métricas interessantes
-                const novasMetricas = calcularMetricas(finalData, ufA, ufB);
-                setMetricas(novasMetricas);
-
-                setChartData(finalData);
-                
-                // Gerar insight automaticamente após carregar os dados
-                if (finalData.length > 0) {
-                    await gerarInsightIA(finalData, ufA, ufB);
-                }
+                // Salvar dados completos e selecionar as top 8 categorias inicialmente
+                setDadosCompletos(finalData);
+                const topCategorias = finalData.slice(0, 8).map(item => item.categoria);
+                setCategoriasSelecionadas(new Set(topCategorias));
 
             } catch (error) {
                 console.error("Erro ao buscar dados para o gráfico de comparação:", error);
@@ -197,135 +173,41 @@ export default function GraficoComparacao({ ufA, ufB, ano = 2024, onInsightGener
         fetchDataForComparison();
     }, [ufA, ufB, ano]);
 
+    // Filtrar dados baseado nas categorias selecionadas
+    useEffect(() => {
+        const dadosFiltrados = dadosCompletos.filter(item =>
+            categoriasSelecionadas.has(item.categoria)
+        );
+        setChartData(dadosFiltrados);
+
+        // Atualizar métricas baseado nos dados visualizados
+        if (dadosFiltrados.length > 0) {
+            const novasMetricas = calcularMetricas(dadosFiltrados, ufA, ufB);
+            setMetricas(novasMetricas);
+        }
+    }, [dadosCompletos, categoriasSelecionadas, ufA, ufB]);
+
+    // Comunicar categorias selecionadas para o componente pai
+    useEffect(() => {
+        if (onCategoriasChange && categoriasSelecionadas.size > 0) {
+            onCategoriasChange(Array.from(categoriasSelecionadas));
+        }
+    }, [categoriasSelecionadas, onCategoriasChange]);
+
+    const alternarCategoria = (nomeCategoria) => {
+        const novaSelecao = new Set(categoriasSelecionadas);
+
+        if (novaSelecao.has(nomeCategoria)) {
+            novaSelecao.delete(nomeCategoria);
+        } else if (novaSelecao.size < 8) {
+            novaSelecao.add(nomeCategoria);
+        }
+
+        setCategoriasSelecionadas(novaSelecao);
+    };
+
     const nomeEstadoA = buscarEstado(ufA)?.nome || ufA;
     const nomeEstadoB = buscarEstado(ufB)?.nome || ufB;
-
-    const gerarInsightIA = async (dadosGrafico, estadoA, estadoB) => {
-    try {
-        setLoadingInsight(true);
-        
-        // Se não houver API key, usar versão local
-        if (!process.env.REACT_APP_OPENAI_API_KEY || process.env.REACT_APP_OPENAI_API_KEY === 'sua_api_key_aqui') {
-            const insightLocal = gerarInsightLocal(dadosGrafico, estadoA, estadoB);
-            setInsight(insightLocal);
-            if (onInsightGenerated) {
-                onInsightGenerated(insightLocal, false);
-            }
-            return;
-        }
-        
-        // Notificar que está carregando
-        if (onInsightGenerated) {
-            onInsightGenerated('', true); // true = está carregando
-        }
-        
-        // Preparar dados para a IA
-            const dadosFormatados = dadosGrafico.map(item => ({
-                categoria: item.categoria,
-                [estadoA]: formatarValorCompleto(item[estadoA]),
-                [estadoB]: formatarValorCompleto(item[estadoB]),
-                diferenca: item[estadoA] - item[estadoB],
-                diferencaPercentual: item[estadoB] > 0 ? ((item[estadoA] - item[estadoB]) / item[estadoB] * 100).toFixed(1) : 'N/A'
-            }));
-
-            const prompt = `
-Analise os dados de investimento público entre ${buscarEstado(estadoA)?.nome || estadoA} e ${buscarEstado(estadoB)?.nome || estadoB} nas seguintes categorias:
-
-${dadosFormatados.map(item => 
-    `• ${item.categoria}: ${estadoA} ${item[estadoA]} vs ${estadoB} ${item[estadoB]} (diferença: ${item.diferencaPercentual !== 'N/A' ? item.diferencaPercentual + '%' : 'N/A'})`
-).join('\n')}
-
-Gere um insight de análise comparativa de no máximo 150 palavras, focando em:
-1. Principais diferenças de investimento
-2. Áreas onde cada estado se destaca
-3. Possíveis implicações ou tendências
-4. Conclusão prática
-
-Use linguagem clara e profissional, sem jargões técnicos.`;
-
-            const response = await fetch('https://api.openai.com/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}` // Você precisará adicionar sua API key aqui
-                },
-                body: JSON.stringify({
-                    model: 'gpt-4.1-nano',
-                    messages: [
-                        {
-                            role: 'system',
-                            content: 'Você é um analista especializado em finanças públicas e políticas governamentais. Gere insights claros e práticos sobre investimentos estaduais.'
-                        },
-                        {
-                            role: 'user',
-                            content: prompt
-                        }
-                    ],
-                    max_tokens: 300,
-                    temperature: 0.7
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error('Erro na API da OpenAI');
-            }
-
-            const data = await response.json();
-            const insightGerado = data.choices[0]?.message?.content || 'Não foi possível gerar um insight para esta comparação.';
-            
-            setInsight(insightGerado);
-        
-        // Notificar o componente pai sobre o insight gerado
-        if (onInsightGenerated) {
-            onInsightGenerated(insightGerado, false); // false = não está carregando
-        }
-    } catch (error) {
-        console.error('Erro ao gerar insight:', error);
-        // Em caso de erro, usar versão local como fallback
-        const insightLocal = gerarInsightLocal(dadosGrafico, estadoA, estadoB);
-        setInsight(insightLocal);
-        if (onInsightGenerated) {
-            onInsightGenerated(insightLocal, false);
-        }
-    } finally {
-        setLoadingInsight(false);
-    }
-    };
-
-    // Função alternativa para gerar insights sem IA (para teste)
-    const gerarInsightLocal = (dadosGrafico, estadoA, estadoB) => {
-        const nomeA = buscarEstado(estadoA)?.nome || estadoA;
-        const nomeB = buscarEstado(estadoB)?.nome || estadoB;
-        
-        let maiorInvestidorGeral = estadoA;
-        let somaA = 0, somaB = 0;
-        
-        dadosGrafico.forEach(item => {
-            somaA += item[estadoA] || 0;
-            somaB += item[estadoB] || 0;
-        });
-        
-        if (somaB > somaA) {
-            maiorInvestidorGeral = estadoB;
-        }
-        
-        // Encontrar categoria com maior diferença
-        let maiorDiferenca = { categoria: '', diferenca: 0, favorito: '' };
-        dadosGrafico.forEach(item => {
-            const diff = Math.abs((item[estadoA] || 0) - (item[estadoB] || 0));
-            if (diff > maiorDiferenca.diferenca) {
-                maiorDiferenca = {
-                    categoria: item.categoria,
-                    diferenca: diff,
-                    favorito: (item[estadoA] || 0) > (item[estadoB] || 0) ? estadoA : estadoB
-                };
-            }
-        });
-        
-        const insight = `Comparando os investimentos entre ${nomeA} e ${nomeB}, observa-se que ${buscarEstado(maiorInvestidorGeral)?.nome || maiorInvestidorGeral} possui maior volume total de investimentos nas categorias analisadas. A maior disparidade ocorre em ${maiorDiferenca.categoria}, onde ${buscarEstado(maiorDiferenca.favorito)?.nome || maiorDiferenca.favorito} investiu significativamente mais. Esta análise sugere diferentes prioridades orçamentárias entre os estados, refletindo suas estratégias de desenvolvimento regional.`;
-        
-        return insight;
-    };
 
     return (
         <div style={{ width: "100%", height: "100%" }}>
@@ -334,12 +216,81 @@ Use linguagem clara e profissional, sem jargões técnicos.`;
                 <h2 style={{ textAlign: "center", color: "#5B228D", marginBottom: "1rem" }}>
                     Comparativo: {nomeEstadoA} vs {nomeEstadoB}
                 </h2>
-                
+
+                {/* Seletor de Categorias */}
+                {!loading && dadosCompletos.length > 0 && (
+                    <div style={{
+                        marginBottom: '15px',
+                        padding: '10px',
+                        backgroundColor: '#f8f9fa',
+                        borderRadius: '8px',
+                        border: '1px solid #e9ecef'
+                    }}>
+                        <div style={{
+                            fontSize: '0.9rem',
+                            fontWeight: 'bold',
+                            color: '#5B228D',
+                            marginBottom: '8px'
+                        }}>
+                            Selecionar Categorias para Comparação (máx. 8):
+                        </div>
+                        <div style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: '6px',
+                            maxHeight: '150px',
+                            overflowY: 'auto',
+                            padding: '5px',
+                            border: '1px solid #dee2e6',
+                            borderRadius: '4px',
+                            backgroundColor: '#fff'
+                        }}>
+                            {dadosCompletos.map((item) => (
+                                <label
+                                    key={item.categoria}
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        cursor: 'pointer',
+                                        fontSize: '0.8rem',
+                                        padding: '4px 8px',
+                                        backgroundColor: categoriasSelecionadas.has(item.categoria) ? '#e3f2fd' : '#fff',
+                                        border: '1px solid #ddd',
+                                        borderRadius: '4px',
+                                        transition: 'all 0.2s ease'
+                                    }}
+                                >
+                                    <input
+                                        type="checkbox"
+                                        checked={categoriasSelecionadas.has(item.categoria)}
+                                        onChange={() => alternarCategoria(item.categoria)}
+                                        disabled={!categoriasSelecionadas.has(item.categoria) && categoriasSelecionadas.size >= 8}
+                                        style={{ marginRight: '5px' }}
+                                    />
+                                    <span style={{
+                                        color: categoriasSelecionadas.has(item.categoria) ? '#1976d2' : '#666',
+                                        fontWeight: categoriasSelecionadas.has(item.categoria) ? 'bold' : 'normal'
+                                    }}>
+                                        {item.categoria}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                        <div style={{
+                            fontSize: '0.75rem',
+                            color: '#666',
+                            marginTop: '5px'
+                        }}>
+                            {categoriasSelecionadas.size}/8 categorias selecionadas
+                        </div>
+                    </div>
+                )}
+
                 {/* Painel de métricas rápidas */}
                 {!loading && chartData.length > 0 && (
-                    <div style={{ 
-                        display: "flex", 
-                        justifyContent: "space-around", 
+                    <div style={{
+                        display: "flex",
+                        justifyContent: "space-around",
                         marginBottom: "1rem",
                         padding: "0.8rem",
                         backgroundColor: "#f8f9fa",
@@ -352,14 +303,14 @@ Use linguagem clara e profissional, sem jargões técnicos.`;
                             </div>
                             <div style={{ fontSize: "0.75rem", color: "#666" }}>Total {ufA}</div>
                         </div>
-                        
+
                         <div style={{ textAlign: "center" }}>
                             <div style={{ fontWeight: "bold", color: "#FFCC4D" }}>
                                 {formatarValorCompleto(metricas.totalB)}
                             </div>
                             <div style={{ fontSize: "0.75rem", color: "#666" }}>Total {ufB}</div>
                         </div>
-                        
+
                         {metricas.maiorDiferenca && (
                             <div style={{ textAlign: "center" }}>
                                 <div style={{ fontWeight: "bold", color: "#e74c3c" }}>
@@ -374,22 +325,22 @@ Use linguagem clara e profissional, sem jargões técnicos.`;
                 )}
             </div>
 
-            <ResponsiveContainer width="100%" height={loading || chartData.length === 0 ? 200 : 350}>
+            <ResponsiveContainer width="100%" height={loading || chartData.length === 0 ? 200 : 500}>
                 {loading ? (
-                    <div style={{ 
-                        display: 'flex', 
-                        justifyContent: 'center', 
-                        alignItems: 'center', 
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
                         height: '100%',
                         color: '#666'
                     }}>
                         Carregando dados de comparação...
                     </div>
                 ) : chartData.length === 0 ? (
-                    <div style={{ 
-                        display: 'flex', 
-                        justifyContent: 'center', 
-                        alignItems: 'center', 
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
                         height: '100%',
                         color: '#666',
                         flexDirection: 'column'
@@ -416,18 +367,18 @@ Use linguagem clara e profissional, sem jargões técnicos.`;
                             width={200}
                             tick={{ fontSize: 11 }}
                         />
-                        <Tooltip 
+                        <Tooltip
                             formatter={(value, name) => [
-                                formatarValorCompleto(value), 
+                                formatarValorCompleto(value),
                                 `Investimento ${name.replace('Invest. ', '')}`
                             ]}
                             labelStyle={{ color: '#333', fontSize: '12px' }}
                         />
                         <Legend verticalAlign="top" />
 
-                        <Bar 
-                            dataKey={ufA} 
-                            name={`Invest. ${ufA}`} 
+                        <Bar
+                            dataKey={ufA}
+                            name={`Invest. ${ufA}`}
                             fill="#0EC0D1"
                         >
                             <LabelList
@@ -439,9 +390,9 @@ Use linguagem clara e profissional, sem jargões técnicos.`;
                             />
                         </Bar>
 
-                        <Bar 
-                            dataKey={ufB} 
-                            name={`Invest. ${ufB}`} 
+                        <Bar
+                            dataKey={ufB}
+                            name={`Invest. ${ufB}`}
                             fill="#FFCC4D"
                         >
                             <LabelList
