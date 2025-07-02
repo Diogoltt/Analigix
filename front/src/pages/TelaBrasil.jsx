@@ -16,6 +16,8 @@ import MapaBrasil from '../componentes/mapas/MapaBrasil';
 import GraficoBarras from '../componentes/graficos/GraficoBarras';
 import GraficoComparacao from '../componentes/graficos/GraficoComparacao';
 import RankingNacional from '../componentes/rankings/RankingNacional';
+import TypewriterText from '../componentes/efeitos/TypewriterText';
+import '../componentes/efeitos/TypewriterText.css';
 
 export default function TelaBrasil() {
     const [topAreasNacional, setTopAreasNacional] = useState([]);
@@ -40,6 +42,11 @@ export default function TelaBrasil() {
     const inputRefB = useRef(null);
     const [mostrarComparacao, setMostrarComparacao] = useState(false);
     const [ufsComparadas, setUfsComparadas] = useState([]);
+    
+    // Estados para insights
+    const [insightTexto, setInsightTexto] = useState('');
+    const [insightCarregando, setInsightCarregando] = useState(false);
+    const [mostrarTypewriter, setMostrarTypewriter] = useState(false);
 
     useEffect(() => {
         const fetchInitialData = async () => {
@@ -133,6 +140,18 @@ export default function TelaBrasil() {
     const handleComparar = (ufA, ufB) => {
         setUfsComparadas([ufA, ufB]);
         setMostrarComparacao(true);
+        // Reset insight quando nova comparação é feita
+        setInsightTexto('');
+        setMostrarTypewriter(false);
+        setInsightCarregando(true);
+    };
+
+    const handleInsightGenerated = (insightText, isLoading) => {
+        setInsightCarregando(isLoading);
+        if (!isLoading && insightText) {
+            setInsightTexto(insightText);
+            setMostrarTypewriter(true);
+        }
     };
 
 
@@ -302,10 +321,40 @@ export default function TelaBrasil() {
                 {mostrarComparacao && (
                     <div className="grafico-insights">
                         <div className="grafico-Comparacao">
-                            <GraficoComparacao ufA={ESTADOS_BR[estadoA]} ufB={ESTADOS_BR[estadoB]} />
+                            <GraficoComparacao 
+                                ufA={ESTADOS_BR[estadoA]} 
+                                ufB={ESTADOS_BR[estadoB]} 
+                                onInsightGenerated={handleInsightGenerated}
+                            />
                         </div>
                         <div className="insights">
-                            <h2>Exemplo de insight com base no gráfico de comparação</h2>
+                            <h2>
+                                💡 Insights da Comparação
+                                <span className="insights-badge">Gerado por IA</span>
+                            </h2>
+                            
+                            {insightCarregando ? (
+                                <div className="insights-loading">
+                                    <div className="loading-spinner"></div>
+                                    Analisando dados e gerando insights...
+                                </div>
+                            ) : insightTexto ? (
+                                <p className="insights-content">
+                                    {mostrarTypewriter ? (
+                                        <TypewriterText 
+                                            text={insightTexto} 
+                                            speed={30}
+                                            onComplete={() => console.log('Typewriter finalizado')}
+                                        />
+                                    ) : (
+                                        insightTexto
+                                    )}
+                                </p>
+                            ) : (
+                                <p className="insights-content">
+                                    Selecione dois estados para ver a análise comparativa.
+                                </p>
+                            )}
                         </div>
                     </div>
                 )}
