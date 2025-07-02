@@ -172,6 +172,14 @@ a {
   background-color: #f3eff7;
 }
 
+.upload-box.drag-over .upload-label {
+  border-color: #5B228D;
+  background-color: #e8f4f8;
+  border-style: solid;
+  box-shadow: 0 0 10px rgba(91, 34, 141, 0.3);
+  transform: scale(1.02);
+}
+
 .upload-icone {
   font-size: 32px; 
   margin-bottom: 15px; 
@@ -192,6 +200,43 @@ a {
   color: #5B228D;
   font-weight: 600;
   text-decoration: underline;
+}
+
+.arquivo-selecionado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
+  background-color: #f0f9ff;
+  border: 1px solid #0EC0D1;
+  border-radius: 6px;
+  max-width: 300px;
+}
+
+.botao-cancelar-arquivo {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 10px;
+  transition: background-color 0.2s ease;
+}
+
+.botao-cancelar-arquivo:hover {
+  background-color: #dc2626;
+}
+
+.botao-cancelar-arquivo:active {
+  transform: scale(0.95);
 }
 
 
