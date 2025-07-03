@@ -13,9 +13,18 @@
 }
 
 .mapaBrasil-svg path:hover {
-  fill: #FFD900; /* cor ao passar o mouse */
+  fill: #FFD900;
   cursor: pointer;
 }
 .mapaEstado{
   fill: #b1e23d;
+}
+
+.mapaBrasil-svg path.estado-sem-suporte {
+  fill: #cccccc !important; 
+  cursor: not-allowed; 
+}
+
+.mapaBrasil-svg path.estado-sem-suporte:hover {
+  fill: #999999 !important;
 }
