@@ -1,5 +1,18 @@
 /* TelaBrasil.css */
-
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@font-face {
+  font-family: 'Campton';
+   src: url('../../componentes/fontes/CamptonBlack.otf') format('opentype');
+  font-weight: 900; /* porque é 'Black' */
+  font-style: normal;
+}
+body{
+    font-family: 'Open Sans', sans-serif;
+}
+h1{
+    font-family: 'Campton', sans-serif;
+    font-weight: 600;
+}
 .navbar {
     background-color: #5b228d;
     /* border: 1px solid #5b228d; */
@@ -212,28 +225,7 @@ a {
     overflow-y: auto;
 }
 
-/* * cards informativos*/
-.container-cards {
-    margin-top: 3rem;
-    display: flex;
-    justify-content: center;
-    gap: 20rem;
-}
 
-.card {
-    flex: 1 1 200px;
-    max-width: 250px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    text-align: center;
-    padding: 1rem;
-    border: 1px solid rgb(30, 30, 30, .1);
-    border-radius: 20px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-
-}
 
 /** Grafico de comparação */
 
@@ -251,6 +243,8 @@ a {
 
 .titulo-comparacao {
     text-align: center;
+    font-family: 'Campton', sans-serif;
+    font-weight: 600;
 
 }
 

@@ -7,6 +7,8 @@ import {
     Tooltip,
     Legend
 } from 'recharts';
+import './GraficoPizza.css';
+
 const CORES = [
     '#5B228D', '#0EC0D1', '#FFCC4D', '#e74c3c', '#27ae60',
     '#f39c12', '#9b59b6', '#34495e', '#e67e22', '#1abc9c',

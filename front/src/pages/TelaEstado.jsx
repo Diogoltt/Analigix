@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './css/TelaEstado.css';
 import { ReactComponent as LogoAnaligixAzul } from '../componentes/logo/logoAnaligixAzul.svg';
 import { ReactComponent as AlfineteMapa } from '../componentes/svg/alfinete.svg';
-import { ReactComponent as Filtro } from '../componentes/svg/filtro.svg';
 import BtnVoltar from '../componentes/botoes/BtnVoltarTela.jsx';
 import RankingEstadual from '../componentes/rankings/RankingEstadual.jsx';
 import GraficoPerfil from '../componentes/graficos/GraficoPerfil.jsx';

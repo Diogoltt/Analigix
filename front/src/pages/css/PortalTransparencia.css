@@ -1,10 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@font-face {
+  font-family: 'Campton';
+  src: url('../../componentes/fontes/CamptonBlack.otf') format('opentype');
+  font-weight: 900; /* porque é 'Black' */
+  font-style: normal;
+}
+
 
 .portal-container {
   display: flex;
   flex-direction: row;
   gap: 40px; 
   padding: 20px 40px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   width: 100%;
   box-sizing: border-box;
   
@@ -12,7 +20,7 @@
 }
 .navbar {
     background-color: #5b228d;
-    
+    font-family: 'Open Sans', sans-serif;
     display: flex;
     justify-content: start;
     align-items: center;
@@ -34,6 +42,7 @@ a {
 
 }
 .titulo-coluna {
+  font-family: 'Campton', sans-serif;
   font-size: 22px;
   font-weight: 600;
   margin-top: 0;
