@@ -396,3 +396,86 @@ a {
         transform: rotate(360deg);
     }
 }
+
+/* Estilos para estado vazio de dados */
+.empty-data-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: #666;
+    font-size: 18px;
+    text-align: center;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #f8f9fa;
+    border: 2px dashed #ddd;
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 1rem 0;
+}
+
+.empty-data-icon {
+    font-size: 3rem;
+    opacity: 0.5;
+    margin-bottom: 0.5rem;
+}
+
+.empty-data-message {
+    font-size: 1.1rem;
+    color: #555;
+    margin: 0;
+}
+
+.empty-data-submessage {
+    font-size: 0.9rem;
+    color: #777;
+    margin-top: 0.5rem;
+}
+
+/* Estilos para botões desabilitados */
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed !important;
+    pointer-events: none;
+}
+
+.btn:disabled:hover {
+    background-color: inherit !important;
+    transform: none !important;
+}
+
+/* Loading state melhorado */
+.loading-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #5b228d;
+    font-weight: 500;
+}
+
+.loading-message::before {
+    content: "⏳";
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Melhorias para mensagens de ano sem dados */
+.no-data-year {
+    color: #FF5A1F !important;
+    font-weight: bold;
+}
+
+.data-available-year {
+    color: #0EC0D1 !important;
+    font-weight: bold;
+}
