@@ -1,25 +1,25 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Analigix",
+  "name": "Analigix - Análise inteligente de dados públicos do Brasil",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "analigix_logo_mapa.png",
       "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "type": "image/png"
     },
     {
-      "src": "logo192.png",
+      "src": "analigix_logo_mapa.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "analigix_logo_mapa.png",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#5B228D",
   "background_color": "#ffffff"
 }
