@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../botoes/Botoes.css';
+import './Rankings.css';
 import DetalhesInvestimento from '../modal/DetalhesInvestimento';
 
 const RankingEstadual = ({ items, page, perPage, uf, ano }) => {

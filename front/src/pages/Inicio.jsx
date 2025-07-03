@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import TelaBrasil from "../pages/TelaBrasil";
+import './css/Inicio.css';
 
 import BtnSaibaMais from "../componentes/botoes/BtnSaibaMais";
 import { ReactComponent as LogoAnaligix } from '../componentes/logo/logoAnaligix.svg';
@@ -34,7 +35,6 @@ export default function Home() {
         textAlign: "center",
         maxWidth: "600px",  
         marginBottom: "20px",
-        fontFamily: "Inter, sans-serif",
         fontSize: "18px",
         lineHeight: "1.6"
       }}>
