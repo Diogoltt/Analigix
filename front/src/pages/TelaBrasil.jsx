@@ -48,6 +48,7 @@ export default function TelaBrasil() {
 
     useEffect(() => {
         const fetchInitialData = async () => {
+            setLoading(true); // Garantir que loading seja true ao iniciar nova busca
             try {
                 const [analiseResponse, rankingResponse] = await Promise.all([
                     fetch(`http://127.0.0.1:5000/api/analise?ano=${anoSelecionado}`),
@@ -57,14 +58,23 @@ export default function TelaBrasil() {
                 const analiseData = await analiseResponse.json();
                 const rankingData = await rankingResponse.json();
 
+                // Reset dos dados para evitar exibição de dados antigos quando não há dados para o ano
                 if (analiseData && analiseData.length >= 2) {
                     setTopAreasNacional(analiseData);
+                } else {
+                    setTopAreasNacional([]); // Limpa dados anteriores
                 }
+                
                 if (rankingData && rankingData.length > 0) {
                     setRankingNacionalData(rankingData);
+                } else {
+                    setRankingNacionalData([]); // Limpa dados anteriores
                 }
             } catch (error) {
                 console.error('Erro ao buscar dados iniciais:', error);
+                // Em caso de erro, também limpa os dados
+                setTopAreasNacional([]);
+                setRankingNacionalData([]);
             } finally {
                 setLoading(false);
             }
@@ -84,12 +94,18 @@ export default function TelaBrasil() {
                             uf: topStateUf,
                             categoria: data[0].categoria_padronizada
                         });
+                    } else {
+                        setTopStateInfo({ uf: '...', categoria: '...' });
                     }
                 } catch (error) {
                     console.error(`Erro ao buscar detalhes para ${topStateUf}:`, error);
+                    setTopStateInfo({ uf: '...', categoria: '...' });
                 }
             };
             fetchTopStateCategory();
+        } else {
+            // Reset quando não há dados de ranking
+            setTopStateInfo({ uf: '...', categoria: '...' });
         }
     }, [rankingNacionalData, anoSelecionado]);
 
@@ -261,25 +277,42 @@ export default function TelaBrasil() {
                     </div>
                     <div className="info-container">
                         <div className="info-nacional">
-                            <h1 style={{ color: '#2C006A', textAlign: 'center', marginBottom: '1.5rem' }}>
-                                No ano <strong style={{ color: '#0EC0D1' }}>{anoSelecionado}</strong> o País investiu mais em{' '}
-                                <strong style={{ color: '#0EC0D1' }}>
-                                    {loading || topAreasNacional.length < 1 ? '...' : topAreasNacional[0].categoria_padronizada}
-                                </strong>{' '}
-                                e{' '}
-                                <strong style={{ color: '#0EC0D1' }}>
-                                    {loading || topAreasNacional.length < 2 ? '...' : topAreasNacional[1].categoria_padronizada}
-                                </strong>
-                            </h1>
+                            {loading ? (
+                                <h1 style={{ color: '#2C006A', textAlign: 'center', marginBottom: '1.5rem' }}>
+                                    Carregando dados para <strong style={{ color: '#0EC0D1' }}>{anoSelecionado}</strong>...
+                                </h1>
+                            ) : topAreasNacional.length >= 2 ? (
+                                <h1 style={{ color: '#2C006A', textAlign: 'center', marginBottom: '1.5rem' }}>
+                                    No ano <strong style={{ color: '#0EC0D1' }}>{anoSelecionado}</strong> o País investiu mais em{' '}
+                                    <strong style={{ color: '#0EC0D1' }}>
+                                        {topAreasNacional[0].categoria_padronizada}
+                                    </strong>{' '}
+                                    e{' '}
+                                    <strong style={{ color: '#0EC0D1' }}>
+                                        {topAreasNacional[1].categoria_padronizada}
+                                    </strong>
+                                </h1>
+                            ) : (
+                                <h1 style={{ color: '#2C006A', textAlign: 'center', marginBottom: '1.5rem' }}>
+                                    Não há dados disponíveis para o ano <strong style={{ color: '#FF5A1F' }}>{anoSelecionado}</strong>
+                                </h1>
+                            )}
                             <BtnVerGrafico
                                 mostrarGrafico={mostrarGrafico}
                                 setMostrarGrafico={setMostrarGrafico}
                                 text={mostrarGrafico ? 'Ranking' : 'Grafico'}
+                                disabled={!loading && topAreasNacional.length === 0 && rankingNacionalData.length === 0}
                             />
                         </div>
 
                         <div className="conteudo-ranking-grafico">
-                            {mostrarGrafico ? (
+                            {!loading && topAreasNacional.length === 0 && rankingNacionalData.length === 0 ? (
+                                <div className="empty-data-container">
+                                    <div className="empty-data-icon">📊</div>
+                                    <div className="empty-data-message">Sem dados disponíveis para {anoSelecionado}</div>
+                                    <div className="empty-data-submessage">Selecione um ano diferente ou verifique se há dados no sistema</div>
+                                </div>
+                            ) : mostrarGrafico ? (
                                 <GraficoBarras ano={anoSelecionado} />
                             ) : (
                                 <RankingNacional items={rankingNacionalData} />
