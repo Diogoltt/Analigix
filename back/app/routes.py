@@ -387,44 +387,85 @@ def get_insight_comparacao():
         num_categorias_a = len(dados_a)
         num_categorias_b = len(dados_b)
         
-        # Gerar insight usando GPT-4
+        # Análises estatísticas mais detalhadas
         try:
+            # Calcular métricas avançadas
+            gasto_medio_a = dados_a['total_gasto'].mean() if len(dados_a) > 0 else 0
+            gasto_medio_b = dados_b['total_gasto'].mean() if len(dados_b) > 0 else 0
+            
+            # Análise de concentração (% do top 3 categorias)
+            top3_a = dados_a.head(3)['total_gasto'].sum() if len(dados_a) >= 3 else total_a
+            top3_b = dados_b.head(3)['total_gasto'].sum() if len(dados_b) >= 3 else total_b
+            concentracao_a = (top3_a / total_a * 100) if total_a > 0 else 0
+            concentracao_b = (top3_b / total_b * 100) if total_b > 0 else 0
+            
+            # Encontrar categorias em comum e exclusivas
+            cats_a = set(dados_a['categoria_padronizada'].tolist())
+            cats_b = set(dados_b['categoria_padronizada'].tolist())
+            cats_comuns = cats_a.intersection(cats_b)
+            cats_exclusivas_a = cats_a - cats_b
+            cats_exclusivas_b = cats_b - cats_a
+            
+            # Análise das categorias comuns
+            analise_comum = ""
+            if len(cats_comuns) > 0:
+                for cat in list(cats_comuns)[:2]:  # Top 2 categorias comuns
+                    valor_a = dados_a[dados_a['categoria_padronizada'] == cat]['total_gasto'].iloc[0]
+                    valor_b = dados_b[dados_b['categoria_padronizada'] == cat]['total_gasto'].iloc[0]
+                    if valor_a > valor_b:
+                        diff_pct = ((valor_a - valor_b) / valor_b * 100) if valor_b > 0 else 100
+                        analise_comum += f"Em {cat}, {uf_a} investiu {diff_pct:.1f}% mais que {uf_b}. "
+                    elif valor_b > valor_a:
+                        diff_pct = ((valor_b - valor_a) / valor_a * 100) if valor_a > 0 else 100
+                        analise_comum += f"Em {cat}, {uf_b} investiu {diff_pct:.1f}% mais que {uf_a}. "
+            
+            # Determinar perfil de investimento
+            perfil_a = "concentrado" if concentracao_a > 70 else "diversificado"
+            perfil_b = "concentrado" if concentracao_b > 70 else "diversificado"
+            
             # Preparar dados para o prompt
             categorias_texto = ', '.join(categorias) if categorias and categorias[0] else 'todas as categorias'
             
             # Formatar valores para o prompt
             total_a_formatado = f"R$ {total_a:,.2f}".replace(',', '.')
             total_b_formatado = f"R$ {total_b:,.2f}".replace(',', '.')
+            diferenca_total = abs(total_a - total_b)
+            diferenca_pct = (diferenca_total / min(total_a, total_b) * 100) if min(total_a, total_b) > 0 else 0
             
-            # Criar prompt estruturado para GPT-4
+            # Orompt mais robusto para GPT-4
             prompt = f"""
-Você é um analista especialista em políticas públicas e orçamento governamental brasileiro. 
+Você é um analista sênior especializado em finanças públicas brasileiras com 15+ anos de experiência em análise orçamentária comparativa.
 
-Analise os dados de investimento público de {ano} e gere um insight profissional e objetivo sobre a comparação entre os estados.
+Analise os dados e gere um insight SURPREENDENTE e ACTIONABLE sobre as diferenças estratégicas entre os estados.
 
-DADOS DA COMPARAÇÃO:
-- Estado A: {uf_a}
-- Estado B: {uf_b}
-- Ano: {ano}
-- Categorias analisadas: {categorias_texto}
+📊 DADOS COMPARATIVOS {ano}:
+• {uf_a}: {total_a_formatado} | {num_categorias_a} categorias | Perfil: {perfil_a}
+• {uf_b}: {total_b_formatado} | {num_categorias_b} categorias | Perfil: {perfil_b}
+• Diferença total: {diferenca_pct:.1f}%
 
-VALORES INVESTIDOS:
-- {uf_a}: {total_a_formatado} (em {num_categorias_a} categorias)
-- {uf_b}: {total_b_formatado} (em {num_categorias_b} categorias)
+🎯 FOCOS PRINCIPAIS:
+• {uf_a}: {top_categoria_a['categoria_padronizada'] if top_categoria_a is not None else 'N/A'} {f"({(top_categoria_a['total_gasto']/total_a*100):.1f}% do orçamento)" if top_categoria_a is not None else ""}
+• {uf_b}: {top_categoria_b['categoria_padronizada'] if top_categoria_b is not None else 'N/A'} {f"({(top_categoria_b['total_gasto']/total_b*100):.1f}% do orçamento)" if top_categoria_b is not None else ""}
 
-PRINCIPAIS FOCOS:
-- Principal categoria {uf_a}: {top_categoria_a['categoria_padronizada'] if top_categoria_a is not None else 'N/A'}
-- Principal categoria {uf_b}: {top_categoria_b['categoria_padronizada'] if top_categoria_b is not None else 'N/A'}
+📈 CONCENTRAÇÃO:
+• {uf_a}: Top 3 categorias = {concentracao_a:.1f}% do orçamento
+• {uf_b}: Top 3 categorias = {concentracao_b:.1f}% do orçamento
 
-INSTRUÇÕES:
-1. Gere um insight de 2-3 frases, máximo 150 palavras
-2. Seja específico com percentuais e valores quando relevante
-3. Mencione diferenças estratégicas entre os estados
-4. Use linguagem técnica mas acessível
-5. Foque nas categorias que estão sendo visualizadas no gráfico
-6. Não use bullet points, apenas texto corrido
+🔍 ANÁLISE DETALHADA:
+• Categorias comuns: {len(cats_comuns)}
+• Exclusivas {uf_a}: {len(cats_exclusivas_a)}
+• Exclusivas {uf_b}: {len(cats_exclusivas_b)}
+{analise_comum}
 
-Insight:"""
+💡 GERE UM INSIGHT que:
+1. Revele padrões não óbvios ou tendências interessantes
+2. Compare estratégias de alocação orçamentária
+3. Mencione implicações para políticas públicas
+4. Use dados específicos (percentuais, rankings)
+5. Seja objetivo mas instigante (120-150 palavras)
+6. Evite clichês como "ambos investem em..." 
+
+INSIGHT ESTRATÉGICO:"""
 
             # Fazer chamada para GPT-4
             print(f"🤖 Tentando gerar insight com GPT-4 para {uf_a} vs {uf_b}...")
@@ -447,32 +488,30 @@ Insight:"""
             insight_final = response.choices[0].message.content.strip()
             print(f"✅ Insight gerado com sucesso pela IA: {insight_final[:50]}...")
             
-        except Exception as e:
-            print(f"❌ Erro ao gerar insight com GPT-4: {str(e)}")
-            print(f"🔄 Usando fallback baseado em dados...")
-            # Fallback para análise baseada em dados se GPT-4 falhar
-            insight_parts = []
-            
-            if total_a > total_b:
-                diferenca_pct = ((total_a - total_b) / total_b) * 100
-                insight_parts.append(f"{uf_a} investiu {diferenca_pct:.1f}% mais que {uf_b} nas categorias analisadas.")
-            elif total_b > total_a:
-                diferenca_pct = ((total_b - total_a) / total_a) * 100
-                insight_parts.append(f"{uf_b} investiu {diferenca_pct:.1f}% mais que {uf_a} nas categorias analisadas.")
-            else:
-                insight_parts.append(f"{uf_a} e {uf_b} tiveram investimentos similares nas categorias analisadas.")
-            
-            if top_categoria_a is not None and top_categoria_b is not None:
-                if top_categoria_a['categoria_padronizada'] == top_categoria_b['categoria_padronizada']:
-                    insight_parts.append(f"Ambos os estados priorizaram '{top_categoria_a['categoria_padronizada']}' como principal área de investimento.")
-                else:
-                    insight_parts.append(f"{uf_a} focou principalmente em '{top_categoria_a['categoria_padronizada']}', enquanto {uf_b} priorizou '{top_categoria_b['categoria_padronizada']}'.")
-            
-            insight_final = " ".join(insight_parts)
+            # Adicionar métricas mais detalhadas ao retorno
+            dados_comparacao_detalhados = {
+                'total_a': float(total_a),
+                'total_b': float(total_b),
+                'diferenca_percentual': float(diferenca_pct),
+                'categorias_a': num_categorias_a,
+                'categorias_b': num_categorias_b,
+                'concentracao_a': float(concentracao_a),
+                'concentracao_b': float(concentracao_b),
+                'perfil_a': perfil_a,
+                'perfil_b': perfil_b,
+                'categorias_comuns': len(cats_comuns),
+                'categorias_exclusivas_a': len(cats_exclusivas_a),
+                'categorias_exclusivas_b': len(cats_exclusivas_b),
+                'top_categoria_a': top_categoria_a['categoria_padronizada'] if top_categoria_a is not None else None,
+                'top_categoria_b': top_categoria_b['categoria_padronizada'] if top_categoria_b is not None else None,
+                'participacao_top_a': float((top_categoria_a['total_gasto']/total_a*100)) if top_categoria_a is not None and total_a > 0 else 0,
+                'participacao_top_b': float((top_categoria_b['total_gasto']/total_b*100)) if top_categoria_b is not None and total_b > 0 else 0
+            }
         
-        return jsonify({
-            'insight': insight_final,
-            'dados_comparacao': {
+        except Exception as calc_error:
+            print(f"❌ Erro nos cálculos avançados: {calc_error}")
+            # Fallback simples se houver erro nos cálculos
+            dados_comparacao_detalhados = {
                 'total_a': float(total_a),
                 'total_b': float(total_b),
                 'categorias_a': num_categorias_a,
@@ -480,6 +519,19 @@ Insight:"""
                 'top_categoria_a': top_categoria_a['categoria_padronizada'] if top_categoria_a is not None else None,
                 'top_categoria_b': top_categoria_b['categoria_padronizada'] if top_categoria_b is not None else None
             }
+            
+            if total_a > total_b:
+                diferenca_pct = ((total_a - total_b) / total_b) * 100
+                insight_final = f"{uf_a} investiu {diferenca_pct:.1f}% mais que {uf_b} nas categorias analisadas."
+            elif total_b > total_a:
+                diferenca_pct = ((total_b - total_a) / total_a) * 100
+                insight_final = f"{uf_b} investiu {diferenca_pct:.1f}% mais que {uf_a} nas categorias analisadas."
+            else:
+                insight_final = f"{uf_a} e {uf_b} tiveram investimentos similares nas categorias analisadas."
+        
+        return jsonify({
+            'insight': insight_final,
+            'dados_comparacao': dados_comparacao_detalhados
         })
         
     except Exception as e:
