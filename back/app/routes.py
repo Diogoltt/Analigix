@@ -484,3 +484,68 @@ Insight:"""
         
     except Exception as e:
         return jsonify({'erro': f'Erro ao gerar insight: {str(e)}'}), 500
+
+
+@app.route('/api/categorias', methods=['GET'])
+def get_categorias():
+    """
+    Retorna todas as categorias únicas disponíveis no banco de dados.
+    """
+    try:
+        # Conectar ao banco usando o mesmo padrão das outras rotas
+        db_path = app.config['DATABASE_PATH']
+        conn = sqlite3.connect(db_path)
+        
+        # Buscar todas as categorias únicas
+        query = "SELECT DISTINCT categoria_padronizada FROM despesas WHERE categoria_padronizada IS NOT NULL ORDER BY categoria_padronizada"
+        
+        cursor = conn.cursor()
+        cursor.execute(query)
+        resultados = cursor.fetchall()
+        
+        # Extrair apenas os nomes das categorias
+        categorias = [row[0] for row in resultados]
+        
+        conn.close()
+        
+        return jsonify(categorias)
+        
+    except Exception as e:
+        print(f"Ocorreu um erro na rota /api/categorias: {e}")
+        return jsonify({"error": "Erro interno do servidor."}), 500
+
+@app.route('/api/despesas-estado/<estado>/<int:ano>', methods=['GET'])
+def get_despesas_estado_ano(estado, ano):
+    """
+    Retorna as despesas de um estado específico em um ano específico, 
+    agrupadas por categoria.
+    """
+    try:
+        # Conectar ao banco
+        db_path = app.config['DATABASE_PATH']
+        conn = sqlite3.connect(db_path)
+        
+        # Query para buscar despesas por categoria de um estado e ano específicos
+        query = """
+            SELECT 
+                categoria_padronizada as categoria,
+                SUM(valor) as valor
+            FROM despesas 
+            WHERE estado = ? 
+            AND strftime('%Y', data) = ?
+            AND categoria_padronizada IS NOT NULL
+            GROUP BY categoria_padronizada
+            ORDER BY valor DESC
+        """
+        
+        df = pd.read_sql_query(query, conn, params=(estado.upper(), str(ano)))
+        conn.close()
+        
+        # Converter para formato JSON
+        resultado = df.to_dict(orient='records')
+        
+        return jsonify(resultado)
+        
+    except Exception as e:
+        print(f"Ocorreu um erro na rota /api/despesas-estado/{estado}/{ano}: {e}")
+        return jsonify({"error": "Erro interno do servidor."}), 500

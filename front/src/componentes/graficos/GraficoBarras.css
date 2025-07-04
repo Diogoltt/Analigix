@@ -6,9 +6,23 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Campton';
+  src: url('../fontes/CamptonMedium.otf') format('opentype');
+  font-weight: 500; /* Medium */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Campton';
+  src: url('../fontes/CamptonSemiBold.otf') format('opentype');
+  font-weight: 600; /* SemiBold */
+  font-style: normal;
+}
 
 .categoria-graficoBarras{
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Campton', 'Open Sans', sans-serif;
+  font-weight: 500;
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -17,6 +31,11 @@
   color: #333;
   outline: none;
   transition: border 0.2s ease;
+}
+
+.categoria-graficoBarras:focus {
+  border-color: #0EC0D1;
+  box-shadow: 0 0 5px rgba(14, 192, 209, 0.3);
 }
 
 .grafico-container {
@@ -43,4 +62,66 @@
   height: auto;
   min-height: 400px;
   
+}
+
+/* Estilos para os controles de estados */
+.controles-grafico {
+  font-family: 'Campton', 'Open Sans', sans-serif;
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.controles-grafico label {
+  font-family: 'Campton', 'Open Sans', sans-serif;
+  font-weight: 600;
+}
+
+.estados-checkbox-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  max-height: 120px;
+  overflow-y: auto;
+  padding: 10px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.estado-checkbox-label {
+  display: flex;
+  align-items: center;
+  font-family: 'Campton', 'Open Sans', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  user-select: none;
+  padding: 5px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.estado-checkbox-label:hover {
+  background-color: #f0f8ff;
+}
+
+.estado-checkbox-label input[type="checkbox"] {
+  margin-right: 6px;
+  cursor: pointer;
+}
+
+.info-estados-ocultos {
+  font-family: 'Campton', 'Open Sans', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+.barras-title {
+  font-family: 'Campton', 'Open Sans', sans-serif;
+  font-weight: 600;
 }

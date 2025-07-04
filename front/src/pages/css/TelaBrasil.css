@@ -24,6 +24,22 @@ h1{
     padding-right: 200px;
 }
 
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #0EC0D1;
+}
+
 .filtro-ano {
     display: flex;
     align-items: center;

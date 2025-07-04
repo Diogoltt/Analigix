@@ -212,7 +212,10 @@ export default function TelaBrasil() {
         <div>
             <nav className="navbar">
                 <a href="/analigix"><LogoAnaligixAzul width="200px" height="80px" /></a>
-                <a href="/Portais-da-Transparencia" style={{ color: "white", font: "" }}>Portais da Transparência</a>
+                <div className="nav-links">
+                    <a href="/tendencias" style={{ color: "white" }}>Tendências</a>
+                    <a href="/portais-da-Transparencia" style={{ color: "white" }}>Portais da Transparência</a>
+                </div>
             </nav>
             <div className="BuscaEstado">
                 <input

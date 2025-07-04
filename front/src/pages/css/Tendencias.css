@@ -1,0 +1,262 @@
+/* Tendencias.css */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+@font-face {
+    font-family: 'Campton';
+    src: url('../../componentes/fontes/CamptonBlack.otf') format('opentype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Campton';
+    src: url('../../componentes/fontes/CamptonMedium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Campton';
+    src: url('../../componentes/fontes/CamptonSemiBold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.tendencias-container {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    background-color: #5b228d;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 200px;
+    padding-right: 200px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #0EC0D1;
+}
+
+.tendencias-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.header-section {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.header-section h1 {
+    font-family: 'Campton', sans-serif;
+    font-weight: 600;
+    font-size: 2.5rem;
+    color: #2C006A;
+    margin-bottom: 10px;
+}
+
+.header-section p {
+    font-family: 'Campton', sans-serif;
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.filtros-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+.filtro-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filtro-grupo label {
+    font-family: 'Campton', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #2C006A;
+}
+
+.filtro-select {
+    font-family: 'Campton', sans-serif;
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: 2px solid #0EC0D1;
+    background-color: white;
+    color: #2C006A;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 200px;
+}
+
+.filtro-select:hover {
+    border-color: #5B228D;
+    box-shadow: 0 2px 8px rgba(91, 34, 141, 0.2);
+}
+
+.filtro-select:focus {
+    outline: none;
+    border-color: #5B228D;
+    box-shadow: 0 0 0 3px rgba(91, 34, 141, 0.1);
+}
+
+.grafico-container {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.chart-wrapper h2 {
+    font-family: 'Campton', sans-serif;
+    font-weight: 600;
+    text-align: center;
+    color: #2C006A;
+    margin-bottom: 30px;
+    font-size: 1.5rem;
+}
+
+.estado-nome {
+    font-family: 'Campton', sans-serif;
+    font-size: 1.2rem;
+    color: #0EC0D1;
+    font-weight: 500;
+}
+
+.loading, .error, .no-data {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.loading p {
+    font-size: 1.1rem;
+    color: #666;
+    font-family: 'Campton', sans-serif;
+    font-weight: 500;
+}
+
+.error p {
+    font-size: 1.1rem;
+    color: #dc3545;
+    font-family: 'Campton', sans-serif;
+    font-weight: 500;
+}
+
+.no-data p {
+    font-size: 1.1rem;
+    color: #666;
+    font-family: 'Campton', sans-serif;
+    font-weight: 500;
+}
+
+.custom-tooltip {
+    background: white;
+    border: 2px solid #0EC0D1;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tooltip-label {
+    font-family: 'Campton', sans-serif;
+    font-weight: 600;
+    color: #2C006A;
+    margin: 0 0 5px 0;
+}
+
+.tooltip-value {
+    font-family: 'Campton', sans-serif;
+    font-weight: 500;
+    color: #0EC0D1;
+    margin: 0;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .navbar {
+        padding-left: 20px;
+        padding-right: 20px;
+        flex-direction: column;
+        gap: 15px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+
+    .nav-links {
+        gap: 20px;
+    }
+
+    .tendencias-content {
+        padding: 20px 15px;
+    }
+
+    .header-section h1 {
+        font-size: 2rem;
+    }
+
+    .filtros-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .filtro-select {
+        min-width: 250px;
+    }
+
+    .grafico-container {
+        padding: 20px 15px;
+    }
+
+    .chart-wrapper h2 {
+        font-size: 1.2rem;
+    }
+
+    .estado-nome {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-section h1 {
+        font-size: 1.8rem;
+    }
+
+    .filtro-select {
+        min-width: 200px;
+    }
+
+    .chart-wrapper h2 {
+        font-size: 1.1rem;
+    }
+}
