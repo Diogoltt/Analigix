@@ -11,7 +11,6 @@ import {
     LabelList,
 } from 'recharts';
 import { buscarEstado } from "../../util/Estados"; 
-import './GraficoComparacao.css';
 
 const formatarValorCompleto = (valor) => {
     if (!valor) return 'R$ 0';
