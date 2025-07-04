@@ -10,7 +10,7 @@ import GraficoPizza from '../componentes/graficos/GraficoPizza.jsx';
 
 
 export default function TelaEstado() {
- 
+
   const { uf } = useParams();
   const navigate = useNavigate();
   const handleClick = () => navigate('/nacional');
@@ -24,7 +24,7 @@ export default function TelaEstado() {
   const [totalRankingItems, setTotalRankingItems] = useState(0);
   const recordsPerPage = 10;
 
- 
+
   useEffect(() => {
     setRankingPage(1);
   }, [anoSelecionado]);
@@ -69,19 +69,24 @@ export default function TelaEstado() {
 
   const totalPages = Math.ceil(totalRankingItems / recordsPerPage);
 
-  
+
   return (
     <div>
       <nav className="navbar">
         <a href="/nacional">
           <LogoAnaligixAzul width="200px" height="80px" />
         </a>
-        <a
-          href="/Portais-da-Transparencia"
-          style={{ color: 'white', font: '' }}
-        >
-          Portais da Transparência
-        </a>
+
+          <div className="nav-links">
+            <a href="/tendencias" style={{ color: "white" }}>Tendências</a>
+            <a
+              href="/Portais-da-Transparencia"
+              style={{ color: 'white', font: '' }}
+            >
+              Portais da Transparência
+            </a>
+          </div>
+
       </nav>
       <div className="container-Principal">
         <div className="container-1">
@@ -110,9 +115,9 @@ export default function TelaEstado() {
                 {loading
                   ? '...'
                   : ` R$ ${valorTotal.toLocaleString('pt-BR', {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}`}
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}`}
               </span>
             </h1>
             <select
