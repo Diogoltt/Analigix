@@ -142,7 +142,10 @@ return (
     <div>
         <nav className="navbar">
             <a href="/analigix"><LogoAnaligixAzul width="200px" height="80px" /></a>
-            <a href="/nacional" style={{ color: "white" }}>Dashboard</a>
+            <div className="nav-links">
+                <a href="/nacional" style={{ color: "white" }}>Dashboard</a>
+                <a href="/tendencias" style={{ color: "white" }}>Tendências</a>
+            </div>
         </nav>
         <div className='container-Principal'>
             <div className='btnVoltar'>

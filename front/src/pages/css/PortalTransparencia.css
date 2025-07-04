@@ -22,10 +22,27 @@
     background-color: #5b228d;
     font-family: 'Open Sans', sans-serif;
     display: flex;
-    justify-content: start;
+    justify-content: space-between;
     align-items: center;
     padding: 1px;
     padding-left: 20px;
+    padding-right: 20px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #0EC0D1;
 }
 
 a {

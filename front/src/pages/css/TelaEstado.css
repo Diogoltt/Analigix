@@ -16,13 +16,28 @@ body {
 }
 
 .navbar {
-  background-color: #5b228d;
-  /* border: 1px solid #5b228d; */
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  /* padding: 5px; */
-  padding-left: 200px;
+    background-color: #5b228d;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 200px;
+    padding-right: 200px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #0EC0D1;
 }
 
 a {

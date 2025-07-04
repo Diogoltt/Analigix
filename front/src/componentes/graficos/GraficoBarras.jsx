@@ -34,6 +34,25 @@ export default function GraficoBarrasEstados({ ano = 2024 }) {
     const [categoriaSelecionada, setCategoriaSelecionada] = useState("");
     const [chartData, setChartData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [categorias, setCategorias] = useState([]);
+    const [estadosOcultos, setEstadosOcultos] = useState(new Set());
+    const [dadosOriginais, setDadosOriginais] = useState([]);
+
+    // Buscar categorias disponíveis
+    useEffect(() => {
+        const fetchCategorias = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/categorias');
+                const data = await response.json();
+                setCategorias(data);
+            } catch (error) {
+                console.error("Erro ao buscar categorias:", error);
+                setCategorias([]);
+            }
+        };
+
+        fetchCategorias();
+    }, []);
 
     useEffect(() => {
         const fetchDataForChart = async () => {
@@ -50,36 +69,81 @@ export default function GraficoBarrasEstados({ ano = 2024 }) {
 
                 if (data.error) throw new Error(data.error);
                 
+                setDadosOriginais(data);
                 
-                setChartData(data);
+                // Filtrar estados ocultos
+                const dadosFiltrados = data.filter(item => !estadosOcultos.has(item.estado));
+                setChartData(dadosFiltrados);
 
             } catch (error) {
                 console.error("Erro ao buscar dados para o gráfico:", error);
                 setChartData([]);
+                setDadosOriginais([]);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchDataForChart();
-    }, [categoriaSelecionada, ano]);
+    }, [categoriaSelecionada, ano, estadosOcultos]);
+
+    // Função para alternar visibilidade do estado
+    const toggleEstado = (estado) => {
+        const novosEstadosOcultos = new Set(estadosOcultos);
+        if (novosEstadosOcultos.has(estado)) {
+            novosEstadosOcultos.delete(estado);
+        } else {
+            novosEstadosOcultos.add(estado);
+        }
+        setEstadosOcultos(novosEstadosOcultos);
+    };
 
     return (
         <div className="grafico-container" style={{ minHeight: "500px" }}>
-            <select
-                className="categoria-graficoBarras"
-                value={categoriaSelecionada}
-                onChange={(e) => setCategoriaSelecionada(e.target.value)}
-            >
-                <option value="">Geral (Todas as Categorias)</option>
-                <option value="Educação">Educação</option>
-                <option value="Saúde">Saúde</option>
-                <option value="Segurança Pública">Segurança Pública</option>
-                <option value="Infraestrutura e Transporte">Infraestrutura e Transporte</option>
-                <option value="Administração e Gestão Pública">Administração e Gestão Pública</option>
-                <option value="Tecnologia da Informação e Inovação">Tecnologia da Informação e Inovação</option>
+            <div className="controles-grafico">
+                <div style={{ marginBottom: "15px" }}>
+                    <label style={{ marginRight: "10px", fontWeight: "bold" }}>
+                        Filtrar por Categoria:
+                    </label>
+                    <select
+                        className="categoria-graficoBarras"
+                        value={categoriaSelecionada}
+                        onChange={(e) => setCategoriaSelecionada(e.target.value)}
+                    >
+                        <option value="">Geral (Todas as Categorias)</option>
+                        {categorias.map(categoria => (
+                            <option key={categoria} value={categoria}>
+                                {categoria}
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
-            </select>
+                {dadosOriginais.length > 0 && (
+                    <div>
+                        <label style={{ marginBottom: "10px", fontWeight: "bold", display: "block" }}>
+                            Ocultar Estados:
+                        </label>
+                        <div className="estados-checkbox-container">
+                            {dadosOriginais.map(item => (
+                                <label key={item.estado} className="estado-checkbox-label">
+                                    <input
+                                        type="checkbox"
+                                        checked={estadosOcultos.has(item.estado)}
+                                        onChange={() => toggleEstado(item.estado)}
+                                    />
+                                    {item.estado}
+                                </label>
+                            ))}
+                        </div>
+                        {estadosOcultos.size > 0 && (
+                            <div className="info-estados-ocultos">
+                                {estadosOcultos.size} estado{estadosOcultos.size > 1 ? 's' : ''} oculto{estadosOcultos.size > 1 ? 's' : ''}
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
             
             <h2 className="barras-title">
                 {categoriaSelecionada
