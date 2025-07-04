@@ -122,11 +122,6 @@ A aplicação estará disponível em: `http://localhost:3000`
 
 O sistema ETL (Extract, Transform, Load) é responsável por processar os dados de transparência dos estados brasileiros.
 
-### Comandos do ETL
-
-```bash
-cd back/etl
-
 ### Estados Suportados
 
 O sistema suporta todos os 26 estados brasileiros + DF, exceto Pernambuco(PE) e Sergipe(SE):
@@ -218,5 +213,4 @@ O sistema utiliza SQLite para armazenar os dados processados. A tabela principal
 
 ---
 
-**Analigix** - Tornando a transparência pública mais acessível e compreensível. 🇧🇷
-```
+**Analigix** - Tornando a transparência pública mais acessível e compreensível.
