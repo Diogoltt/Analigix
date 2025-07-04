@@ -113,6 +113,30 @@ def _processar_arquivo_csv(arquivo, sigla_estado, ano, config):
         from processadores.especiais import processar_rs_csv_reader
         return processar_rs_csv_reader(arquivo, NOME_BANCO, NOME_TABELA, ano)
     
+    if sigla_estado == 'DF':
+        from processadores.especiais import processar_df_csv_reader
+        return processar_df_csv_reader(arquivo, NOME_BANCO, NOME_TABELA, ano)
+    
+    if sigla_estado == 'MA':
+        from processadores.especiais import processar_ma_csv_reader
+        return processar_ma_csv_reader(arquivo, NOME_BANCO, NOME_TABELA, ano)
+    
+    if sigla_estado == 'GO':
+        from processadores.especiais import processar_goias_csv_reader
+        return processar_goias_csv_reader(arquivo, NOME_BANCO, NOME_TABELA, ano)
+    
+    if sigla_estado == 'MS':
+        from processadores.especiais import processar_ms_csv_especial
+        return processar_ms_csv_especial(arquivo, NOME_BANCO, NOME_TABELA, ano)
+    
+    if sigla_estado == 'RJ':
+        from processadores.especiais import processar_rj_csv_especial
+        return processar_rj_csv_especial(arquivo, NOME_BANCO, NOME_TABELA, ano)
+    
+    if sigla_estado == 'SP':
+        from processadores.especiais import processar_sp_csv_especial
+        return processar_sp_csv_especial(arquivo, NOME_BANCO, NOME_TABELA, ano)
+    
     try:        
         # Carregar CSV com tratamento de encoding
         df = carregar_csv_com_encoding(arquivo)

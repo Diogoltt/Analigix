@@ -56,10 +56,10 @@ MAPEAMENTO_COLUNAS = {
     'CE': {  
         'arquivo': '../csvs/*CE*.csv',
         'colunas': {
-            'orgao': 'Unidade gestora',
-            'valor_pago': 'Valor pago final',
-            'valor_empenhado': 'Valor empenhado final',
-            'ano': 'Exercício',
+            'orgao': 'Órgão',
+            'valor_pago': 'Orçamento pago',
+            'valor_empenhado': 'Orçamento empenhado',
+            'ano': 'Ano',
             'estado': 'CE'
         }
     },
@@ -96,10 +96,10 @@ MAPEAMENTO_COLUNAS = {
     'MA': {  
         'arquivo': '../csvs/*MA*.csv',
         'colunas': {
-            'orgao': None,  
-            'valor_pago': None,
-            'valor_empenhado': None,
-            'ano': None,
+            'orgao': 'Descrição',  
+            'valor_pago': 'Pago',
+            'valor_empenhado': 'Empenhado',
+            'ano': 'Ano',
             'estado': 'MA'
         }
     },
