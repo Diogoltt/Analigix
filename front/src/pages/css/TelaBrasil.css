@@ -1,0 +1,491 @@
+/* TelaBrasil.css */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@font-face {
+  font-family: 'Campton';
+   src: url('../../componentes/fontes/CamptonBlack.otf') format('opentype');
+  font-weight: 900; /* porque é 'Black' */
+  font-style: normal;
+}
+body{
+    font-family: 'Open Sans', sans-serif;
+}
+h1{
+    font-family: 'Campton', sans-serif;
+    font-weight: 600;
+}
+.navbar {
+    background-color: #5b228d;
+    /* border: 1px solid #5b228d; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* padding: 5px; */
+    padding-left: 200px;
+    padding-right: 200px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #0EC0D1;
+}
+
+.filtro-ano {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filtro-ano label {
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.filtro-ano select {
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: 2px solid #0EC0D1;
+    background-color: white;
+    color: #2C006A;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filtro-ano select:hover {
+    background-color: #f8f9fa;
+    border-color: #0aa8b8;
+}
+
+.filtro-ano select:focus {
+    outline: none;
+    border-color: #0aa8b8;
+    box-shadow: 0 0 0 3px rgba(14, 192, 209, 0.1);
+}
+
+a {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Container principal da busca */
+.BuscaEstado {
+    position: relative;
+    display: inline-block;
+    /* Para o container se ajustar ao conteúdo */
+}
+
+/* Input de busca */
+.busca-input {
+    width: 100%;
+    padding: 10px;
+    /* Garante que padding não aumente a largura */
+}
+
+.BuscaEstado {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    flex-wrap: wrap;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+}
+
+.busca-input {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 16px;
+    width: 300px;
+    max-width: 90%;
+    color: #333;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+}
+
+.busca-input:focus {
+    border-color: #5b228d;
+    box-shadow: 0 0 0 3px rgba(91, 34, 141, 0.1);
+}
+.sugestoes-container {
+    position: absolute;
+    top: 70%;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+
+}
+
+.sugestao-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.sugestao-item:hover {
+    background-color: #FF5A1F;
+    color: white
+}
+
+.container-mapa-ranking {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+
+}
+
+.mapa-ranking {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    gap: 2rem;
+    padding: 2rem;
+    height: 100%;
+    box-sizing: border-box;
+    border-radius: 20px;
+}
+
+/* * Busca de estados*/
+/* Corrigindo nome da classe (era .buscaEstado com minúscula) */
+.BuscaEstado {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    flex-wrap: wrap;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+}
+
+.busca-input {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 16px;
+    width: 300px;
+    max-width: 90%;
+    color: #333;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+}
+
+.busca-input:focus {
+    border-color: #5b228d;
+    box-shadow: 0 0 0 3px rgba(91, 34, 141, 0.1);
+}
+
+
+.mapaBrasil {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid rgb(30, 30, 30, .1);
+    border-radius: 20px;
+    max-width: 600px;
+    height: auto;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+}
+
+.info-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+
+.info-nacional {
+    border: 1px solid rgb(30, 30, 30, .1);
+    border-radius: 20px;
+    padding: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.conteudo-ranking-grafico {
+    border: 1px solid rgb(30, 30, 30, .1);
+    border-radius: 20px;
+    padding: 0.5rem;
+    width: 100%;
+    flex-grow: 1;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+
+
+/** Grafico de comparação */
+
+
+.container-comparacao {
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    background-color: #f9f9f9;
+    border-top: 1px solid #ddd;
+    margin-top: 4rem;
+    border-radius: 20px;
+}
+
+.titulo-comparacao {
+    text-align: center;
+    font-family: 'Campton', sans-serif;
+    font-weight: 600;
+
+}
+
+.forms-Grafico {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    background-color: #ffffff;
+}
+
+.campo-Grafico {
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+    color: #333;
+}
+
+.input-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.sugestoes-containerA {
+    position: absolute;
+    left: 56%;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+}
+
+.select-Grafico {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #333;
+    outline: none;
+    transition: border 0.2s ease;
+    width: 100%;
+}
+
+.grafico-insights {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 2rem;
+    padding: 1rem 0;
+}
+
+.grafico-Comparacao {
+    flex: 3;
+    height: 850px;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+}
+
+.insights {
+    flex: 1;
+    height: auto;
+    padding: 1.2rem;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+}
+
+.insights h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #5B228D;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.insights-badge {
+    margin-left: 10px;
+    font-size: 12px;
+    background-color: #e3f2fd;
+    color: #1976d2;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.insights-content {
+    line-height: 1.6;
+    color: #333;
+    font-size: 14px;
+    margin: 0;
+    text-align: justify;
+    width: 100%;
+}
+
+.insights-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 14px;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.loading-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #5B228D;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Estilos para estado vazio de dados */
+.empty-data-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: #666;
+    font-size: 18px;
+    text-align: center;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #f8f9fa;
+    border: 2px dashed #ddd;
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 1rem 0;
+}
+
+.empty-data-icon {
+    font-size: 3rem;
+    opacity: 0.5;
+    margin-bottom: 0.5rem;
+}
+
+.empty-data-message {
+    font-size: 1.1rem;
+    color: #555;
+    margin: 0;
+}
+
+.empty-data-submessage {
+    font-size: 0.9rem;
+    color: #777;
+    margin-top: 0.5rem;
+}
+
+/* Estilos para botões desabilitados */
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed !important;
+    pointer-events: none;
+}
+
+.btn:disabled:hover {
+    background-color: inherit !important;
+    transform: none !important;
+}
+
+/* Loading state melhorado */
+.loading-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #5b228d;
+    font-weight: 500;
+}
+
+.loading-message::before {
+    content: "⏳";
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Melhorias para mensagens de ano sem dados */
+.no-data-year {
+    color: #FF5A1F !important;
+    font-weight: bold;
+}
+
+.data-available-year {
+    color: #0EC0D1 !important;
+    font-weight: bold;
+}

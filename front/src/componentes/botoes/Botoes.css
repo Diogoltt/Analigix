@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+
+.btn{
+    background-color: #FF5A1F;
+    color: white;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    border-radius: 6px;
+    font-Size: 18px;
+    font-family: "Open Sans", sans-serif;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+.btn :hover{
+    background-color: #d64e1c;
+
+}
+

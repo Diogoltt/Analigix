@@ -1,0 +1,10 @@
+Table Despesas_Estados {
+	id integer [ pk, increment, not null, unique ]
+	ano integer
+	orgão varchar
+	area_de_atuacao varchar
+	valor_gasto numeric
+	uf varchar
+	descricao text
+}
+
