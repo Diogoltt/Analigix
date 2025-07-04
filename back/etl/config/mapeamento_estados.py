@@ -266,10 +266,10 @@ MAPEAMENTO_COLUNAS = {
     'TO': {  
         'arquivo': '../csvs/*TO*.csv',
         'colunas': {
-            'orgao': 'FUN��O',
+            'orgao': 'FUN��O',  # Coluna com função (que será tratada como órgão)
             'valor_pago': 'PAGO',
             'valor_empenhado': 'EMPENHADO',
-            'ano': None,
+            'ano': None,  # Não há coluna de ano específica no CSV
             'estado': 'TO'
         }
     }

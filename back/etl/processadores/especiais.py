@@ -1062,3 +1062,157 @@ def processar_sp_csv_especial(arquivo, nome_banco, nome_tabela, ano=2024):
         import traceback
         traceback.print_exc()
         return 0
+
+
+def processar_to_csv_especial(arquivo, nome_banco, nome_tabela, ano=2024):
+    """
+    Processa especificamente o CSV do Tocantins (TO).
+    O arquivo tem 2 linhas de cabeçalho antes dos dados reais e uma linha de total no final.
+    """
+    print(f"  🔧 Processamento especial para TO - pulando 2 linhas iniciais e removendo linha total (ano: {ano})")
+    
+    try:
+        dados_processados = []
+        
+        # Tentar diferentes encodings
+        encodings = ['utf-8', 'latin-1', 'iso-8859-1', 'windows-1252', 'cp1252']
+        df = None
+        
+        for encoding in encodings:
+            try:
+                print(f"  🔄 Tentando encoding: {encoding}")
+                # Pular as primeiras 2 linhas e usar vírgula como delimitador
+                df = pd.read_csv(arquivo, encoding=encoding, delimiter=";", skiprows=2)
+                print(f"  ✅ Sucesso com encoding: {encoding}")
+                break
+            except UnicodeDecodeError:
+                print(f"  ❌ Falhou com encoding: {encoding}")
+                continue
+        
+        if df is None:
+            print(f"  ❌ Não foi possível ler o arquivo com nenhum dos encodings testados")
+            return 0
+        
+        # Remover a última linha (que contém o total)
+        if len(df) > 0:
+            df = df.iloc[:-1]  # Remove a última linha
+            print(f"  📋 Arquivo carregado com {len(df)} linhas (removida última linha com total)")
+        
+        print(f"  📋 Colunas encontradas: {list(df.columns)}")
+        
+        # Verificar se as colunas esperadas existem
+        colunas_esperadas = ['FUNÇÃO', 'EMPENHADO', 'PAGO']
+        colunas_encontradas = list(df.columns)
+        
+        # Verificar se pelo menos as colunas principais existem
+        if not ('FUNÇÃO' in colunas_encontradas and 'EMPENHADO' in colunas_encontradas and 'PAGO' in colunas_encontradas):
+            print(f"  ⚠️  Colunas esperadas não encontradas. Esperadas: {colunas_esperadas}")
+            print(f"  ⚠️  Encontradas: {colunas_encontradas}")
+            return 0
+        
+        linhas_processadas = 0
+        linhas_validas = 0
+        contador_empenhado = 0
+        contador_pago = 0
+        
+        for index, row in df.iterrows():
+            try:
+                linhas_processadas += 1
+                
+                # Extrair dados da linha
+                funcao = str(row['FUNÇÃO']).strip() if pd.notna(row['FUNÇÃO']) else 'Não informado'
+                valor_empenhado_str = str(row['EMPENHADO']) if pd.notna(row['EMPENHADO']) else '0'
+                valor_pago_str = str(row['PAGO']) if pd.notna(row['PAGO']) else '0'
+                
+                # Pular linhas vazias ou inválidas
+                if pd.isna(row['FUNÇÃO']) or funcao == 'nan' or funcao == '':
+                    continue
+                
+                # Função para converter valores monetários brasileiros
+                def converter_valor_brasileiro(valor_str):
+                    try:
+                        # Remover espaços e caracteres especiais
+                        valor_str = valor_str.strip()
+                        
+                        # Substituir vírgula por ponto para decimal
+                        valor_str = valor_str.replace(',', '.')
+                        
+                        # Remover pontos de milhares (se houver múltiplos pontos)
+                        partes = valor_str.split('.')
+                        if len(partes) > 2:
+                            # Reconstituir: juntar todas as partes exceto a última, depois adicionar a última
+                            valor_str = ''.join(partes[:-1]) + '.' + partes[-1]
+                        
+                        return float(valor_str)
+                    except (ValueError, AttributeError):
+                        return 0.0
+                
+                # Converter valores
+                valor_empenhado = converter_valor_brasileiro(valor_empenhado_str)
+                valor_pago = converter_valor_brasileiro(valor_pago_str)
+                
+                # Determinar valor final - priorizar empenhado, depois pago
+                valor_final = None
+                if valor_empenhado > 0:
+                    valor_final = valor_empenhado
+                    contador_empenhado += 1
+                elif valor_pago > 0:
+                    valor_final = valor_pago
+                    contador_pago += 1
+                
+                # Processar apenas se há valor válido
+                if valor_final is not None and valor_final > 0:
+                    linhas_validas += 1
+                    
+                    # Limpar e categorizar função (que será tratada como órgão)
+                    # Remove o número e traço do início (ex: "01 - LEGISLATIVA" vira "LEGISLATIVA")
+                    funcao_limpa = funcao
+                    if ' - ' in funcao:
+                        funcao_limpa = funcao.split(' - ', 1)[1]
+                    
+                    orgao_limpo = limpar_caracteres_especiais(funcao_limpa)
+                    categoria = mapear_categoria_padronizada(orgao_limpo)
+                    
+                    # Criar registro
+                    ano_int = int(ano) if isinstance(ano, str) else ano
+                    data = datetime(ano_int, 1, 1).date()
+                    
+                    dados_processados.append({
+                        'estado': 'TO',
+                        'data': data,
+                        'orgao': orgao_limpo,
+                        'categoria_padronizada': categoria,
+                        'valor': valor_final
+                    })
+                    
+            except Exception as e:
+                print(f"  ⚠️  Erro na linha {linhas_processadas}: {e}")
+                continue
+        
+        print(f"  📊 Estatísticas de processamento:")
+        print(f"    - Linhas processadas: {linhas_processadas}")
+        print(f"    - Linhas válidas: {linhas_validas}")
+        print(f"    - Valores empenhados: {contador_empenhado}")
+        print(f"    - Valores pagos: {contador_pago}")
+        print(f"    - Registros válidos: {len(dados_processados)}")
+        
+        # Salvar no banco
+        if dados_processados:
+            import sqlite3
+            df_final = pd.DataFrame(dados_processados)
+            conn = sqlite3.connect(nome_banco)
+            df_final.to_sql(nome_tabela, conn, if_exists='append', index=False)
+            conn.commit()
+            conn.close()
+            
+            print(f"  ✅ {len(df_final)} registros inseridos para TO")
+            return len(df_final)
+        else:
+            print(f"  ⚠️  Nenhum dado válido encontrado para TO")
+            return 0
+            
+    except Exception as e:
+        print(f"  ❌ Erro ao processar TO: {e}")
+        import traceback
+        traceback.print_exc()
+        return 0

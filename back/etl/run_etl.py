@@ -137,7 +137,11 @@ def _processar_arquivo_csv(arquivo, sigla_estado, ano, config):
         from processadores.especiais import processar_sp_csv_especial
         return processar_sp_csv_especial(arquivo, NOME_BANCO, NOME_TABELA, ano)
     
-    try:        
+    if sigla_estado == 'TO':
+        from processadores.especiais import processar_to_csv_especial
+        return processar_to_csv_especial(arquivo, NOME_BANCO, NOME_TABELA, ano)
+
+    try:
         # Carregar CSV com tratamento de encoding
         df = carregar_csv_com_encoding(arquivo)
         print(f"  ✅ CSV carregado. Total de linhas: {len(df)}")
