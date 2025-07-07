@@ -128,17 +128,7 @@ O sistema suporta todos os 26 estados brasileiros + DF, exceto Pernambuco(PE) e 
 
 - AC, AL, AP, AM, BA, CE, DF, ES, GO, MA, MT, MS, MG, PA, PB, PR, PI, RJ, RN, RS, RO, RR, SC, SP, TO
 
-Alguns estados possuem processadores especiais devido a formatos específicos de seus CSVs:
-
-- **Tocantins (TO)**: Pula 2 linhas iniciais e remove linha de total
-- **São Paulo (SP)**: Remove linha de total
-- **Rio de Janeiro (RJ)**: Pula 15 linhas iniciais
-- **Mato Grosso do Sul (MS)**: Pula 4 linhas iniciais
-- **Distrito Federal (DF)**: Pula linha de título
-- **Maranhão (MA)**: Remove 3 linhas finais inúteis
-- **Rio Grande do Sul (RS)**: Filtragem por ano
-- **Goiás (GO)**: Filtragem por ano
-- **Rondônia (RO)**: Processamento especial com csv.reader
+Alguns estados possuem processadores especiais devido a formatos específicos de seus CSVs
 
 ## 📊 API Endpoints
 
@@ -187,29 +177,6 @@ O sistema utiliza SQLite para armazenar os dados processados. A tabela principal
 - `npm start`: Servidor de desenvolvimento
 - `npm build`: Build para produção
 - `npm test`: Executa testes
-
-## 🔍 Troubleshooting
-
-### Problemas Comuns
-
-1. **Erro de encoding ao processar CSV**
-
-   - O sistema tenta múltiplos encodings automaticamente
-   - Verifique se o arquivo CSV está correto
-
-2. **Banco de dados não encontrado**
-
-   - Execute o ETL primeiro para criar o banco
-   - Verifique o caminho em `.env`
-
-3. **API não responde**
-
-   - Verifique se o servidor Flask está rodando
-   - Confirme a porta 5000 está disponível
-
-4. **Frontend não carrega**
-   - Verifique se as dependências foram instaladas
-   - Confirme se a API está rodando
 
 ---
 
